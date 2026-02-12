@@ -1,0 +1,2 @@
+# padroes_projeto_2026_1
+padroes_projeto_2026_1
