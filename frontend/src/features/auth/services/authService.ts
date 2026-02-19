@@ -1,40 +1,48 @@
-import { delay } from '@/utils';
+﻿import axios from 'axios';
 import type { LoginRequest, LoginResponse } from '../types';
+
+// Instância dedicada ao backend (sem o prefixo /api)
+const backendApi = axios.create({
+  baseURL: import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:8080',
+  timeout: 15000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
 /**
  * Serviço de autenticação
- * 
- * Atualmente usando mock data. Quando a API estiver pronta,
- * basta descomentar as chamadas com axios e remover os mocks.
  */
 export const authService = {
   /**
-   * Realiza o login do usuário
+   * Realiza o login do usuário chamando POST /login no backend
+   * Payload: { usuario: string, senha: string }
+   * Resposta: { sucesso: boolean, mensagem: string }
    */
   async login(credentials: LoginRequest): Promise<LoginResponse> {
-    // TODO: Substituir pelo endpoint real
-    // const response = await api.post<LoginResponse>('/auth/login', credentials);
-    // return response.data;
+    const payload = {
+      usuario: credentials.email,
+      senha: credentials.password,
+    };
 
-    // Mock — simula chamada à API
-    await delay(1500);
+    const response = await backendApi.post<{ sucesso: boolean; mensagem: string }>(
+      '/login',
+      payload,
+    );
 
-    if (
-      credentials.email === 'admin@email.com' &&
-      credentials.password === '123456'
-    ) {
-      return {
-        user: {
-          id: '1',
-          name: 'Administrador',
-          email: credentials.email,
-          avatar: undefined,
-        },
-        accessToken: 'mock-jwt-token-123456',
-      };
+    if (!response.data.sucesso) {
+      throw new Error(response.data.mensagem);
     }
 
-    throw new Error('Email ou senha inválidos');
+    return {
+      user: {
+        id: '1',
+        name: 'Administrador',
+        email: credentials.email,
+        avatar: undefined,
+      },
+      accessToken: 'session-token',
+    };
   },
 
   /**
