@@ -1,4 +1,7 @@
-package br.umc.models.valueObjects;
+package br.umc.models;
+
+import br.umc.models.valueObjects.DataNascimento;
+import br.umc.models.valueObjects.Nome;
 
 import java.time.LocalDate;
 import java.util.Objects;

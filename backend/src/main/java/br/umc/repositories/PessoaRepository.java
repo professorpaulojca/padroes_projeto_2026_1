@@ -1,6 +1,6 @@
 package br.umc.repositories;
 
-import br.umc.models.valueObjects.Pessoa;
+import br.umc.models.Pessoa;
 
 import java.util.List;
 import java.util.Optional;

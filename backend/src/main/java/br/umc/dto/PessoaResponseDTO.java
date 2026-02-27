@@ -1,6 +1,6 @@
 package br.umc.dto;
 
-import br.umc.models.valueObjects.Pessoa;
+import br.umc.models.Pessoa;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "Dados de resposta de uma pessoa cadastrada")

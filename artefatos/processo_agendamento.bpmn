@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_Agendamento_Clinica_3Lanes" targetNamespace="http://exemplo.clinica/agendamento/3lanes" exporter="Camunda Modeler" exporterVersion="5.44.0">
+  <bpmn:process id="Processo_Agendamento_Clinica_3Lanes" name="Agendamento de Consulta (Manual / no papel - 3 Lanes)" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_1">
+      <bpmn:lane id="Lane_Arquivo" name="Arquivo (Fichário e Agenda em papel)">
+        <bpmn:flowNodeRef>Task_ConsultarFichario</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CriarFichaPaciente</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_VerificarAgenda</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Recepcao" name="Recepção">
+        <bpmn:flowNodeRef>Task_EntregarConfirmacao</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_RegistrarNaAgenda</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_TipoAtendimento</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_IdentificarTipoAtendimento</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_PacienteCadastrado</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_RegistrarDadosConvenio</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ConsultarAgenda</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ConfirmarAgendamento</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ColetarDados</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_AnotarDadosAtendimento</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_VerificarCadastro</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_OferecerAlternativas</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_HaVaga</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Paciente" name="Paciente">
+        <bpmn:flowNodeRef>Task_EscolherAlternativa</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_SolicitarAgendamento</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_1" name="Início">
+      <bpmn:outgoing>Flow_01</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="EndEvent_1" name="Agendamento concluído">
+      <bpmn:incoming>Flow_99</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="Task_SolicitarAgendamento" name="Solicitar agendamento (telefone/presencial/WhatsApp)">
+      <bpmn:incoming>Flow_01</bpmn:incoming>
+      <bpmn:outgoing>Flow_02</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_EscolherAlternativa" name="Escolher alternativa de data/horário">
+      <bpmn:incoming>Flow_20</bpmn:incoming>
+      <bpmn:outgoing>Flow_21</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ColetarDados" name="Coletar dados do paciente (nome, CPF, contato)">
+      <bpmn:incoming>Flow_02</bpmn:incoming>
+      <bpmn:outgoing>Flow_03</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_AnotarDadosAtendimento" name="Anotar pedido (especialidade/médico e preferência de horário)">
+      <bpmn:incoming>Flow_03</bpmn:incoming>
+      <bpmn:outgoing>Flow_04</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_VerificarCadastro" name="Verificar se o paciente já é cadastrado">
+      <bpmn:incoming>Flow_04</bpmn:incoming>
+      <bpmn:outgoing>Flow_05</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="Gateway_PacienteCadastrado" name="Paciente cadastrado?">
+      <bpmn:incoming>Flow_07</bpmn:incoming>
+      <bpmn:outgoing>Flow_08_Sim</bpmn:outgoing>
+      <bpmn:outgoing>Flow_09_Nao</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_IdentificarTipoAtendimento" name="Identificar atendimento (Convênio ou Particular)">
+      <bpmn:incoming>Flow_08_Sim</bpmn:incoming>
+      <bpmn:outgoing>Flow_12</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="Gateway_TipoAtendimento" name="Tipo de atendimento?">
+      <bpmn:incoming>Flow_12</bpmn:incoming>
+      <bpmn:outgoing>Flow_13_Convenio</bpmn:outgoing>
+      <bpmn:outgoing>Flow_14_Particular</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_RegistrarDadosConvenio" name="Registrar dados do convênio (carteirinha/plano/validade)">
+      <bpmn:incoming>Flow_13_Convenio</bpmn:incoming>
+      <bpmn:outgoing>Flow_15</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ConsultarAgenda" name="Consultar agenda para a data/horário solicitado">
+      <bpmn:incoming>Flow_14_Particular</bpmn:incoming>
+      <bpmn:incoming>Flow_15</bpmn:incoming>
+      <bpmn:incoming>Flow_21</bpmn:incoming>
+      <bpmn:outgoing>Flow_16</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="Gateway_HaVaga" name="Há vaga disponível?">
+      <bpmn:incoming>Flow_18</bpmn:incoming>
+      <bpmn:outgoing>Flow_19_Sim</bpmn:outgoing>
+      <bpmn:outgoing>Flow_19_Nao</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_OferecerAlternativas" name="Oferecer alternativas (dias/horários/outro médico)">
+      <bpmn:incoming>Flow_19_Nao</bpmn:incoming>
+      <bpmn:incoming>Flow_11</bpmn:incoming>
+      <bpmn:outgoing>Flow_20</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ConfirmarAgendamento" name="Confirmar agendamento com o paciente">
+      <bpmn:incoming>Flow_19_Sim</bpmn:incoming>
+      <bpmn:outgoing>Flow_30</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_EntregarConfirmacao" name="Entregar confirmação (anotação/recibo/WhatsApp manual)">
+      <bpmn:incoming>Flow_32</bpmn:incoming>
+      <bpmn:outgoing>Flow_99</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ConsultarFichario" name="Consultar fichário de pacientes (papel)">
+      <bpmn:incoming>Flow_05</bpmn:incoming>
+      <bpmn:outgoing>Flow_07</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_CriarFichaPaciente" name="Criar ficha do paciente (cadastro manual)">
+      <bpmn:incoming>Flow_09_Nao</bpmn:incoming>
+      <bpmn:outgoing>Flow_11</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_VerificarAgenda" name="Verificar disponibilidade na agenda (livro/planilha)">
+      <bpmn:incoming>Flow_16</bpmn:incoming>
+      <bpmn:outgoing>Flow_18</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_RegistrarNaAgenda" name="Registrar agendamento na agenda (anotar no livro/planilha)">
+      <bpmn:incoming>Flow_30</bpmn:incoming>
+      <bpmn:outgoing>Flow_32</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_01" sourceRef="StartEvent_1" targetRef="Task_SolicitarAgendamento" />
+    <bpmn:sequenceFlow id="Flow_02" sourceRef="Task_SolicitarAgendamento" targetRef="Task_ColetarDados" />
+    <bpmn:sequenceFlow id="Flow_03" sourceRef="Task_ColetarDados" targetRef="Task_AnotarDadosAtendimento" />
+    <bpmn:sequenceFlow id="Flow_04" sourceRef="Task_AnotarDadosAtendimento" targetRef="Task_VerificarCadastro" />
+    <bpmn:sequenceFlow id="Flow_05" sourceRef="Task_VerificarCadastro" targetRef="Task_ConsultarFichario" />
+    <bpmn:sequenceFlow id="Flow_07" sourceRef="Task_ConsultarFichario" targetRef="Gateway_PacienteCadastrado" />
+    <bpmn:sequenceFlow id="Flow_08_Sim" name="Sim" sourceRef="Gateway_PacienteCadastrado" targetRef="Task_IdentificarTipoAtendimento" />
+    <bpmn:sequenceFlow id="Flow_09_Nao" name="Não" sourceRef="Gateway_PacienteCadastrado" targetRef="Task_CriarFichaPaciente" />
+    <bpmn:sequenceFlow id="Flow_11" sourceRef="Task_CriarFichaPaciente" targetRef="Task_OferecerAlternativas" />
+    <bpmn:sequenceFlow id="Flow_12" sourceRef="Task_IdentificarTipoAtendimento" targetRef="Gateway_TipoAtendimento" />
+    <bpmn:sequenceFlow id="Flow_13_Convenio" name="Convênio" sourceRef="Gateway_TipoAtendimento" targetRef="Task_RegistrarDadosConvenio" />
+    <bpmn:sequenceFlow id="Flow_14_Particular" name="Particular" sourceRef="Gateway_TipoAtendimento" targetRef="Task_ConsultarAgenda" />
+    <bpmn:sequenceFlow id="Flow_15" sourceRef="Task_RegistrarDadosConvenio" targetRef="Task_ConsultarAgenda" />
+    <bpmn:sequenceFlow id="Flow_16" sourceRef="Task_ConsultarAgenda" targetRef="Task_VerificarAgenda" />
+    <bpmn:sequenceFlow id="Flow_18" sourceRef="Task_VerificarAgenda" targetRef="Gateway_HaVaga" />
+    <bpmn:sequenceFlow id="Flow_19_Sim" name="Sim" sourceRef="Gateway_HaVaga" targetRef="Task_ConfirmarAgendamento" />
+    <bpmn:sequenceFlow id="Flow_19_Nao" name="Não" sourceRef="Gateway_HaVaga" targetRef="Task_OferecerAlternativas" />
+    <bpmn:sequenceFlow id="Flow_20" sourceRef="Task_OferecerAlternativas" targetRef="Task_EscolherAlternativa" />
+    <bpmn:sequenceFlow id="Flow_21" sourceRef="Task_EscolherAlternativa" targetRef="Task_ConsultarAgenda" />
+    <bpmn:sequenceFlow id="Flow_30" sourceRef="Task_ConfirmarAgendamento" targetRef="Task_RegistrarNaAgenda" />
+    <bpmn:sequenceFlow id="Flow_32" sourceRef="Task_RegistrarNaAgenda" targetRef="Task_EntregarConfirmacao" />
+    <bpmn:sequenceFlow id="Flow_99" sourceRef="Task_EntregarConfirmacao" targetRef="EndEvent_1" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Processo_Agendamento_Clinica_3Lanes">
+      <bpmndi:BPMNShape id="Lane_Arquivo_di" bpmnElement="Lane_Arquivo" isHorizontal="true">
+        <dc:Bounds x="160" y="610" width="3860" height="260" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Recepcao_di" bpmnElement="Lane_Recepcao" isHorizontal="true">
+        <dc:Bounds x="160" y="240" width="3860" height="370" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Paciente_di" bpmnElement="Lane_Paciente" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="3860" height="160" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="200" y="132" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="205" y="168" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_EscolherAlternativa_di" bpmnElement="Task_EscolherAlternativa">
+        <dc:Bounds x="1150" y="110" width="260" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1_di" bpmnElement="EndEvent_1">
+        <dc:Bounds x="3762" y="152" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3746" y="114.5" width="68" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_EntregarConfirmacao_di" bpmnElement="Task_EntregarConfirmacao">
+        <dc:Bounds x="3320" y="350" width="360" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_RegistrarNaAgenda_di" bpmnElement="Task_RegistrarNaAgenda">
+        <dc:Bounds x="3355" y="498" width="290" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_TipoAtendimento_di" bpmnElement="Gateway_TipoAtendimento" isMarkerVisible="true">
+        <dc:Bounds x="1795" y="385" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1786" y="347.5" width="67" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_IdentificarTipoAtendimento_di" bpmnElement="Task_IdentificarTipoAtendimento">
+        <dc:Bounds x="1960" y="270" width="300" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_PacienteCadastrado_di" bpmnElement="Gateway_PacienteCadastrado" isMarkerVisible="true">
+        <dc:Bounds x="1425" y="295" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1419" y="257.5" width="61" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_SolicitarAgendamento_di" bpmnElement="Task_SolicitarAgendamento">
+        <dc:Bounds x="300" y="110" width="260" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_RegistrarDadosConvenio_di" bpmnElement="Task_RegistrarDadosConvenio">
+        <dc:Bounds x="535" y="535" width="330" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ConsultarFichario_di" bpmnElement="Task_ConsultarFichario">
+        <dc:Bounds x="1020" y="640" width="260" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ConsultarAgenda_di" bpmnElement="Task_ConsultarAgenda">
+        <dc:Bounds x="200" y="443" width="300" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_CriarFichaPaciente_di" bpmnElement="Task_CriarFichaPaciente">
+        <dc:Bounds x="2800" y="720" width="260" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ConfirmarAgendamento_di" bpmnElement="Task_ConfirmarAgendamento">
+        <dc:Bounds x="2905" y="290" width="290" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ColetarDados_di" bpmnElement="Task_ColetarDados">
+        <dc:Bounds x="220" y="310" width="260" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_AnotarDadosAtendimento_di" bpmnElement="Task_AnotarDadosAtendimento">
+        <dc:Bounds x="630" y="310" width="300" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_VerificarCadastro_di" bpmnElement="Task_VerificarCadastro">
+        <dc:Bounds x="1020" y="310" width="260" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_VerificarAgenda_di" bpmnElement="Task_VerificarAgenda">
+        <dc:Bounds x="220" y="730" width="300" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_OferecerAlternativas_di" bpmnElement="Task_OferecerAlternativas">
+        <dc:Bounds x="2710" y="470" width="300" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_HaVaga_di" bpmnElement="Gateway_HaVaga" isMarkerVisible="true">
+        <dc:Bounds x="2435" y="325" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2432" y="287.5" width="56" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_01_di" bpmnElement="Flow_01">
+        <di:waypoint x="236" y="150" />
+        <di:waypoint x="300" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_99_di" bpmnElement="Flow_99">
+        <di:waypoint x="3500" y="350" />
+        <di:waypoint x="3500" y="170" />
+        <di:waypoint x="3762" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02_di" bpmnElement="Flow_02">
+        <di:waypoint x="350" y="190" />
+        <di:waypoint x="350" y="250" />
+        <di:waypoint x="370" y="250" />
+        <di:waypoint x="370" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_20_di" bpmnElement="Flow_20">
+        <di:waypoint x="2710" y="520" />
+        <di:waypoint x="1575" y="520" />
+        <di:waypoint x="1575" y="150" />
+        <di:waypoint x="1410" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_21_di" bpmnElement="Flow_21">
+        <di:waypoint x="1280" y="190" />
+        <di:waypoint x="1280" y="473" />
+        <di:waypoint x="500" y="473" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03_di" bpmnElement="Flow_03">
+        <di:waypoint x="480" y="350" />
+        <di:waypoint x="630" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04_di" bpmnElement="Flow_04">
+        <di:waypoint x="930" y="350" />
+        <di:waypoint x="1020" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05_di" bpmnElement="Flow_05">
+        <di:waypoint x="1150" y="390" />
+        <di:waypoint x="1150" y="640" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07_di" bpmnElement="Flow_07">
+        <di:waypoint x="1280" y="650" />
+        <di:waypoint x="1280" y="538" />
+        <di:waypoint x="1350" y="538" />
+        <di:waypoint x="1350" y="320" />
+        <di:waypoint x="1425" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08_Sim_di" bpmnElement="Flow_08_Sim">
+        <di:waypoint x="1475" y="320" />
+        <di:waypoint x="1610" y="320" />
+        <di:waypoint x="1610" y="310" />
+        <di:waypoint x="1960" y="310" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1784" y="285" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09_Nao_di" bpmnElement="Flow_09_Nao">
+        <di:waypoint x="1450" y="345" />
+        <di:waypoint x="1450" y="760" />
+        <di:waypoint x="2800" y="760" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2089" y="737" width="21" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11_di" bpmnElement="Flow_11">
+        <di:waypoint x="2930" y="720" />
+        <di:waypoint x="2930" y="625" />
+        <di:waypoint x="2980" y="625" />
+        <di:waypoint x="2980" y="530" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12_di" bpmnElement="Flow_12">
+        <di:waypoint x="2110" y="350" />
+        <di:waypoint x="2110" y="410" />
+        <di:waypoint x="1845" y="410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13_Convenio_di" bpmnElement="Flow_13_Convenio">
+        <di:waypoint x="1820" y="435" />
+        <di:waypoint x="1820" y="560" />
+        <di:waypoint x="865" y="560" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1826" y="453" width="47" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14_Particular_di" bpmnElement="Flow_14_Particular">
+        <di:waypoint x="1798" y="413" />
+        <di:waypoint x="1750" y="413" />
+        <di:waypoint x="1750" y="489" />
+        <di:waypoint x="500" y="489" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1366" y="466" width="48" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15_di" bpmnElement="Flow_15">
+        <di:waypoint x="700" y="535" />
+        <di:waypoint x="700" y="496" />
+        <di:waypoint x="499" y="496" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16_di" bpmnElement="Flow_16">
+        <di:waypoint x="350" y="503" />
+        <di:waypoint x="350" y="730" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18_di" bpmnElement="Flow_18">
+        <di:waypoint x="520" y="770" />
+        <di:waypoint x="2320" y="770" />
+        <di:waypoint x="2320" y="350" />
+        <di:waypoint x="2435" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19_Sim_di" bpmnElement="Flow_19_Sim">
+        <di:waypoint x="2485" y="350" />
+        <di:waypoint x="2715" y="350" />
+        <di:waypoint x="2715" y="320" />
+        <di:waypoint x="2905" y="320" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2559" y="323" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19_Nao_di" bpmnElement="Flow_19_Nao">
+        <di:waypoint x="2460" y="375" />
+        <di:waypoint x="2460" y="410" />
+        <di:waypoint x="2850" y="410" />
+        <di:waypoint x="2850" y="470" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2683" y="387" width="21" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_30_di" bpmnElement="Flow_30">
+        <di:waypoint x="3050" y="350" />
+        <di:waypoint x="3050" y="538" />
+        <di:waypoint x="3355" y="538" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_32_di" bpmnElement="Flow_32">
+        <di:waypoint x="3500" y="498" />
+        <di:waypoint x="3500" y="410" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

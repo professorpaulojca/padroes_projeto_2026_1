@@ -2,7 +2,7 @@ package br.umc.services;
 
 import br.umc.dto.PessoaDTO;
 import br.umc.dto.PessoaResponseDTO;
-import br.umc.models.valueObjects.Pessoa;
+import br.umc.models.Pessoa;
 import br.umc.repositories.PessoaRepository;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,6 @@
 package br.umc.repositories;
 
-import br.umc.models.valueObjects.Pessoa;
+import br.umc.models.Pessoa;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

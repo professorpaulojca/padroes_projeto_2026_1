@@ -1,0 +1,75 @@
+sequenceDiagram
+autonumber
+
+actor Paciente as Paciente
+participant UI as Frontend
+participant Api as ApiClient
+participant Cfg as BackendConfig
+participant AgCtrl as AgendamentoController
+participant PacCtrl as PacienteController
+participant MedCtrl as MedicoController
+participant AgSvc as AgendamentoService
+participant PacSvc as PacienteService
+participant MedSvc as MedicoService
+participant AgRepo as AgendamentoRepository
+participant PacRepo as PacienteRepository
+participant MedRepo as MedicoRepository
+database DB as BancoDeDados
+
+Paciente->>UI: Abre tela de agendamento
+UI->>Api: GET /api/medicos
+Api->>Cfg: HTTP request
+Cfg->>MedCtrl: encaminhar
+MedCtrl->>MedSvc: listarMedicos()
+MedSvc->>MedRepo: findAll()
+MedRepo->>DB: SELECT medicos
+DB-->>MedRepo: dados
+MedRepo-->>MedSvc: lista
+MedSvc-->>MedCtrl: DTO
+MedCtrl-->>Api: 200
+Api-->>UI: lista medicos
+
+Paciente->>UI: Informar CPF
+UI->>Api: GET /api/pacientes?cpf
+Api->>Cfg: HTTP request
+Cfg->>PacCtrl: encaminhar
+PacCtrl->>PacSvc: buscarCpf()
+PacSvc->>PacRepo: findByCpf()
+PacRepo->>DB: SELECT paciente
+DB-->>PacRepo: resultado
+PacRepo-->>PacSvc: model
+
+alt paciente existe
+  PacSvc-->>PacCtrl: DTO
+  PacCtrl-->>Api: 200
+  Api-->>UI: preencher tela
+else paciente nao existe
+  PacSvc-->>PacCtrl: null
+  PacCtrl-->>Api: 404
+  Api-->>UI: mostrar cadastrar
+end
+
+Paciente->>UI: Confirmar agendamento
+UI->>Api: POST /agendamentos
+Api->>Cfg: HTTP request
+Cfg->>AgCtrl: encaminhar
+AgCtrl->>AgSvc: criarAgendamento()
+
+AgSvc->>AgRepo: existsHorario()
+AgRepo->>DB: SELECT conflito
+DB-->>AgRepo: resultado
+AgRepo-->>AgSvc: status
+
+alt horario ocupado
+  AgSvc-->>AgCtrl: erro
+  AgCtrl-->>Api: 409
+  Api-->>UI: aviso
+else horario livre
+  AgSvc->>AgRepo: save()
+  AgRepo->>DB: INSERT
+  DB-->>AgRepo: ok
+  AgRepo-->>AgSvc: ok
+  AgSvc-->>AgCtrl: response
+  AgCtrl-->>Api: 201
+  Api-->>UI: confirmacao
+end
