@@ -4,12 +4,16 @@ import br.umc.models.valueObjects.DataNascimento;
 import br.umc.models.valueObjects.Nome;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 public class Pessoa {
 
     private final Nome nome;
     private final DataNascimento dataNascimento;
+    private final List<Endereco> enderecos;
 
     public Pessoa(Nome nome, DataNascimento dataNascimento) {
         if (nome == null) {
@@ -20,6 +24,7 @@ public class Pessoa {
         }
         this.nome = nome;
         this.dataNascimento = dataNascimento;
+        this.enderecos = new ArrayList<>();
     }
 
     public Pessoa(String nomeString, String dataNascimentoString) {
@@ -42,12 +47,27 @@ public class Pessoa {
         return dataNascimento.getIdade();
     }
 
+    public List<Endereco> getEnderecos() {
+        return Collections.unmodifiableList(enderecos);
+    }
+
+    public void adicionarEndereco(Endereco endereco) {
+        if (endereco == null) {
+            throw new IllegalArgumentException("Endereço não pode ser nulo");
+        }
+        enderecos.add(endereco);
+    }
+
+    public void removerEndereco(Endereco endereco) {
+        enderecos.remove(endereco);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Pessoa pessoa = (Pessoa) o;
-        return Objects.equals(nome, pessoa.nome) && 
+        return Objects.equals(nome, pessoa.nome) &&
                Objects.equals(dataNascimento, pessoa.dataNascimento);
     }
 
@@ -62,6 +82,7 @@ public class Pessoa {
                 "nome=" + nome +
                 ", dataNascimento=" + dataNascimento +
                 ", idade=" + getIdade() +
+                ", enderecos=" + enderecos +
                 '}';
     }
 }

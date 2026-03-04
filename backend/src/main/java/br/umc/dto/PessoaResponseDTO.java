@@ -3,6 +3,9 @@ package br.umc.dto;
 import br.umc.models.Pessoa;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Schema(description = "Dados de resposta de uma pessoa cadastrada")
 public class PessoaResponseDTO {
 
@@ -15,21 +18,21 @@ public class PessoaResponseDTO {
     @Schema(description = "Idade calculada em anos", example = "34")
     private int idade;
 
+    @Schema(description = "Lista de endereços da pessoa")
+    private List<EnderecoResponseDTO> enderecos;
+
     public PessoaResponseDTO() {
     }
 
-    public PessoaResponseDTO(String nome, String dataNascimento, int idade) {
-        this.nome = nome;
-        this.dataNascimento = dataNascimento;
-        this.idade = idade;
-    }
-
     public static PessoaResponseDTO fromPessoa(Pessoa pessoa) {
-        return new PessoaResponseDTO(
-                pessoa.getNome().getValor(),
-                pessoa.getDataNascimento().getFormatado(),
-                pessoa.getIdade()
-        );
+        PessoaResponseDTO dto = new PessoaResponseDTO();
+        dto.nome = pessoa.getNome().getValor();
+        dto.dataNascimento = pessoa.getDataNascimento().getFormatado();
+        dto.idade = pessoa.getIdade();
+        dto.enderecos = pessoa.getEnderecos().stream()
+                .map(EnderecoResponseDTO::fromEndereco)
+                .collect(Collectors.toList());
+        return dto;
     }
 
     public String getNome() {
@@ -54,5 +57,13 @@ public class PessoaResponseDTO {
 
     public void setIdade(int idade) {
         this.idade = idade;
+    }
+
+    public List<EnderecoResponseDTO> getEnderecos() {
+        return enderecos;
+    }
+
+    public void setEnderecos(List<EnderecoResponseDTO> enderecos) {
+        this.enderecos = enderecos;
     }
 }

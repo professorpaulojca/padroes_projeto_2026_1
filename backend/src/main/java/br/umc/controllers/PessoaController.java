@@ -1,18 +1,23 @@
 package br.umc.controllers;
 
+import br.umc.dto.EnderecoDTO;
+import br.umc.dto.EnderecoResponseDTO;
 import br.umc.dto.PessoaDTO;
 import br.umc.dto.PessoaResponseDTO;
 import br.umc.services.PessoaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -23,6 +28,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/pessoas")
 @Tag(name = "Pessoas", description = "API para gerenciamento de pessoas")
+@Validated
 public class PessoaController {
 
     private final PessoaService pessoaService;
@@ -54,6 +60,45 @@ public class PessoaController {
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(criarMensagemErro(e.getMessage()));
+        }
+    }
+
+    @PostMapping("/{nome}/enderecos")
+    @Operation(
+            summary = "Adicionar endereços a uma pessoa",
+            description = "Valida o(s) CEP(s) informado(s) via ViaCEP, busca as coordenadas geográficas (latitude/longitude) " +
+                    "via Nominatim/OpenStreetMap e associa o(s) endereço(s) à pessoa. " +
+                    "O cliente deve enviar apenas: cep, numero, complemento (opcional), tipoEndereco e enderecoPrincipal."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Endereço(s) adicionado(s) com sucesso",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = EnderecoResponseDTO.class)))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Dados inválidos ou CEP não encontrado no ViaCEP"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Pessoa não encontrada"
+            )
+    })
+    public ResponseEntity<?> adicionarEnderecos(
+            @Parameter(description = "Nome completo da pessoa", example = "João da Silva")
+            @PathVariable String nome,
+            @Valid @RequestBody @NotEmpty(message = "A lista de endereços não pode ser vazia")
+            List<@Valid EnderecoDTO> enderecos) {
+        try {
+            List<EnderecoResponseDTO> response = pessoaService.adicionarEnderecos(nome, enderecos);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (IllegalArgumentException e) {
+            String mensagem = e.getMessage();
+            if (mensagem != null && mensagem.contains("não encontrada")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(criarMensagemErro(mensagem));
+            }
+            return ResponseEntity.badRequest().body(criarMensagemErro(mensagem));
         }
     }
 
@@ -93,7 +138,7 @@ public class PessoaController {
             @Parameter(description = "Nome completo da pessoa", example = "João da Silva")
             @RequestParam String nome) {
         Optional<PessoaResponseDTO> pessoa = pessoaService.buscarPorNome(nome);
-        
+
         if (pessoa.isPresent()) {
             return ResponseEntity.ok(pessoa.get());
         } else {
