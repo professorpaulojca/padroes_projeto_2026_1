@@ -14,9 +14,6 @@ import br.umc.models.valueObjects.Logradouro;
 import br.umc.models.valueObjects.Numero;
 import br.umc.models.valueObjects.Pais;
 import br.umc.models.valueObjects.TipoEnderecoVO;
-import org.springframework.stereotype.Service;
-
-@Service
 public class EnderecoService {
 
     private static final String PAIS_PADRAO = "Brasil";

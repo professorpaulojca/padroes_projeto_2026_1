@@ -7,13 +7,10 @@ import br.umc.dto.PessoaResponseDTO;
 import br.umc.models.Endereco;
 import br.umc.models.Pessoa;
 import br.umc.repositories.PessoaRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Service
 public class PessoaService {
 
     private final PessoaRepository pessoaRepository;

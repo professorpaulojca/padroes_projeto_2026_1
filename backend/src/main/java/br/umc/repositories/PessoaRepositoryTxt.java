@@ -7,8 +7,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.springframework.stereotype.Repository;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -16,7 +14,6 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Repository
 public class PessoaRepositoryTxt implements PessoaRepository {
 
     private static final String ARQUIVO = "pessoas.txt";

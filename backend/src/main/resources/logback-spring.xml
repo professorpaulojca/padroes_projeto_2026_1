@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- ===================================================
+         Propriedades
+         =================================================== -->
+    <springProperty scope="context" name="APP_NAME"   source="spring.application.name" defaultValue="padroes-projeto"/>
+    <springProperty scope="context" name="LOG_PATH"   source="app.log.path"            defaultValue="logs"/>
+    <springProperty scope="context" name="LOG_RETAIN" source="app.log.retencao-dias"   defaultValue="30"/>
+
+    <!-- ===================================================
+         CONSOLE — texto legível em desenvolvimento
+         =================================================== -->
+    <springProfile name="!prod">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%d{dd/MM/yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36} [%X{requestId}] [%X{usuario}] - %msg%n</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+    </springProfile>
+
+    <!-- ===================================================
+         CONSOLE PROD — JSON estruturado (Logstash/ELK)
+         =================================================== -->
+    <springProfile name="prod">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <includeMdcKeyName>requestId</includeMdcKeyName>
+                <includeMdcKeyName>usuario</includeMdcKeyName>
+                <includeMdcKeyName>ip</includeMdcKeyName>
+                <includeMdcKeyName>uri</includeMdcKeyName>
+                <includeMdcKeyName>metodo</includeMdcKeyName>
+                <customFields>{"app":"${APP_NAME}"}</customFields>
+            </encoder>
+        </appender>
+    </springProfile>
+
+    <!-- ===================================================
+         ARQUIVO GERAL — rotação diária, retenção 30 dias
+         =================================================== -->
+    <appender name="FILE_APP" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/application.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/archive/application.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>${LOG_RETAIN}</maxHistory>
+            <totalSizeCap>2GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeMdcKeyName>requestId</includeMdcKeyName>
+            <includeMdcKeyName>usuario</includeMdcKeyName>
+            <includeMdcKeyName>ip</includeMdcKeyName>
+            <includeMdcKeyName>uri</includeMdcKeyName>
+            <includeMdcKeyName>metodo</includeMdcKeyName>
+            <customFields>{"app":"${APP_NAME}"}</customFields>
+        </encoder>
+    </appender>
+
+    <!-- ===================================================
+         ARQUIVO DE AUDITORIA — canal exclusivo, retenção 90 dias
+         =================================================== -->
+    <appender name="FILE_AUDIT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/audit.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/archive/audit.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>90</maxHistory>
+            <totalSizeCap>5GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeMdcKeyName>requestId</includeMdcKeyName>
+            <includeMdcKeyName>usuario</includeMdcKeyName>
+            <includeMdcKeyName>ip</includeMdcKeyName>
+            <customFields>{"app":"${APP_NAME}","canal":"auditoria"}</customFields>
+        </encoder>
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+                <marker>AUDIT</marker>
+            </evaluator>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- ===================================================
+         ARQUIVO DE ERROS — apenas WARN e ERROR
+         =================================================== -->
+    <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/error.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/archive/error.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>${LOG_RETAIN}</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeMdcKeyName>requestId</includeMdcKeyName>
+            <includeMdcKeyName>usuario</includeMdcKeyName>
+            <includeMdcKeyName>ip</includeMdcKeyName>
+            <customFields>{"app":"${APP_NAME}","canal":"erros"}</customFields>
+        </encoder>
+    </appender>
+
+    <!-- ===================================================
+         ARQUIVO DE MÉTRICAS HTTP — acesso por requisição
+         =================================================== -->
+    <appender name="FILE_HTTP" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/http-access.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/archive/http-access.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>${LOG_RETAIN}</maxHistory>
+            <totalSizeCap>2GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeMdcKeyName>requestId</includeMdcKeyName>
+            <includeMdcKeyName>usuario</includeMdcKeyName>
+            <includeMdcKeyName>ip</includeMdcKeyName>
+            <includeMdcKeyName>uri</includeMdcKeyName>
+            <includeMdcKeyName>metodo</includeMdcKeyName>
+            <customFields>{"app":"${APP_NAME}","canal":"http"}</customFields>
+        </encoder>
+    </appender>
+
+    <!-- ===================================================
+         Appenders assíncronos (não bloqueia threads de negócio)
+         =================================================== -->
+    <appender name="ASYNC_APP" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE_APP"/>
+        <queueSize>1000</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <includeCallerData>true</includeCallerData>
+    </appender>
+
+    <appender name="ASYNC_ERROR" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE_ERROR"/>
+        <queueSize>500</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+    </appender>
+
+    <appender name="ASYNC_HTTP" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE_HTTP"/>
+        <queueSize>2000</queueSize>
+        <discardingThreshold>20</discardingThreshold>
+    </appender>
+
+    <!-- ===================================================
+         Loggers específicos
+         =================================================== -->
+
+    <!-- AuditLogService — vai para console + FILE_AUDIT + FILE_APP -->
+    <logger name="br.umc.audit" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE_AUDIT"/>
+        <appender-ref ref="ASYNC_APP"/>
+    </logger>
+
+    <!-- HttpMetricsFilter — vai para console + FILE_HTTP -->
+    <logger name="br.umc.metrics.HttpMetricsFilter" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_HTTP"/>
+        <appender-ref ref="ASYNC_APP"/>
+    </logger>
+
+    <!-- Spring Security — apenas WARN para não poluir -->
+    <logger name="org.springframework.security" level="WARN"/>
+
+    <!-- Hibernate SQL — DEBUG só quando necessário (mude para DEBUG para ver queries) -->
+    <logger name="org.hibernate.SQL" level="WARN"/>
+    <logger name="org.hibernate.type.descriptor.sql" level="WARN"/>
+
+    <!-- ===================================================
+         Root logger
+         =================================================== -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_APP"/>
+        <appender-ref ref="ASYNC_ERROR"/>
+    </root>
+
+</configuration>
