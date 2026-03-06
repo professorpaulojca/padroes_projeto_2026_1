@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro — Sistema de Gestão</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    :root{--primary:#1976d2;--primary-dark:#1565c0;--secondary:#9c27b0;--error:#d32f2f;--success:#2e7d32;--bg:#f0f4ff;--paper:#fff;--text:#1a1a2e;--muted:#6b7280;--border:#d1d9e0;--radius:10px;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);min-height:100vh;display:flex;flex-direction:column;}
+
+    .proto-nav{background:#1a1a2e;color:#fff;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;font-size:13px;}
+    .proto-nav a{color:#90caf9;text-decoration:none;display:flex;align-items:center;gap:4px;}
+    .proto-nav a:hover{text-decoration:underline;}
+    .proto-badge{background:var(--secondary);padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;}
+    .nav-links{display:flex;gap:16px;align-items:center;}
+
+    .bg-split{flex:1;display:flex;}
+    .bg-left{flex:1;background:linear-gradient(160deg,#7b1fa2,#9c27b0 50%,#ba68c8);display:flex;align-items:center;justify-content:center;padding:48px;position:relative;overflow:hidden;}
+    .bg-left::before{content:'';position:absolute;width:350px;height:350px;background:rgba(255,255,255,.06);border-radius:50%;top:-80px;right:-80px;}
+    .hero-text{color:#fff;max-width:380px;z-index:1;}
+    .hero-text .logo{font-size:24px;font-weight:800;margin-bottom:28px;display:flex;align-items:center;gap:10px;}
+    .hero-text h1{font-size:34px;font-weight:800;line-height:1.2;margin-bottom:14px;}
+    .hero-text p{font-size:15px;opacity:.82;line-height:1.6;}
+    .hero-steps{margin-top:32px;display:flex;flex-direction:column;gap:14px;}
+    .hero-step{display:flex;align-items:center;gap:12px;font-size:14px;opacity:.88;}
+    .hero-step-num{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+    .bg-right{width:560px;background:var(--bg);display:flex;align-items:flex-start;justify-content:center;padding:40px 40px;overflow-y:auto;}
+
+    .card{background:var(--paper);border-radius:16px;box-shadow:0 8px 32px rgba(156,39,176,.12);width:100%;max-width:460px;padding:36px;}
+    .card-header{text-align:center;margin-bottom:28px;}
+    .card-icon{width:52px;height:52px;border-radius:13px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 4px 14px rgba(156,39,176,.4);}
+    .card-header h2{font-size:22px;font-weight:800;color:var(--text);}
+    .card-header p{font-size:14px;color:var(--muted);margin-top:4px;}
+
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    .form-group{margin-bottom:16px;}
+    .form-label{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;}
+    .form-label span{color:var(--error);}
+    .input-wrap{position:relative;}
+    .form-input{width:100%;padding:10px 42px 10px 13px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:14px;color:var(--text);background:#fafbff;transition:border .15s,box-shadow .15s;outline:none;}
+    .form-input:focus{border-color:var(--secondary);box-shadow:0 0 0 3px rgba(156,39,176,.1);background:#fff;}
+    .form-input.valid{border-color:var(--success);}
+    .form-input.error{border-color:var(--error);}
+    .input-icon{position:absolute;right:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:18px;cursor:pointer;}
+    .input-icon.ok{color:var(--success);}
+    .form-hint{font-size:11px;color:var(--muted);margin-top:4px;}
+    .form-error{font-size:11px;color:var(--error);margin-top:4px;display:flex;align-items:center;gap:3px;}
+
+    /* Strength meter */
+    .strength-wrap{margin-top:8px;}
+    .strength-bars{display:flex;gap:4px;margin-bottom:4px;}
+    .strength-bar{flex:1;height:4px;border-radius:2px;background:#e0e0e0;transition:background .2s;}
+    .s1{background:var(--error);}
+    .s2{background:#ed6c02;}
+    .s3{background:#2e7d32;}
+    .strength-label{font-size:11px;font-weight:600;}
+
+    /* Terms */
+    .terms-row{display:flex;align-items:flex-start;gap:10px;background:#f8f9ff;border-radius:8px;padding:12px 14px;margin:16px 0;}
+    .terms-row input{width:16px;height:16px;accent-color:var(--secondary);flex-shrink:0;margin-top:1px;}
+    .terms-row p{font-size:13px;color:var(--muted);line-height:1.5;}
+    .terms-row a{color:var(--primary);font-weight:600;text-decoration:none;}
+    .terms-row a:hover{text-decoration:underline;}
+
+    .btn-primary{width:100%;padding:13px;background:var(--secondary);color:#fff;border:none;border-radius:var(--radius);font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(156,39,176,.4);transition:background .15s,transform .1s;display:flex;align-items:center;justify-content:center;gap:8px;}
+    .btn-primary:hover{background:#7b1fa2;transform:translateY(-1px);}
+    .divider{display:flex;align-items:center;gap:12px;margin:16px 0;}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+    .divider span{font-size:12px;color:var(--muted);}
+    .card-footer{text-align:center;font-size:14px;color:var(--muted);margin-top:12px;}
+    .link{color:var(--primary);font-weight:600;text-decoration:none;}
+    .link:hover{text-decoration:underline;}
+
+    .note-box{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px;font-size:13px;color:#78350f;margin-top:16px;}
+    .note-box strong{display:block;font-size:11px;font-weight:700;margin-bottom:6px;text-transform:uppercase;}
+    .note-box ul{padding-left:16px;}
+    .note-box li{margin-top:3px;}
+
+    @media(max-width:900px){.bg-left{display:none;}.bg-right{width:100%;padding:32px 16px;}}
+  </style>
+</head>
+<body>
+<nav class="proto-nav">
+  <a href="index.html"><span class="material-icons" style="font-size:16px">arrow_back</span> Índice</a>
+  <span>Tela 03 · Cadastro de Usuário</span>
+  <div class="nav-links">
+    <span class="proto-badge">Público</span>
+    <a href="02-esqueci-senha.html">← Anterior</a>
+    <a href="04-dashboard.html">Próxima →</a>
+  </div>
+</nav>
+
+<div class="bg-split">
+  <div class="bg-left">
+    <div class="hero-text">
+      <div class="logo"><span class="material-icons" style="font-size:28px">person_add</span> Criar conta</div>
+      <h1>Comece a gerenciar em minutos</h1>
+      <p>Cadastre-se gratuitamente e tenha acesso a todas as funcionalidades do sistema.</p>
+      <div class="hero-steps">
+        <div class="hero-step"><div class="hero-step-num">1</div> Preencha seus dados básicos</div>
+        <div class="hero-step"><div class="hero-step-num">2</div> Crie uma senha segura</div>
+        <div class="hero-step"><div class="hero-step-num">3</div> Acesse o sistema imediatamente</div>
+        <div class="hero-step"><div class="hero-step-num">4</div> (Opcional) Associe a uma Pessoa</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-right">
+    <div style="width:100%;max-width:460px">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon" style="background:var(--secondary)">
+            <span class="material-icons" style="color:#fff;font-size:26px">person_add</span>
+          </div>
+          <h2>Criar nova conta</h2>
+          <p>Preencha os dados abaixo para se cadastrar</p>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nome <span>*</span></label>
+            <div class="input-wrap">
+              <input class="form-input valid" type="text" value="João" />
+              <span class="material-icons input-icon ok">check_circle</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sobrenome <span>*</span></label>
+            <div class="input-wrap">
+              <input class="form-input valid" type="text" value="Silva" />
+              <span class="material-icons input-icon ok">check_circle</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">E-mail <span>*</span></label>
+          <div class="input-wrap">
+            <input class="form-input valid" type="email" value="joao.silva@email.com" />
+            <span class="material-icons input-icon ok">check_circle</span>
+          </div>
+          <p class="form-hint">Será usado para login e notificações.</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Senha <span>*</span></label>
+          <div class="input-wrap">
+            <input class="form-input" type="password" value="MinhaS3nha!" />
+            <span class="material-icons input-icon">visibility</span>
+          </div>
+          <div class="strength-wrap">
+            <div class="strength-bars">
+              <div class="strength-bar s3"></div>
+              <div class="strength-bar s3"></div>
+              <div class="strength-bar s3"></div>
+              <div class="strength-bar" style="background:#e0e0e0"></div>
+            </div>
+            <p class="strength-label" style="color:#2e7d32">Força da senha: Boa</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Confirmar senha <span>*</span></label>
+          <div class="input-wrap">
+            <input class="form-input valid" type="password" value="MinhaS3nha!" />
+            <span class="material-icons input-icon ok">check_circle</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Perfil de acesso <span>*</span></label>
+          <select class="form-input">
+            <option value="">Selecione um perfil…</option>
+            <option selected>Operador</option>
+            <option>Administrador</option>
+            <option>Leitura</option>
+          </select>
+          <p class="form-hint">Administradores podem gerenciar usuários.</p>
+        </div>
+
+        <!-- Info opcional sobre associação a pessoa -->
+        <div style="background:#f3e8ff;border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:#6b21a8;display:flex;gap:8px;align-items:flex-start">
+          <span class="material-icons" style="font-size:18px;flex-shrink:0;margin-top:1px">info</span>
+          <span>Após o cadastro, você poderá associar este usuário a uma <strong>Pessoa</strong> cadastrada no sistema (opcional).</span>
+        </div>
+
+        <div class="terms-row">
+          <input type="checkbox" id="terms" checked />
+          <p>Li e aceito os <a href="#">Termos de Uso</a> e a <a href="#">Política de Privacidade</a>.</p>
+        </div>
+
+        <button class="btn-primary">
+          <span class="material-icons" style="font-size:18px">how_to_reg</span>
+          Criar conta
+        </button>
+
+        <div class="divider"><span>ou</span></div>
+
+        <div class="card-footer">
+          Já tem conta? <a href="01-login.html" class="link">Fazer login</a>
+        </div>
+      </div>
+
+      <div class="note-box">
+        <strong>📋 Notas de design</strong>
+        <ul>
+          <li>Validação em tempo real campo a campo</li>
+          <li>Indicador de força da senha dinâmico</li>
+          <li>Confirmação de senha verifica match ao digitar</li>
+          <li>Botão bloqueado sem aceitar os termos</li>
+          <li>Após cadastro: login automático → Dashboard</li>
+          <li>Associação a Pessoa: feita em Perfil (Tela 05)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

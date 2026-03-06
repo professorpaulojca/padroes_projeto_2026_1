@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perfil — Sistema de Gestão</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    :root{--primary:#1976d2;--primary-dark:#1565c0;--primary-light:#42a5f5;--secondary:#9c27b0;--success:#2e7d32;--error:#d32f2f;--warning:#ed6c02;--bg:#f4f6fb;--paper:#fff;--text:#1a1a2e;--muted:#6b7280;--border:#e4e8ef;--sidebar-w:240px;--topbar-h:60px;--radius:12px;--shadow:0 2px 12px rgba(0,0,0,.08);}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+
+    .proto-nav{background:#1a1a2e;color:#fff;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;font-size:13px;}
+    .proto-nav a{color:#90caf9;text-decoration:none;display:flex;align-items:center;gap:4px;}
+    .proto-nav a:hover{text-decoration:underline;}
+    .proto-badge{background:var(--success);padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;}
+    .nav-links{display:flex;gap:16px;align-items:center;}
+
+    .app-layout{flex:1;display:flex;overflow:hidden;}
+
+    /* Sidebar (same as dashboard) */
+    .sidebar{width:var(--sidebar-w);background:var(--primary-dark);color:#fff;display:flex;flex-direction:column;flex-shrink:0;}
+    .sidebar-logo{padding:20px 20px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.12);}
+    .sidebar-logo .icon{width:34px;height:34px;background:var(--primary-light);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .sidebar-logo h1{font-size:15px;font-weight:800;line-height:1.2;}
+    .sidebar-logo p{font-size:11px;opacity:.55;margin-top:2px;}
+    .sidebar-section{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);padding:20px 20px 8px;}
+    .sidebar-item{display:flex;align-items:center;gap:12px;padding:11px 20px;font-size:13.5px;cursor:pointer;transition:all .15s;text-decoration:none;color:rgba(255,255,255,.8);}
+    .sidebar-item:hover{background:rgba(255,255,255,.1);color:#fff;}
+    .sidebar-item.active{background:rgba(255,255,255,.15);color:#fff;font-weight:600;border-right:3px solid var(--primary-light);}
+    .sidebar-item .material-icons{font-size:20px;opacity:.85;flex-shrink:0;}
+    .sidebar-item .badge{margin-left:auto;background:var(--error);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;}
+    .sidebar-footer{margin-top:auto;padding:16px;border-top:1px solid rgba(255,255,255,.12);}
+    .sidebar-user{display:flex;align-items:center;gap:10px;cursor:pointer;padding:8px;border-radius:8px;}
+    .sidebar-user .avatar{width:34px;height:34px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
+    .sidebar-user-info p{font-size:13px;font-weight:600;color:#fff;}
+    .sidebar-user-info span{font-size:11px;color:rgba(255,255,255,.5);}
+
+    .main-area{flex:1;display:flex;flex-direction:column;overflow-y:auto;}
+    .topbar{background:var(--paper);border-bottom:1px solid var(--border);height:var(--topbar-h);padding:0 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:var(--shadow);}
+    .topbar-left .topbar-title{font-size:18px;font-weight:800;}
+    .breadcrumb{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:4px;}
+    .breadcrumb a{color:var(--primary);text-decoration:none;}
+    .topbar-right{display:flex;align-items:center;gap:8px;}
+    .icon-btn{width:38px;height:38px;border-radius:50%;background:transparent;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+    .topbar-avatar{width:38px;height:38px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;}
+
+    .content{padding:28px;flex:1;}
+
+    /* Tabs */
+    .tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:28px;}
+    .tab{padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;user-select:none;}
+    .tab.active{color:var(--primary);border-bottom-color:var(--primary);}
+    .tab:hover:not(.active){color:var(--text);}
+    .tab-panel{display:none;}
+    .tab-panel.active{display:block;}
+
+    /* Profile header */
+    .profile-header{background:linear-gradient(135deg,var(--primary-dark),var(--primary));border-radius:var(--radius);padding:28px;color:#fff;display:flex;align-items:center;gap:20px;margin-bottom:24px;position:relative;overflow:hidden;}
+    .profile-header::before{content:'';position:absolute;width:200px;height:200px;background:rgba(255,255,255,.06);border-radius:50%;right:-40px;top:-60px;}
+    .prof-avatar{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;flex-shrink:0;cursor:pointer;border:3px solid rgba(255,255,255,.4);position:relative;}
+    .prof-avatar-badge{position:absolute;bottom:0;right:0;width:22px;height:22px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+    .prof-avatar-badge .material-icons{font-size:13px;color:var(--primary);}
+    .prof-info h2{font-size:22px;font-weight:800;}
+    .prof-info p{font-size:14px;opacity:.8;margin-top:2px;}
+    .prof-info .badge-row{display:flex;gap:8px;margin-top:10px;}
+    .prof-badge{padding:4px 12px;border-radius:999px;font-size:12px;font-weight:700;}
+    .prof-badge.admin{background:rgba(255,255,255,.2);color:#fff;}
+    .prof-badge.active{background:#dcfce7;color:#166534;}
+    .prof-edit-btn{margin-left:auto;background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.4);padding:9px 18px;border-radius:8px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s;flex-shrink:0;}
+    .prof-edit-btn:hover{background:rgba(255,255,255,.3);}
+
+    /* Form */
+    .form-card{background:var(--paper);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:20px;}
+    .form-card-title{font-size:16px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+    .form-card-title .material-icons{color:var(--primary);font-size:20px;}
+    .form-card-desc{font-size:13px;color:var(--muted);margin-bottom:20px;}
+    .form-grid{display:grid;gap:16px;}
+    .form-grid-2{grid-template-columns:1fr 1fr;}
+    .form-group{display:flex;flex-direction:column;gap:6px;}
+    .form-label{font-size:13px;font-weight:600;color:var(--text);}
+    .form-label span{color:var(--error);}
+    .form-input{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:14px;color:var(--text);background:#fafbff;transition:border .15s;outline:none;}
+    .form-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(25,118,210,.1);background:#fff;}
+    .form-hint{font-size:11px;color:var(--muted);}
+    .form-actions{display:flex;gap:10px;margin-top:8px;}
+
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;}
+    .btn-primary{background:var(--primary);color:#fff;box-shadow:0 2px 8px rgba(25,118,210,.3);}
+    .btn-primary:hover{background:var(--primary-dark);}
+    .btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border);}
+    .btn-ghost:hover{background:var(--bg);}
+    .btn-danger{background:var(--error);color:#fff;}
+    .btn-success{background:var(--success);color:#fff;}
+    .btn-sm{padding:7px 14px;font-size:13px;}
+
+    /* Associação de Pessoa */
+    .assoc-card{background:var(--paper);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:20px;}
+    .assoc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+    .assoc-title{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;}
+    .assoc-title .material-icons{color:var(--secondary);}
+
+    /* Pessoa linked */
+    .pessoa-linked{background:linear-gradient(135deg,#f3e8ff,#ede9fe);border-radius:10px;padding:16px;display:flex;align-items:center;gap:14px;}
+    .pessoa-avatar{width:48px;height:48px;border-radius:50%;background:var(--secondary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;}
+    .pessoa-info{flex:1;}
+    .pessoa-name{font-size:15px;font-weight:700;color:var(--text);}
+    .pessoa-meta{font-size:13px;color:var(--muted);margin-top:2px;}
+    .pessoa-badge{display:inline-flex;align-items:center;gap:4px;background:#f3e8ff;color:#6b21a8;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;margin-top:6px;}
+
+    /* Search pessoa */
+    .search-box{border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;font-family:inherit;font-size:14px;width:100%;outline:none;background:#fafbff;}
+    .search-box:focus{border-color:var(--secondary);box-shadow:0 0 0 3px rgba(156,39,176,.1);}
+    .search-result{background:#fff;border:1.5px solid var(--border);border-radius:8px;margin-top:6px;overflow:hidden;}
+    .search-result-item{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;transition:background .12s;border-bottom:1px solid var(--border);}
+    .search-result-item:last-child{border-bottom:none;}
+    .search-result-item:hover{background:#f8f0ff;}
+    .search-item-avatar{width:32px;height:32px;border-radius:50%;background:var(--secondary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+
+    /* Password section */
+    .strength-bars{display:flex;gap:4px;margin:6px 0 3px;}
+    .strength-bar{flex:1;height:4px;border-radius:2px;}
+
+    /* Danger zone */
+    .danger-zone{background:#fff5f5;border:1.5px solid #fecaca;border-radius:var(--radius);padding:20px;}
+    .danger-title{font-size:15px;font-weight:700;color:var(--error);margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+    .danger-desc{font-size:13px;color:var(--muted);margin-bottom:16px;}
+
+    /* Alert */
+    .alert-success{background:#dcfce7;color:#14532d;border-radius:8px;padding:12px 14px;font-size:13px;display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+    .alert-info{background:#e0f2fe;color:#0c4a6e;border-radius:8px;padding:12px 14px;font-size:13px;display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+
+    .badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;}
+    .badge-green{background:#dcfce7;color:#166534;}
+  </style>
+</head>
+<body>
+<nav class="proto-nav">
+  <a href="index.html"><span class="material-icons" style="font-size:16px">arrow_back</span> Índice</a>
+  <span>Tela 05 · Perfil do Usuário</span>
+  <div class="nav-links">
+    <span class="proto-badge">Autenticado</span>
+    <a href="04-dashboard.html">← Anterior</a>
+    <a href="06-pessoas.html">Próxima →</a>
+  </div>
+</nav>
+
+<div class="app-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="icon"><span class="material-icons" style="color:#fff;font-size:18px">hub</span></div>
+      <div><h1>Sistema</h1><p>de Gestão</p></div>
+    </div>
+    <p class="sidebar-section">Principal</p>
+    <a class="sidebar-item" href="04-dashboard.html"><span class="material-icons">dashboard</span> Dashboard</a>
+    <a class="sidebar-item" href="06-pessoas.html"><span class="material-icons">people</span> Pessoas <span class="badge">248</span></a>
+    <a class="sidebar-item" href="07-enderecos.html"><span class="material-icons">location_on</span> Endereços</a>
+    <p class="sidebar-section">Usuário</p>
+    <a class="sidebar-item active" href="05-perfil.html"><span class="material-icons">manage_accounts</span> Meu Perfil</a>
+    <a class="sidebar-item" href="#"><span class="material-icons">notifications_none</span> Notificações <span class="badge">3</span></a>
+    <p class="sidebar-section">Sistema</p>
+    <a class="sidebar-item" href="#"><span class="material-icons">admin_panel_settings</span> Usuários</a>
+    <a class="sidebar-item" href="#"><span class="material-icons">settings</span> Configurações</a>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="avatar">JS</div>
+        <div class="sidebar-user-info"><p>João Silva</p><span>Administrador</span></div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-area">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div>
+          <div class="topbar-title">Meu Perfil</div>
+          <div class="breadcrumb"><a href="04-dashboard.html">Início</a><span class="material-icons" style="font-size:14px">chevron_right</span><span>Meu Perfil</span></div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="icon-btn"><span class="material-icons" style="font-size:20px;color:var(--muted)">notifications_none</span></button>
+        <div class="topbar-avatar">JS</div>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- Profile header banner -->
+      <div class="profile-header">
+        <div class="prof-avatar">
+          JS
+          <div class="prof-avatar-badge"><span class="material-icons">photo_camera</span></div>
+        </div>
+        <div class="prof-info">
+          <h2>João da Silva</h2>
+          <p>joao.silva@email.com</p>
+          <div class="badge-row">
+            <span class="prof-badge admin">Administrador</span>
+            <span class="prof-badge active">● Ativo</span>
+          </div>
+        </div>
+        <button class="prof-edit-btn" onclick="document.getElementById('tab-dados').click()">
+          <span class="material-icons" style="font-size:16px">edit</span> Editar Perfil
+        </button>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <div class="tab active" id="tab-dados" onclick="switchTab('dados')">Dados Pessoais</div>
+        <div class="tab" id="tab-assoc" onclick="switchTab('assoc')">Pessoa Vinculada</div>
+        <div class="tab" id="tab-senha" onclick="switchTab('senha')">Alterar Senha</div>
+        <div class="tab" id="tab-conta" onclick="switchTab('conta')">Conta</div>
+      </div>
+
+      <!-- Tab: Dados pessoais -->
+      <div class="tab-panel active" id="panel-dados">
+        <div class="alert-success">
+          <span class="material-icons" style="font-size:18px">check_circle</span>
+          Dados atualizados com sucesso em 05/03/2026 às 14:32.
+        </div>
+        <div class="form-card">
+          <p class="form-card-title"><span class="material-icons">person</span> Informações do Usuário</p>
+          <p class="form-card-desc">Dados de acesso ao sistema. Estas informações são independentes de uma Pessoa cadastrada.</p>
+          <div class="form-grid form-grid-2" style="margin-bottom:16px">
+            <div class="form-group">
+              <label class="form-label">Nome <span>*</span></label>
+              <input class="form-input" type="text" value="João" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Sobrenome <span>*</span></label>
+              <input class="form-input" type="text" value="Silva" />
+            </div>
+          </div>
+          <div class="form-grid" style="margin-bottom:16px">
+            <div class="form-group">
+              <label class="form-label">E-mail <span>*</span></label>
+              <input class="form-input" type="email" value="joao.silva@email.com" />
+              <span class="form-hint">Alterar o e-mail exige confirmação no novo endereço.</span>
+            </div>
+          </div>
+          <div class="form-grid form-grid-2" style="margin-bottom:16px">
+            <div class="form-group">
+              <label class="form-label">Perfil de acesso</label>
+              <select class="form-input">
+                <option selected>Administrador</option>
+                <option>Operador</option>
+                <option>Leitura</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Status</label>
+              <select class="form-input">
+                <option selected>Ativo</option>
+                <option>Inativo</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary"><span class="material-icons" style="font-size:16px">save</span> Salvar alterações</button>
+            <button class="btn btn-ghost">Cancelar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Pessoa vinculada -->
+      <div class="tab-panel" id="panel-assoc">
+        <div class="assoc-card">
+          <div class="assoc-header">
+            <div class="assoc-title"><span class="material-icons">link</span> Pessoa Vinculada</div>
+            <button class="btn btn-ghost btn-sm" onclick="toggleSearch()"><span class="material-icons" style="font-size:16px">edit</span> Alterar</button>
+          </div>
+
+          <div class="alert-info">
+            <span class="material-icons" style="font-size:18px">info</span>
+            Um usuário pode estar vinculado a uma Pessoa, mas isso é opcional. Um usuário sem Pessoa pode usar o sistema normalmente.
+          </div>
+
+          <!-- Estado: vinculado -->
+          <div id="linked-state">
+            <p style="font-size:13px;font-weight:600;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em">Vinculado a:</p>
+            <div class="pessoa-linked">
+              <div class="pessoa-avatar">JS</div>
+              <div class="pessoa-info">
+                <p class="pessoa-name">João da Silva</p>
+                <p class="pessoa-meta">CPF: 123.456.789-00 · Nascimento: 15/08/1990</p>
+                <p class="pessoa-meta">📧 joao.silva@email.com · 📱 (11) 99999-0000</p>
+                <span class="pessoa-badge"><span class="material-icons" style="font-size:13px">link</span> Vinculado</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px;margin-left:auto">
+                <a href="06-pessoas.html" class="btn btn-ghost btn-sm"><span class="material-icons" style="font-size:14px">open_in_new</span> Ver Pessoa</a>
+                <button class="btn btn-danger btn-sm" onclick="unlinkPessoa()"><span class="material-icons" style="font-size:14px">link_off</span> Desvincular</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Estado: buscar -->
+          <div id="search-state" style="display:none">
+            <p style="font-size:13px;font-weight:600;color:var(--muted);margin-bottom:10px">Buscar Pessoa para vincular:</p>
+            <input class="search-box" type="text" placeholder="Buscar por nome, CPF ou e-mail…" value="João" />
+            <div class="search-result">
+              <div class="search-result-item" onclick="linkPessoa()">
+                <div class="search-item-avatar">JS</div>
+                <div><p style="font-size:14px;font-weight:600">João da Silva</p><p style="font-size:12px;color:var(--muted)">CPF: 123.456.789-00</p></div>
+                <span class="badge badge-green" style="margin-left:auto">Disponível</span>
+              </div>
+              <div class="search-result-item">
+                <div class="search-item-avatar" style="background:#ed6c02">JM</div>
+                <div><p style="font-size:14px;font-weight:600">João Mendes</p><p style="font-size:12px;color:var(--muted)">CPF: 098.765.432-11</p></div>
+                <span class="badge" style="background:#fee2e2;color:#991b1b;margin-left:auto">Já vinculado</span>
+              </div>
+            </div>
+            <p style="font-size:12px;color:var(--muted);margin-top:8px">Pessoas já vinculadas a outro usuário aparecem como indisponíveis.</p>
+          </div>
+        </div>
+        <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px;font-size:13px;color:#78350f;">
+          <strong style="display:block;font-size:11px;font-weight:700;margin-bottom:6px;text-transform:uppercase">📋 Notas de design</strong>
+          <ul style="padding-left:16px">
+            <li>Usuário pode existir sem Pessoa associada</li>
+            <li>Uma Pessoa pode existir sem usuário</li>
+            <li>Uma Pessoa só pode estar vinculada a 1 usuário</li>
+            <li>Busca com autocompletar ao digitar (min. 3 chars)</li>
+            <li>Desvincular exige confirmação via modal</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Tab: Alterar senha -->
+      <div class="tab-panel" id="panel-senha">
+        <div class="form-card" style="max-width:520px">
+          <p class="form-card-title"><span class="material-icons">lock</span> Alterar Senha</p>
+          <p class="form-card-desc">Por segurança, confirme sua senha atual antes de criar uma nova.</p>
+          <div class="form-group" style="margin-bottom:16px">
+            <label class="form-label">Senha atual <span>*</span></label>
+            <input class="form-input" type="password" value="••••••••" />
+          </div>
+          <div class="form-group" style="margin-bottom:8px">
+            <label class="form-label">Nova senha <span>*</span></label>
+            <input class="form-input" type="password" value="NovaS3nha@2026" />
+          </div>
+          <div style="margin-bottom:16px">
+            <div class="strength-bars">
+              <div class="strength-bar" style="background:var(--success)"></div>
+              <div class="strength-bar" style="background:var(--success)"></div>
+              <div class="strength-bar" style="background:var(--success)"></div>
+              <div class="strength-bar" style="background:var(--success)"></div>
+            </div>
+            <p style="font-size:11px;font-weight:600;color:var(--success)">Força: Muito boa ✓</p>
+          </div>
+          <div class="form-group" style="margin-bottom:20px">
+            <label class="form-label">Confirmar nova senha <span>*</span></label>
+            <input class="form-input" type="password" value="NovaS3nha@2026" style="border-color:var(--success)" />
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary"><span class="material-icons" style="font-size:16px">lock_reset</span> Alterar senha</button>
+            <button class="btn btn-ghost">Cancelar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Conta -->
+      <div class="tab-panel" id="panel-conta">
+        <div class="form-card" style="margin-bottom:20px;">
+          <p class="form-card-title"><span class="material-icons">history</span> Histórico de acesso</p>
+          <p class="form-card-desc">Últimos acessos ao sistema com este usuário.</p>
+          <div style="display:flex;flex-direction:column;gap:0">
+            <div style="padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;display:flex;gap:16px">
+              <span style="color:var(--muted);min-width:150px">05/03/2026 14:28</span>
+              <span>Chrome — Windows 11</span>
+              <span style="color:var(--success);font-weight:600;margin-left:auto">● Sessão atual</span>
+            </div>
+            <div style="padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;display:flex;gap:16px">
+              <span style="color:var(--muted);min-width:150px">04/03/2026 09:15</span>
+              <span>Safari — iPhone 15</span>
+              <span style="color:var(--muted);margin-left:auto">São Paulo, BR</span>
+            </div>
+            <div style="padding:10px 0;font-size:13px;display:flex;gap:16px">
+              <span style="color:var(--muted);min-width:150px">03/03/2026 18:40</span>
+              <span>Chrome — MacOS</span>
+              <span style="color:var(--muted);margin-left:auto">São Paulo, BR</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="danger-zone">
+          <p class="danger-title"><span class="material-icons" style="font-size:18px">warning</span> Zona de Perigo</p>
+          <p class="danger-desc">Estas ações são irreversíveis. Certifique-se antes de continuar.</p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <button class="btn btn-danger btn-sm"><span class="material-icons" style="font-size:15px">logout</span> Encerrar todas as sessões</button>
+            <button class="btn btn-danger btn-sm" style="background:transparent;color:var(--error);border:1.5px solid var(--error)"><span class="material-icons" style="font-size:15px">delete_forever</span> Excluir conta</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  function switchTab(tab){
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    document.getElementById('tab-'+tab).classList.add('active');
+    document.getElementById('panel-'+tab).classList.add('active');
+  }
+  function toggleSearch(){
+    const s=document.getElementById('search-state');
+    const l=document.getElementById('linked-state');
+    if(s.style.display==='none'){s.style.display='block';l.style.display='none';}
+    else{s.style.display='none';l.style.display='block';}
+  }
+  function linkPessoa(){
+    document.getElementById('search-state').style.display='none';
+    document.getElementById('linked-state').style.display='block';
+  }
+  function unlinkPessoa(){
+    if(confirm('Deseja realmente desvincular esta pessoa do seu perfil?')){
+      document.getElementById('linked-state').innerHTML='<div style="text-align:center;padding:28px;color:var(--muted)"><span class="material-icons" style="font-size:40px;display:block;margin-bottom:8px;opacity:.4">link_off</span><p style="font-size:14px">Nenhuma Pessoa vinculada.</p><button class="btn btn-primary btn-sm" style="margin-top:14px" onclick="toggleSearch()"><span class=\"material-icons\" style=\"font-size:15px\">search</span> Buscar e vincular</button></div>';
+    }
+  }
+</script>
+</body>
+</html>

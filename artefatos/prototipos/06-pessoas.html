@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pessoas — Sistema de Gestão</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    :root{--primary:#1976d2;--primary-dark:#1565c0;--primary-light:#42a5f5;--secondary:#9c27b0;--success:#2e7d32;--error:#d32f2f;--warning:#ed6c02;--bg:#f4f6fb;--paper:#fff;--text:#1a1a2e;--muted:#6b7280;--border:#e4e8ef;--sidebar-w:240px;--radius:12px;--shadow:0 2px 12px rgba(0,0,0,.08);}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+    .proto-nav{background:#1a1a2e;color:#fff;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;font-size:13px;}
+    .proto-nav a{color:#90caf9;text-decoration:none;display:flex;align-items:center;gap:4px;}
+    .proto-nav a:hover{text-decoration:underline;}
+    .proto-badge{background:var(--warning);padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;}
+    .nav-links{display:flex;gap:16px;align-items:center;}
+    .app-layout{flex:1;display:flex;overflow:hidden;}
+    .sidebar{width:var(--sidebar-w);background:var(--primary-dark);color:#fff;display:flex;flex-direction:column;flex-shrink:0;}
+    .sidebar-logo{padding:20px 20px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.12);}
+    .sidebar-logo .icon{width:34px;height:34px;background:var(--primary-light);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .sidebar-logo h1{font-size:15px;font-weight:800;line-height:1.2;}
+    .sidebar-logo p{font-size:11px;opacity:.55;margin-top:2px;}
+    .sidebar-section{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);padding:20px 20px 8px;}
+    .sidebar-item{display:flex;align-items:center;gap:12px;padding:11px 20px;font-size:13.5px;cursor:pointer;transition:all .15s;text-decoration:none;color:rgba(255,255,255,.8);}
+    .sidebar-item:hover{background:rgba(255,255,255,.1);color:#fff;}
+    .sidebar-item.active{background:rgba(255,255,255,.15);color:#fff;font-weight:600;border-right:3px solid var(--primary-light);}
+    .sidebar-item .material-icons{font-size:20px;opacity:.85;flex-shrink:0;}
+    .sidebar-item .badge{margin-left:auto;background:var(--error);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;}
+    .sidebar-footer{margin-top:auto;padding:16px;border-top:1px solid rgba(255,255,255,.12);}
+    .sidebar-user{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;}
+    .sidebar-user .avatar{width:34px;height:34px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
+    .sidebar-user-info p{font-size:13px;font-weight:600;color:#fff;}
+    .sidebar-user-info span{font-size:11px;color:rgba(255,255,255,.5);}
+    .main-area{flex:1;display:flex;flex-direction:column;overflow-y:auto;}
+    .topbar{background:var(--paper);border-bottom:1px solid var(--border);height:60px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:var(--shadow);}
+    .topbar-title{font-size:18px;font-weight:800;}
+    .breadcrumb{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:4px;}
+    .breadcrumb a{color:var(--primary);text-decoration:none;}
+    .topbar-right{display:flex;align-items:center;gap:8px;}
+    .icon-btn{width:38px;height:38px;border-radius:50%;background:transparent;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+    .topbar-avatar{width:38px;height:38px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;}
+    .content{padding:24px;flex:1;}
+
+    /* Toolbar */
+    .toolbar{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+    .search-wrap{position:relative;flex:1;min-width:220px;}
+    .search-wrap .material-icons{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:18px;}
+    .search-input{width:100%;padding:10px 14px 10px 40px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:14px;background:#fff;outline:none;transition:border .15s;}
+    .search-input:focus{border-color:var(--primary);}
+    .filter-select{padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;background:#fff;outline:none;color:var(--text);cursor:pointer;}
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;text-decoration:none;}
+    .btn-primary{background:var(--primary);color:#fff;box-shadow:0 2px 8px rgba(25,118,210,.3);}
+    .btn-primary:hover{background:var(--primary-dark);}
+    .btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border);}
+    .btn-ghost:hover{background:var(--bg);}
+    .btn-sm{padding:7px 14px;font-size:13px;}
+
+    /* Table card */
+    .table-card{background:var(--paper);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px;}
+    .table-header{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+    .table-header-title{font-size:15px;font-weight:700;}
+    .table-header-meta{font-size:13px;color:var(--muted);}
+    .table-wrap{overflow-x:auto;}
+    table{width:100%;border-collapse:collapse;font-size:13.5px;}
+    thead th{background:#f8faff;padding:11px 16px;text-align:left;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);}
+    thead th.sort{cursor:pointer;}
+    thead th.sort:hover{color:var(--primary);}
+    tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
+    tbody tr:last-child{border-bottom:none;}
+    tbody tr:hover{background:#f8fafc;}
+    tbody td{padding:12px 16px;color:var(--text);}
+    .pessoa-cell{display:flex;align-items:center;gap:10px;}
+    .p-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+    .p-name{font-size:14px;font-weight:600;}
+    .p-sub{font-size:12px;color:var(--muted);}
+    .badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;}
+    .badge-green{background:#dcfce7;color:#166534;}
+    .badge-red{background:#fee2e2;color:#991b1b;}
+    .badge-yellow{background:#fef9c3;color:#854d0e;}
+    .badge-blue{background:#dbeafe;color:#1e40af;}
+    .badge-gray{background:#f1f5f9;color:#475569;}
+    .actions{display:flex;gap:4px;}
+    .act-btn{width:30px;height:30px;border-radius:6px;border:1px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;}
+    .act-btn:hover{background:var(--bg);}
+    .act-btn.edit:hover{background:#e3f2fd;border-color:var(--primary);}
+    .act-btn.del:hover{background:#fee2e2;border-color:var(--error);}
+    .act-btn.view:hover{background:#f3e8ff;border-color:var(--secondary);}
+
+    /* Pagination */
+    .pagination{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-top:1px solid var(--border);}
+    .pag-info{font-size:13px;color:var(--muted);}
+    .pag-btns{display:flex;gap:4px;}
+    .pag-btn{width:34px;height:34px;border-radius:6px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);display:flex;align-items:center;justify-content:center;transition:all .12s;}
+    .pag-btn:hover{background:var(--bg);}
+    .pag-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+    /* Drawer / panel */
+    .drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);backdrop-filter:blur(2px);z-index:200;display:none;}
+    .drawer-overlay.open{display:flex;align-items:flex-start;justify-content:flex-end;}
+    .drawer{width:560px;background:#fff;height:100%;overflow-y:auto;box-shadow:-4px 0 24px rgba(0,0,0,.15);display:flex;flex-direction:column;}
+    .drawer-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+    .drawer-title{font-size:18px;font-weight:800;}
+    .drawer-close{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+    .drawer-body{padding:24px;flex:1;overflow-y:auto;}
+
+    /* Form inside drawer */
+    .drawer-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:24px;}
+    .drawer-tab{padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;}
+    .drawer-tab.active{color:var(--primary);border-bottom-color:var(--primary);}
+    .drawer-tab-panel{display:none;}
+    .drawer-tab-panel.active{display:block;}
+    .form-section{margin-bottom:20px;}
+    .form-section-title{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    .form-group{margin-bottom:14px;}
+    .form-label{display:block;font-size:13px;font-weight:600;margin-bottom:5px;}
+    .form-label span{color:var(--error);}
+    .form-input{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:13.5px;outline:none;transition:border .15s;}
+    .form-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(25,118,210,.1);}
+    .form-hint{font-size:11px;color:var(--muted);margin-top:3px;}
+
+    /* Extension cards */
+    .ext-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;}
+    .ext-card{border:2px dashed var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:all .15s;text-align:center;}
+    .ext-card:hover{border-color:var(--primary);background:#f0f7ff;}
+    .ext-card.active{border-color:var(--primary);background:#e3f2fd;border-style:solid;}
+    .ext-card .material-icons{font-size:28px;display:block;margin-bottom:6px;}
+    .ext-card p{font-size:13px;font-weight:600;}
+    .ext-card span{font-size:11px;color:var(--muted);}
+
+    /* Alert */
+    .alert-success{background:#dcfce7;color:#14532d;border-radius:8px;padding:11px 14px;font-size:13px;display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+    .drawer-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:10px;flex-shrink:0;}
+  </style>
+</head>
+<body>
+<nav class="proto-nav">
+  <a href="index.html"><span class="material-icons" style="font-size:16px">arrow_back</span> Índice</a>
+  <span>Tela 06 · Administração de Pessoas</span>
+  <div class="nav-links">
+    <span class="proto-badge">Admin</span>
+    <a href="05-perfil.html">← Anterior</a>
+    <a href="07-enderecos.html">Próxima →</a>
+  </div>
+</nav>
+
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="icon"><span class="material-icons" style="color:#fff;font-size:18px">hub</span></div>
+      <div><h1>Sistema</h1><p>de Gestão</p></div>
+    </div>
+    <p class="sidebar-section">Principal</p>
+    <a class="sidebar-item" href="04-dashboard.html"><span class="material-icons">dashboard</span> Dashboard</a>
+    <a class="sidebar-item active" href="06-pessoas.html"><span class="material-icons">people</span> Pessoas <span class="badge">248</span></a>
+    <a class="sidebar-item" href="07-enderecos.html"><span class="material-icons">location_on</span> Endereços</a>
+    <p class="sidebar-section">Usuário</p>
+    <a class="sidebar-item" href="05-perfil.html"><span class="material-icons">manage_accounts</span> Meu Perfil</a>
+    <a class="sidebar-item" href="#"><span class="material-icons">notifications_none</span> Notificações <span class="badge">3</span></a>
+    <p class="sidebar-section">Sistema</p>
+    <a class="sidebar-item" href="#"><span class="material-icons">admin_panel_settings</span> Usuários</a>
+    <a class="sidebar-item" href="#"><span class="material-icons">settings</span> Configurações</a>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="avatar">JS</div>
+        <div class="sidebar-user-info"><p>João Silva</p><span>Administrador</span></div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-area">
+    <header class="topbar">
+      <div>
+        <div class="topbar-title">Pessoas</div>
+        <div class="breadcrumb"><a href="04-dashboard.html">Início</a><span class="material-icons" style="font-size:14px">chevron_right</span><span>Pessoas</span></div>
+      </div>
+      <div class="topbar-right">
+        <button class="icon-btn"><span class="material-icons" style="font-size:20px;color:var(--muted)">notifications_none</span></button>
+        <div class="topbar-avatar">JS</div>
+      </div>
+    </header>
+
+    <main class="content">
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="search-wrap">
+          <span class="material-icons">search</span>
+          <input class="search-input" type="text" placeholder="Buscar por nome, CPF, e-mail…" value="Maria" />
+        </div>
+        <select class="filter-select">
+          <option>Todos os status</option>
+          <option>Ativos</option>
+          <option>Inativos</option>
+        </select>
+        <select class="filter-select">
+          <option>Todas as cidades</option>
+          <option>São Paulo</option>
+          <option>Campinas</option>
+        </select>
+        <button class="btn btn-ghost btn-sm"><span class="material-icons" style="font-size:16px">file_download</span> Exportar</button>
+        <button class="btn btn-primary" onclick="openDrawer('create')">
+          <span class="material-icons" style="font-size:18px">person_add</span> Nova Pessoa
+        </button>
+      </div>
+
+      <!-- Table -->
+      <div class="table-card">
+        <div class="table-header">
+          <div>
+            <p class="table-header-title">Lista de Pessoas</p>
+            <p class="table-header-meta">248 pessoas cadastradas · Exibindo 1–10</p>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="act-btn" title="Visualização em grade"><span class="material-icons" style="font-size:18px">grid_view</span></button>
+            <button class="act-btn" style="background:var(--bg)" title="Visualização em lista"><span class="material-icons" style="font-size:18px">view_list</span></button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:36px"><input type="checkbox" style="accent-color:var(--primary)" /></th>
+                <th class="sort">Pessoa <span class="material-icons" style="font-size:13px;vertical-align:middle">unfold_more</span></th>
+                <th class="sort">CPF <span class="material-icons" style="font-size:13px;vertical-align:middle">unfold_more</span></th>
+                <th>Contato</th>
+                <th>Endereços</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox" style="accent-color:var(--primary)" checked /></td>
+                <td><div class="pessoa-cell"><div class="p-avatar" style="background:#dbeafe;color:#1e40af">ME</div><div><p class="p-name">Maria Eduarda Santos</p><p class="p-sub">Cadastrada 05/03/2026</p></div></div></td>
+                <td style="font-family:monospace;font-size:13px">123.456.789-00</td>
+                <td><p style="font-size:13px">maria@email.com</p><p style="font-size:12px;color:var(--muted)">(11) 98765-4321</p></td>
+                <td><span class="badge badge-blue">3 end.</span></td>
+                <td><span class="badge badge-green">Ativa</span></td>
+                <td><div class="actions">
+                  <button class="act-btn view" title="Ver endereços" onclick="window.location='07-enderecos.html'"><span class="material-icons" style="font-size:16px">location_on</span></button>
+                  <button class="act-btn edit" title="Editar" onclick="openDrawer('edit')"><span class="material-icons" style="font-size:16px">edit</span></button>
+                  <button class="act-btn del" title="Excluir"><span class="material-icons" style="font-size:16px">delete</span></button>
+                </div></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" style="accent-color:var(--primary)" /></td>
+                <td><div class="pessoa-cell"><div class="p-avatar" style="background:#f3e8ff;color:#6b21a8">CG</div><div><p class="p-name">Carlos Gustavo Mendes</p><p class="p-sub">Cadastrado 05/03/2026</p></div></div></td>
+                <td style="font-family:monospace;font-size:13px">987.654.321-00</td>
+                <td><p style="font-size:13px">carlos@email.com</p><p style="font-size:12px;color:var(--muted)">(11) 91234-5678</p></td>
+                <td><span class="badge badge-blue">1 end.</span></td>
+                <td><span class="badge badge-green">Ativo</span></td>
+                <td><div class="actions">
+                  <button class="act-btn view" title="Ver endereços" onclick="window.location='07-enderecos.html'"><span class="material-icons" style="font-size:16px">location_on</span></button>
+                  <button class="act-btn edit" title="Editar" onclick="openDrawer('edit')"><span class="material-icons" style="font-size:16px">edit</span></button>
+                  <button class="act-btn del" title="Excluir"><span class="material-icons" style="font-size:16px">delete</span></button>
+                </div></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" style="accent-color:var(--primary)" /></td>
+                <td><div class="pessoa-cell"><div class="p-avatar" style="background:#dcfce7;color:#166534">AP</div><div><p class="p-name">Ana Paula Ferreira</p><p class="p-sub">Cadastrada 04/03/2026</p></div></div></td>
+                <td style="font-family:monospace;font-size:13px">111.222.333-44</td>
+                <td><p style="font-size:13px">ana@email.com</p><p style="font-size:12px;color:var(--muted)">(19) 99876-5432</p></td>
+                <td><span class="badge badge-yellow">0 end.</span></td>
+                <td><span class="badge badge-yellow">Pendente</span></td>
+                <td><div class="actions">
+                  <button class="act-btn view" title="Ver endereços" onclick="window.location='07-enderecos.html'"><span class="material-icons" style="font-size:16px">location_on</span></button>
+                  <button class="act-btn edit" title="Editar" onclick="openDrawer('edit')"><span class="material-icons" style="font-size:16px">edit</span></button>
+                  <button class="act-btn del" title="Excluir"><span class="material-icons" style="font-size:16px">delete</span></button>
+                </div></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" style="accent-color:var(--primary)" /></td>
+                <td><div class="pessoa-cell"><div class="p-avatar" style="background:#fee2e2;color:#991b1b">RL</div><div><p class="p-name">Ricardo Lima</p><p class="p-sub">Cadastrado 03/03/2026</p></div></div></td>
+                <td style="font-family:monospace;font-size:13px">555.666.777-88</td>
+                <td><p style="font-size:13px">ricardo@email.com</p><p style="font-size:12px;color:var(--muted)">(21) 93456-7890</p></td>
+                <td><span class="badge badge-blue">2 end.</span></td>
+                <td><span class="badge badge-red">Inativo</span></td>
+                <td><div class="actions">
+                  <button class="act-btn view" title="Ver endereços" onclick="window.location='07-enderecos.html'"><span class="material-icons" style="font-size:16px">location_on</span></button>
+                  <button class="act-btn edit" title="Editar" onclick="openDrawer('edit')"><span class="material-icons" style="font-size:16px">edit</span></button>
+                  <button class="act-btn del" title="Excluir"><span class="material-icons" style="font-size:16px">delete</span></button>
+                </div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pagination">
+          <p class="pag-info">Exibindo 1–10 de 248 registros</p>
+          <div class="pag-btns">
+            <button class="pag-btn"><span class="material-icons" style="font-size:16px">chevron_left</span></button>
+            <button class="pag-btn active">1</button>
+            <button class="pag-btn">2</button>
+            <button class="pag-btn">3</button>
+            <button class="pag-btn" style="font-size:11px">…</button>
+            <button class="pag-btn">25</button>
+            <button class="pag-btn"><span class="material-icons" style="font-size:16px">chevron_right</span></button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ── DRAWER: Criar / Editar Pessoa ── -->
+<div class="drawer-overlay open" id="drawer-overlay" onclick="closeDrawer(event)">
+  <div class="drawer" onclick="event.stopPropagation()">
+    <div class="drawer-header">
+      <p class="drawer-title" id="drawer-title">✏️ Editar Pessoa</p>
+      <button class="drawer-close" onclick="closeDrawer()"><span class="material-icons" style="font-size:18px">close</span></button>
+    </div>
+
+    <div class="drawer-body">
+      <div class="alert-success">
+        <span class="material-icons" style="font-size:18px">check_circle</span>
+        Dados salvos com sucesso!
+      </div>
+
+      <!-- Tabs do drawer -->
+      <div class="drawer-tabs">
+        <div class="drawer-tab active" onclick="switchDrawerTab('basico')">Dados Básicos</div>
+        <div class="drawer-tab" onclick="switchDrawerTab('extra')">Dados Extras</div>
+        <div class="drawer-tab" onclick="switchDrawerTab('extensoes')">Extensões</div>
+      </div>
+
+      <!-- Tab: Básico -->
+      <div class="drawer-tab-panel active" id="dtab-basico">
+        <div class="form-section">
+          <p class="form-section-title">Identificação</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nome <span>*</span></label>
+              <input class="form-input" value="Maria Eduarda" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Sobrenome <span>*</span></label>
+              <input class="form-input" value="Santos" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">CPF <span>*</span></label>
+              <input class="form-input" value="123.456.789-00" style="font-family:monospace" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">RG</label>
+              <input class="form-input" value="12.345.678-9" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Data de nascimento</label>
+              <input class="form-input" type="date" value="1990-08-15" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Sexo</label>
+              <select class="form-input"><option>Feminino</option><option>Masculino</option><option>Outro</option><option>Não informar</option></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <p class="form-section-title">Contato</p>
+          <div class="form-group">
+            <label class="form-label">E-mail</label>
+            <input class="form-input" type="email" value="maria@email.com" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Telefone</label>
+              <input class="form-input" value="(11) 98765-4321" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Celular</label>
+              <input class="form-input" value="(11) 99999-8888" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <p class="form-section-title">Status</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Status</label>
+              <select class="form-input"><option>Ativo</option><option>Inativo</option><option>Pendente</option></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Observações</label>
+              <input class="form-input" placeholder="Observações opcionais…" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Extra -->
+      <div class="drawer-tab-panel" id="dtab-extra">
+        <div class="form-section">
+          <p class="form-section-title">Dados adicionais</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tipo Sanguíneo</label>
+              <select class="form-input">
+                <option>Não informado</option>
+                <option>A+</option><option>A-</option>
+                <option>B+</option><option>B-</option>
+                <option selected>AB+</option><option>AB-</option>
+                <option>O+</option><option>O-</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Estado civil</label>
+              <select class="form-input"><option>Solteiro(a)</option><option selected>Casado(a)</option><option>Divorciado(a)</option><option>Viúvo(a)</option></select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nacionalidade</label>
+              <input class="form-input" value="Brasileira" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Naturalidade</label>
+              <input class="form-input" value="São Paulo - SP" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Profissão</label>
+            <input class="form-input" value="Engenheira de Software" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Empresa / Organização</label>
+            <input class="form-input" value="TechCorp Ltda." />
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Extensões -->
+      <div class="drawer-tab-panel" id="dtab-extensoes">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Selecione os módulos adicionais para esta pessoa. Cada módulo adiciona funcionalidades específicas.</p>
+
+        <div class="ext-grid">
+          <div class="ext-card active" onclick="this.classList.toggle('active')">
+            <span class="material-icons" style="color:#e53935">water_drop</span>
+            <p>Tipo Sanguíneo</p>
+            <span>AB+ · Doador universal</span>
+          </div>
+          <div class="ext-card active" onclick="this.classList.toggle('active')">
+            <span class="material-icons" style="color:#1976d2">directions_car</span>
+            <p>Veículos</p>
+            <span>2 veículo(s) cadastrado(s)</span>
+          </div>
+          <div class="ext-card" onclick="this.classList.toggle('active')">
+            <span class="material-icons" style="color:#7b1fa2">pets</span>
+            <p>Pets</p>
+            <span>Adicionar animais de estimação</span>
+          </div>
+          <div class="ext-card" onclick="this.classList.toggle('active')">
+            <span class="material-icons" style="color:#2e7d32">local_hospital</span>
+            <p>Saúde</p>
+            <span>Alergias, medicamentos, plano</span>
+          </div>
+          <div class="ext-card" onclick="this.classList.toggle('active')">
+            <span class="material-icons" style="color:#ed6c02">school</span>
+            <p>Formação</p>
+            <span>Escolaridade e cursos</span>
+          </div>
+          <div class="ext-card" onclick="this.classList.toggle('active')">
+            <span class="material-icons" style="color:#0288d1">work</span>
+            <p>Histórico Profissional</p>
+            <span>Empregos anteriores</span>
+          </div>
+          <div class="ext-card" onclick="this.classList.toggle('active')">
+            <span class="material-icons" style="color:#795548">people</span>
+            <p>Dependentes</p>
+            <span>Cônjuge, filhos, responsáveis</span>
+          </div>
+          <div class="ext-card" style="border-style:dashed" onclick="this.classList.toggle('active')">
+            <span class="material-icons" style="color:var(--muted)">add_circle_outline</span>
+            <p style="color:var(--muted)">Módulo personalizado</p>
+            <span>Criar novo tipo</span>
+          </div>
+        </div>
+
+        <!-- Veículo ativo para mostrar exemplo -->
+        <div style="margin-top:20px;background:#e3f2fd;border-radius:10px;padding:16px;">
+          <p style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:12px"><span class="material-icons" style="font-size:16px;vertical-align:middle">directions_car</span> Veículos cadastrados</p>
+          <div style="background:#fff;border-radius:8px;padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:12px;">
+            <span class="material-icons" style="color:#1976d2;font-size:24px">directions_car</span>
+            <div><p style="font-size:13px;font-weight:600">Honda Civic 2023</p><p style="font-size:12px;color:var(--muted)">Placa: ABC-1D23 · Prata</p></div>
+            <button class="act-btn del" style="margin-left:auto"><span class="material-icons" style="font-size:15px">delete</span></button>
+          </div>
+          <div style="background:#fff;border-radius:8px;padding:12px;display:flex;align-items:center;gap:12px;">
+            <span class="material-icons" style="color:#1976d2;font-size:24px">two_wheeler</span>
+            <div><p style="font-size:13px;font-weight:600">Yamaha MT-07 2022</p><p style="font-size:12px;color:var(--muted)">Placa: XYZ-9A87 · Azul</p></div>
+            <button class="act-btn del" style="margin-left:auto"><span class="material-icons" style="font-size:15px">delete</span></button>
+          </div>
+          <button class="btn btn-primary btn-sm" style="margin-top:10px"><span class="material-icons" style="font-size:15px">add</span> Adicionar veículo</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="drawer-footer">
+      <button class="btn btn-primary" style="flex:1"><span class="material-icons" style="font-size:16px">save</span> Salvar</button>
+      <a href="07-enderecos.html" class="btn btn-ghost btn-sm"><span class="material-icons" style="font-size:16px">location_on</span> Ver Endereços</a>
+      <button class="btn btn-ghost" onclick="closeDrawer()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openDrawer(mode){
+    document.getElementById('drawer-overlay').classList.add('open');
+    document.getElementById('drawer-title').textContent = mode==='create'? '➕ Nova Pessoa' : '✏️ Editar Pessoa';
+  }
+  function closeDrawer(e){
+    if(!e || e.target===document.getElementById('drawer-overlay'))
+      document.getElementById('drawer-overlay').classList.remove('open');
+  }
+  function switchDrawerTab(tab){
+    document.querySelectorAll('.drawer-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.drawer-tab-panel').forEach(p=>p.classList.remove('active'));
+    const idx = ['basico','extra','extensoes'].indexOf(tab);
+    document.querySelectorAll('.drawer-tab')[idx].classList.add('active');
+    document.getElementById('dtab-'+tab).classList.add('active');
+  }
+</script>
+</body>
+</html>

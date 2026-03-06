@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Endereços — Sistema de Gestão</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    :root{--primary:#1976d2;--primary-dark:#1565c0;--primary-light:#42a5f5;--secondary:#9c27b0;--success:#2e7d32;--error:#d32f2f;--warning:#ed6c02;--info:#0288d1;--bg:#f4f6fb;--paper:#fff;--text:#1a1a2e;--muted:#6b7280;--border:#e4e8ef;--sidebar-w:240px;--radius:12px;--shadow:0 2px 12px rgba(0,0,0,.08);}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+    .proto-nav{background:#1a1a2e;color:#fff;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;font-size:13px;}
+    .proto-nav a{color:#90caf9;text-decoration:none;display:flex;align-items:center;gap:4px;}
+    .proto-nav a:hover{text-decoration:underline;}
+    .proto-badge{background:var(--info);padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;}
+    .nav-links{display:flex;gap:16px;align-items:center;}
+    .app-layout{flex:1;display:flex;overflow:hidden;}
+    .sidebar{width:var(--sidebar-w);background:var(--primary-dark);color:#fff;display:flex;flex-direction:column;flex-shrink:0;}
+    .sidebar-logo{padding:20px 20px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.12);}
+    .sidebar-logo .icon{width:34px;height:34px;background:var(--primary-light);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .sidebar-logo h1{font-size:15px;font-weight:800;line-height:1.2;}
+    .sidebar-logo p{font-size:11px;opacity:.55;margin-top:2px;}
+    .sidebar-section{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);padding:20px 20px 8px;}
+    .sidebar-item{display:flex;align-items:center;gap:12px;padding:11px 20px;font-size:13.5px;cursor:pointer;transition:all .15s;text-decoration:none;color:rgba(255,255,255,.8);}
+    .sidebar-item:hover{background:rgba(255,255,255,.1);color:#fff;}
+    .sidebar-item.active{background:rgba(255,255,255,.15);color:#fff;font-weight:600;border-right:3px solid var(--primary-light);}
+    .sidebar-item .material-icons{font-size:20px;opacity:.85;flex-shrink:0;}
+    .sidebar-item .badge{margin-left:auto;background:var(--error);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;}
+    .sidebar-footer{margin-top:auto;padding:16px;border-top:1px solid rgba(255,255,255,.12);}
+    .sidebar-user{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;}
+    .sidebar-user .avatar{width:34px;height:34px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
+    .sidebar-user-info p{font-size:13px;font-weight:600;color:#fff;}
+    .sidebar-user-info span{font-size:11px;color:rgba(255,255,255,.5);}
+    .main-area{flex:1;display:flex;flex-direction:column;overflow-y:auto;}
+    .topbar{background:var(--paper);border-bottom:1px solid var(--border);height:60px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:var(--shadow);}
+    .topbar-title{font-size:18px;font-weight:800;}
+    .breadcrumb{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:4px;}
+    .breadcrumb a{color:var(--primary);text-decoration:none;}
+    .topbar-right{display:flex;align-items:center;gap:8px;}
+    .icon-btn{width:38px;height:38px;border-radius:50%;background:transparent;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+    .topbar-avatar{width:38px;height:38px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;}
+    .content{padding:24px;flex:1;}
+
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;text-decoration:none;}
+    .btn-primary{background:var(--primary);color:#fff;box-shadow:0 2px 8px rgba(25,118,210,.3);}
+    .btn-primary:hover{background:var(--primary-dark);}
+    .btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border);}
+    .btn-ghost:hover{background:var(--bg);}
+    .btn-danger{background:var(--error);color:#fff;}
+    .btn-sm{padding:7px 13px;font-size:13px;}
+    .btn-outlined{background:transparent;color:var(--primary);border:1.5px solid var(--primary);}
+    .btn-outlined:hover{background:#e3f2fd;}
+
+    /* Context header: pessoa selecionada */
+    .context-bar{background:linear-gradient(135deg,var(--primary-dark),var(--primary));border-radius:var(--radius);padding:18px 22px;color:#fff;display:flex;align-items:center;gap:16px;margin-bottom:20px;}
+    .context-avatar{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;flex-shrink:0;border:2px solid rgba(255,255,255,.35);}
+    .context-info{flex:1;}
+    .context-name{font-size:17px;font-weight:800;}
+    .context-meta{font-size:13px;opacity:.8;margin-top:2px;}
+    .context-actions{display:flex;gap:8px;}
+    .ctx-btn{background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.3);padding:8px 14px;border-radius:8px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s;}
+    .ctx-btn:hover{background:rgba(255,255,255,.3);}
+
+    /* Toolbar */
+    .toolbar{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+    .search-wrap{position:relative;flex:1;min-width:200px;}
+    .search-wrap .material-icons{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:18px;}
+    .search-input{width:100%;padding:9px 13px 9px 38px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:14px;background:#fff;outline:none;transition:border .15s;}
+    .search-input:focus{border-color:var(--primary);}
+
+    /* Address card grid */
+    .addr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-bottom:20px;}
+    .addr-card{background:var(--paper);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;transition:transform .15s,box-shadow .15s;}
+    .addr-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.12);}
+    .addr-card-map{height:100px;background:linear-gradient(135deg,#e3f2fd,#f3e8ff);display:flex;align-items:center;justify-content:center;position:relative;}
+    .addr-card-map .material-icons{font-size:40px;color:var(--primary);opacity:.5;}
+    .addr-card-type{position:absolute;top:8px;right:8px;}
+    .addr-card-body{padding:16px;}
+    .addr-card-title{font-size:15px;font-weight:700;margin-bottom:3px;}
+    .addr-card-street{font-size:14px;color:var(--text);margin-bottom:6px;}
+    .addr-card-meta{font-size:13px;color:var(--muted);line-height:1.6;}
+    .addr-card-footer{padding:12px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+    .pessoas-links{display:flex;align-items:center;gap:-8px;}
+    .mini-avatar{width:24px;height:24px;border-radius:50%;background:var(--primary);color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #fff;margin-left:-6px;}
+    .mini-avatar:first-child{margin-left:0;}
+    .pessoas-count{font-size:12px;color:var(--muted);margin-left:8px;}
+    .badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;}
+    .badge-green{background:#dcfce7;color:#166534;}
+    .badge-red{background:#fee2e2;color:#991b1b;}
+    .badge-yellow{background:#fef9c3;color:#854d0e;}
+    .badge-blue{background:#dbeafe;color:#1e40af;}
+    .badge-gray{background:#f1f5f9;color:#475569;}
+    .act-btn{width:30px;height:30px;border-radius:6px;border:1px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;}
+    .act-btn:hover{background:var(--bg);}
+    .act-btn.edit:hover{background:#e3f2fd;border-color:var(--primary);}
+    .act-btn.del:hover{background:#fee2e2;border-color:var(--error);}
+
+    /* Drawer */
+    .drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);backdrop-filter:blur(2px);z-index:200;display:none;align-items:flex-start;justify-content:flex-end;}
+    .drawer-overlay.open{display:flex;}
+    .drawer{width:520px;background:#fff;height:100%;overflow-y:auto;box-shadow:-4px 0 24px rgba(0,0,0,.15);display:flex;flex-direction:column;}
+    .drawer-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+    .drawer-title{font-size:18px;font-weight:800;}
+    .drawer-close{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+    .drawer-body{padding:24px;flex:1;}
+    .drawer-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:10px;flex-shrink:0;}
+    .form-section-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);margin-top:4px;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .form-group{margin-bottom:14px;}
+    .form-label{display:block;font-size:13px;font-weight:600;margin-bottom:5px;}
+    .form-label span{color:var(--error);}
+    .form-input{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:13.5px;outline:none;transition:border .15s;}
+    .form-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(25,118,210,.1);}
+    .form-hint{font-size:11px;color:var(--muted);margin-top:3px;}
+    .cep-row{display:flex;gap:8px;align-items:flex-end;}
+    .cep-row .form-input{flex:1;}
+    .alert-success{background:#dcfce7;color:#14532d;border-radius:8px;padding:11px 14px;font-size:13px;display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+    .alert-info{background:#e0f2fe;color:#0c4a6e;border-radius:8px;padding:11px 14px;font-size:13px;display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+    .alert-warning{background:#fef9c3;color:#713f12;border-radius:8px;padding:11px 14px;font-size:13px;display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+
+    /* Pessoas vinculadas section */
+    .pessoa-assoc-list{display:flex;flex-direction:column;gap:6px;margin-top:8px;}
+    .pessoa-assoc-item{display:flex;align-items:center;gap:10px;padding:9px 12px;background:#f8f9ff;border-radius:8px;border:1px solid var(--border);}
+    .pa-avatar{width:30px;height:30px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+    .pa-name{font-size:13.5px;font-weight:600;flex:1;}
+    .pa-del{width:26px;height:26px;border-radius:5px;border:1px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+    .pa-del:hover{background:#fee2e2;border-color:var(--error);}
+    .add-pessoa-btn{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:8px;border:1.5px dashed var(--border);background:transparent;cursor:pointer;font-family:inherit;font-size:13px;color:var(--primary);font-weight:600;width:100%;transition:all .15s;}
+    .add-pessoa-btn:hover{background:#e3f2fd;border-color:var(--primary);}
+    .pessoa-search{border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:13px;width:100%;outline:none;margin-top:8px;}
+    .pessoa-search:focus{border-color:var(--secondary);}
+    .pessoa-search-results{background:#fff;border:1.5px solid var(--border);border-radius:8px;margin-top:4px;}
+    .ps-item{display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;transition:background .12s;border-bottom:1px solid var(--border);font-size:13px;}
+    .ps-item:last-child{border-bottom:none;}
+    .ps-item:hover{background:#f3e8ff;}
+    .ps-avatar{width:28px;height:28px;border-radius:50%;background:var(--secondary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
+
+    /* Map placeholder */
+    .map-placeholder{background:linear-gradient(135deg,#e3f2fd,#e8eaf6);border-radius:10px;height:180px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;margin-bottom:16px;border:2px dashed var(--border);}
+    .map-placeholder .material-icons{font-size:48px;color:var(--primary);opacity:.35;}
+    .map-placeholder p{font-size:13px;color:var(--muted);}
+  </style>
+</head>
+<body>
+<nav class="proto-nav">
+  <a href="index.html"><span class="material-icons" style="font-size:16px">arrow_back</span> Índice</a>
+  <span>Tela 07 · Endereços das Pessoas</span>
+  <div class="nav-links">
+    <span class="proto-badge">Admin</span>
+    <a href="06-pessoas.html">← Anterior</a>
+    <a href="index.html">✓ Fim</a>
+  </div>
+</nav>
+
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="icon"><span class="material-icons" style="color:#fff;font-size:18px">hub</span></div>
+      <div><h1>Sistema</h1><p>de Gestão</p></div>
+    </div>
+    <p class="sidebar-section">Principal</p>
+    <a class="sidebar-item" href="04-dashboard.html"><span class="material-icons">dashboard</span> Dashboard</a>
+    <a class="sidebar-item" href="06-pessoas.html"><span class="material-icons">people</span> Pessoas <span class="badge">248</span></a>
+    <a class="sidebar-item active" href="07-enderecos.html"><span class="material-icons">location_on</span> Endereços</a>
+    <p class="sidebar-section">Usuário</p>
+    <a class="sidebar-item" href="05-perfil.html"><span class="material-icons">manage_accounts</span> Meu Perfil</a>
+    <a class="sidebar-item" href="#"><span class="material-icons">notifications_none</span> Notificações <span class="badge">3</span></a>
+    <p class="sidebar-section">Sistema</p>
+    <a class="sidebar-item" href="#"><span class="material-icons">admin_panel_settings</span> Usuários</a>
+    <a class="sidebar-item" href="#"><span class="material-icons">settings</span> Configurações</a>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="avatar">JS</div>
+        <div class="sidebar-user-info"><p>João Silva</p><span>Administrador</span></div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-area">
+    <header class="topbar">
+      <div>
+        <div class="topbar-title">Endereços</div>
+        <div class="breadcrumb">
+          <a href="04-dashboard.html">Início</a>
+          <span class="material-icons" style="font-size:14px">chevron_right</span>
+          <a href="06-pessoas.html">Pessoas</a>
+          <span class="material-icons" style="font-size:14px">chevron_right</span>
+          <span>Maria Eduarda Santos</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="icon-btn"><span class="material-icons" style="font-size:20px;color:var(--muted)">notifications_none</span></button>
+        <div class="topbar-avatar">JS</div>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- Contexto da pessoa -->
+      <div class="context-bar">
+        <div class="context-avatar">ME</div>
+        <div class="context-info">
+          <p class="context-name">Maria Eduarda Santos</p>
+          <p class="context-meta">CPF: 123.456.789-00 · 3 endereços cadastrados</p>
+        </div>
+        <div class="context-actions">
+          <a href="06-pessoas.html" class="ctx-btn"><span class="material-icons" style="font-size:16px">arrow_back</span> Voltar a Pessoas</a>
+          <button class="ctx-btn" onclick="openDrawer()"><span class="material-icons" style="font-size:16px">add_location_alt</span> Novo Endereço</button>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="search-wrap">
+          <span class="material-icons">search</span>
+          <input class="search-input" type="text" placeholder="Buscar por rua, bairro, CEP ou cidade…" />
+        </div>
+        <select style="padding:9px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;background:#fff;outline:none;">
+          <option>Todos os tipos</option>
+          <option>Residencial</option>
+          <option>Comercial</option>
+          <option>Correspondência</option>
+        </select>
+        <button class="btn btn-ghost btn-sm"><span class="material-icons" style="font-size:16px">map</span> Ver no mapa</button>
+        <button class="btn btn-primary" onclick="openDrawer()">
+          <span class="material-icons" style="font-size:18px">add_location_alt</span> Novo Endereço
+        </button>
+      </div>
+
+      <!-- Address cards -->
+      <div class="addr-grid">
+
+        <!-- Card 1 -->
+        <div class="addr-card">
+          <div class="addr-card-map">
+            <span class="material-icons">location_on</span>
+            <div class="addr-card-type"><span class="badge badge-blue">Residencial</span></div>
+          </div>
+          <div class="addr-card-body">
+            <p class="addr-card-title">Endereço principal</p>
+            <p class="addr-card-street">Rua das Flores, 123 — Apto 45</p>
+            <p class="addr-card-meta">
+              Jardim Paulista · São Paulo — SP<br>
+              CEP: 01310-100 · Brasil
+            </p>
+          </div>
+          <div class="addr-card-footer">
+            <div>
+              <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px">
+                <div class="mini-avatar" style="background:#1976d2">ME</div>
+                <div class="mini-avatar" style="background:#9c27b0">CG</div>
+                <div class="mini-avatar" style="background:#2e7d32">AP</div>
+                <span class="pessoas-count">3 pessoas</span>
+              </div>
+              <span class="badge badge-green">CEP válido</span>
+            </div>
+            <div style="display:flex;gap:4px">
+              <button class="act-btn edit" onclick="openDrawer()" title="Editar"><span class="material-icons" style="font-size:16px">edit</span></button>
+              <button class="act-btn del" title="Excluir"><span class="material-icons" style="font-size:16px">delete</span></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="addr-card">
+          <div class="addr-card-map" style="background:linear-gradient(135deg,#f3e8ff,#ede9fe)">
+            <span class="material-icons" style="color:var(--secondary)">location_on</span>
+            <div class="addr-card-type"><span class="badge" style="background:#f3e8ff;color:#6b21a8">Comercial</span></div>
+          </div>
+          <div class="addr-card-body">
+            <p class="addr-card-title">Trabalho</p>
+            <p class="addr-card-street">Av. Paulista, 1000 — Conj. 120</p>
+            <p class="addr-card-meta">
+              Bela Vista · São Paulo — SP<br>
+              CEP: 01310-100 · Brasil
+            </p>
+          </div>
+          <div class="addr-card-footer">
+            <div>
+              <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px">
+                <div class="mini-avatar" style="background:#1976d2">ME</div>
+                <span class="pessoas-count">1 pessoa</span>
+              </div>
+              <span class="badge badge-green">CEP válido</span>
+            </div>
+            <div style="display:flex;gap:4px">
+              <button class="act-btn edit" onclick="openDrawer()" title="Editar"><span class="material-icons" style="font-size:16px">edit</span></button>
+              <button class="act-btn del" title="Excluir"><span class="material-icons" style="font-size:16px">delete</span></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: CEP inválido -->
+        <div class="addr-card" style="border:1.5px solid #fde68a;">
+          <div class="addr-card-map" style="background:linear-gradient(135deg,#fef9c3,#fde68a)">
+            <span class="material-icons" style="color:var(--warning)">gps_off</span>
+            <div class="addr-card-type"><span class="badge badge-gray">Correspondência</span></div>
+          </div>
+          <div class="addr-card-body">
+            <p class="addr-card-title">Correspondência</p>
+            <p class="addr-card-street">Rua Desconhecida, 999</p>
+            <p class="addr-card-meta" style="color:var(--warning)">
+              CEP: 00000-000 — <strong>não encontrado</strong><br>
+              Verifique o CEP informado
+            </p>
+          </div>
+          <div class="addr-card-footer">
+            <div>
+              <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px">
+                <div class="mini-avatar" style="background:#1976d2">ME</div>
+                <span class="pessoas-count">1 pessoa</span>
+              </div>
+              <span class="badge badge-yellow">CEP inválido</span>
+            </div>
+            <div style="display:flex;gap:4px">
+              <button class="act-btn edit" onclick="openDrawer()" title="Corrigir" style="background:#fef9c3;border-color:var(--warning)"><span class="material-icons" style="font-size:16px;color:var(--warning)">edit</span></button>
+              <button class="act-btn del" title="Excluir"><span class="material-icons" style="font-size:16px">delete</span></button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Nota relação N:N -->
+      <div style="background:#e0f2fe;border-left:4px solid var(--info);border-radius:0 10px 10px 0;padding:14px 18px;font-size:13px;color:#0c4a6e;display:flex;gap:10px">
+        <span class="material-icons" style="font-size:20px;flex-shrink:0">info</span>
+        <div>
+          <strong>Relação N:N — Endereço × Pessoa:</strong><br>
+          Um endereço pode pertencer a múltiplas pessoas (ex: moradores do mesmo imóvel). 
+          Ao vincular um endereço já cadastrado a outra pessoa, o sistema reutiliza o registro — nenhum dado é duplicado.
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ── DRAWER: Novo / Editar Endereço ── -->
+<div class="drawer-overlay open" id="drawer-overlay" onclick="closeDrawer(event)">
+  <div class="drawer" onclick="event.stopPropagation()">
+    <div class="drawer-header">
+      <p class="drawer-title">📍 Novo Endereço</p>
+      <button class="drawer-close" onclick="closeDrawer()"><span class="material-icons" style="font-size:18px">close</span></button>
+    </div>
+    <div class="drawer-body">
+
+      <div class="alert-info">
+        <span class="material-icons" style="font-size:18px">info</span>
+        Digite o CEP para preencher automaticamente via ViaCEP.
+      </div>
+
+      <!-- CEP -->
+      <p class="form-section-title">Localização</p>
+      <div class="form-group">
+        <label class="form-label">CEP <span>*</span></label>
+        <div class="cep-row">
+          <input class="form-input" value="01310-100" style="font-family:monospace" />
+          <button class="btn btn-primary btn-sm" onclick="simulateCepFetch()">
+            <span class="material-icons" style="font-size:16px">search</span> Buscar CEP
+          </button>
+        </div>
+        <p class="form-hint">Preenchimento automático via API ViaCEP.</p>
+      </div>
+
+      <div id="cep-result">
+        <div class="alert-success" style="margin-bottom:16px">
+          <span class="material-icons" style="font-size:18px">check_circle</span>
+          CEP encontrado! Campos preenchidos automaticamente.
+        </div>
+
+        <div class="form-row">
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="form-label">Logradouro <span>*</span></label>
+            <input class="form-input" value="Rua das Flores" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Número <span>*</span></label>
+            <input class="form-input" value="123" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Complemento</label>
+            <input class="form-input" value="Apto 45" placeholder="Apto, sala, bloco…" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Bairro <span>*</span></label>
+            <input class="form-input" value="Jardim Paulista" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cidade <span>*</span></label>
+            <input class="form-input" value="São Paulo" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Estado <span>*</span></label>
+            <select class="form-input"><option selected>SP</option><option>RJ</option><option>MG</option><option>RS</option></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">País</label>
+            <input class="form-input" value="Brasil" />
+          </div>
+        </div>
+
+        <p class="form-section-title" style="margin-top:4px">Classificação</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Tipo de endereço</label>
+            <select class="form-input">
+              <option>Residencial</option>
+              <option>Comercial</option>
+              <option>Correspondência</option>
+              <option>Outro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ponto de referência</label>
+            <input class="form-input" placeholder="Ex: próximo ao metrô" />
+          </div>
+        </div>
+
+        <!-- Mapa placeholder -->
+        <div class="map-placeholder">
+          <span class="material-icons">map</span>
+          <p>Mapa interativo (Google Maps / Leaflet)</p>
+        </div>
+
+        <!-- Pessoas vinculadas a este endereço -->
+        <p class="form-section-title">Pessoas neste endereço</p>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Um endereço pode ser compartilhado entre múltiplas pessoas.</p>
+
+        <div class="pessoa-assoc-list">
+          <div class="pessoa-assoc-item">
+            <div class="pa-avatar">ME</div>
+            <p class="pa-name">Maria Eduarda Santos <span style="font-size:11px;color:var(--success);font-weight:600">● Atual</span></p>
+            <button class="pa-del" disabled title="Não é possível remover a pessoa atual"><span class="material-icons" style="font-size:14px;color:var(--muted)">lock</span></button>
+          </div>
+          <div class="pessoa-assoc-item">
+            <div class="pa-avatar" style="background:var(--secondary)">CG</div>
+            <p class="pa-name">Carlos Gustavo Mendes</p>
+            <button class="pa-del" onclick="this.closest('.pessoa-assoc-item').remove()"><span class="material-icons" style="font-size:14px">close</span></button>
+          </div>
+        </div>
+
+        <div id="add-pessoa-area" style="margin-top:8px">
+          <button class="add-pessoa-btn" onclick="toggleAddPessoa()">
+            <span class="material-icons" style="font-size:18px">person_add</span> Vincular outra pessoa a este endereço
+          </button>
+        </div>
+
+        <div id="pessoa-search-panel" style="display:none;margin-top:6px">
+          <input class="pessoa-search" type="text" placeholder="Buscar pessoa por nome ou CPF…" value="Ana" />
+          <div class="pessoa-search-results">
+            <div class="ps-item" onclick="addPessoa(this,'AP','Ana Paula Ferreira')">
+              <div class="ps-avatar">AP</div>
+              <div><p style="font-weight:600">Ana Paula Ferreira</p><p style="font-size:11px;color:var(--muted)">CPF: 111.222.333-44</p></div>
+              <span class="badge badge-green" style="margin-left:auto">Disponível</span>
+            </div>
+            <div class="ps-item">
+              <div class="ps-avatar" style="background:#ed6c02">AP</div>
+              <div><p style="font-weight:600">Antonio Pereira</p><p style="font-size:11px;color:var(--muted)">CPF: 444.555.666-77</p></div>
+              <span class="badge badge-green" style="margin-left:auto">Disponível</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="drawer-footer">
+      <button class="btn btn-primary" style="flex:1"><span class="material-icons" style="font-size:16px">save</span> Salvar endereço</button>
+      <button class="btn btn-ghost" onclick="closeDrawer()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openDrawer(){document.getElementById('drawer-overlay').classList.add('open');}
+  function closeDrawer(e){if(!e||e.target===document.getElementById('drawer-overlay'))document.getElementById('drawer-overlay').classList.remove('open');}
+  function simulateCepFetch(){
+    document.getElementById('cep-result').style.display='block';
+  }
+  function toggleAddPessoa(){
+    const p=document.getElementById('pessoa-search-panel');
+    p.style.display=p.style.display==='none'?'block':'none';
+  }
+  function addPessoa(el,initials,name){
+    const list=document.querySelector('.pessoa-assoc-list');
+    const item=document.createElement('div');
+    item.className='pessoa-assoc-item';
+    item.innerHTML=`<div class="pa-avatar" style="background:#0288d1">${initials}</div><p class="pa-name">${name}</p><button class="pa-del" onclick="this.closest('.pessoa-assoc-item').remove()"><span class="material-icons" style="font-size:14px">close</span></button>`;
+    list.appendChild(item);
+    document.getElementById('pessoa-search-panel').style.display='none';
+  }
+</script>
+</body>
+</html>
