@@ -1,0 +1,164 @@
+<mxfile host="app.diagrams.net" modified="2026-02-26T23:00:00.000Z" agent="ChatGPT" version="24.7.5" type="device">
+  <diagram id="agendamento-ui" name="Protótipo - Agendamento Clínica">
+    <mxGraphModel dx="1260" dy="760" grid="1" gridSize="10" guides="1" tooltips="1" connect="0" arrows="0" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Canvas / Frame -->
+        <mxCell id="frame" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="1080" height="680" as="geometry"/>
+        </mxCell>
+
+        <!-- Header -->
+        <mxCell id="header" value="Clínica Médica • Agendamento de Consultas" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#d0d0d0;fontSize=20;fontStyle=1;align=left;spacingLeft=16;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="1080" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- Breadcrumb / Subheader -->
+        <mxCell id="subheader" value="Início  ›  Agenda  ›  Novo Agendamento" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#e0e0e0;fontSize=12;align=left;spacingLeft=16;" vertex="1" parent="1">
+          <mxGeometry x="40" y="110" width="1080" height="34" as="geometry"/>
+        </mxCell>
+
+        <!-- Left Panel -->
+        <mxCell id="leftPanel" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#d0d0d0;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="60" y="160" width="480" height="500" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="leftTitle" value="Dados do Paciente e da Consulta" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#d0d0d0;fontSize=14;fontStyle=1;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="60" y="160" width="480" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Patient Section -->
+        <mxCell id="secPaciente" value="Paciente" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#ffffff;fontSize=13;fontStyle=1;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="70" y="210" width="460" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- Inputs: Nome -->
+        <mxCell id="lblNome" value="Nome" style="whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontSize=12;align=left;" vertex="1" parent="1">
+          <mxGeometry x="80" y="245" width="80" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="inpNome" value="Ex.: Maria Silva" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#c0c0c0;fillColor=#ffffff;fontSize=12;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="268" width="440" height="34" as="geometry"/>
+        </mxCell>
+
+        <!-- Inputs: CPF -->
+        <mxCell id="lblCpf" value="CPF" style="whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontSize=12;align=left;" vertex="1" parent="1">
+          <mxGeometry x="80" y="310" width="80" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="inpCpf" value="000.000.000-00" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#c0c0c0;fillColor=#ffffff;fontSize=12;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="333" width="210" height="34" as="geometry"/>
+        </mxCell>
+
+        <!-- Inputs: Telefone -->
+        <mxCell id="lblTel" value="Telefone/WhatsApp" style="whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontSize=12;align=left;" vertex="1" parent="1">
+          <mxGeometry x="310" y="310" width="160" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="inpTel" value="(11) 99999-9999" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#c0c0c0;fillColor=#ffffff;fontSize=12;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="310" y="333" width="210" height="34" as="geometry"/>
+        </mxCell>
+
+        <!-- Buttons: Buscar/Cadastrar -->
+        <mxCell id="btnBuscar" value="Buscar cadastro" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#808080;fillColor=#f5f5f5;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="80" y="378" width="140" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="btnCadastrar" value="Cadastrar novo" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#808080;fillColor=#f5f5f5;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="230" y="378" width="140" height="32" as="geometry"/>
+        </mxCell>
+
+        <!-- Consultation Section -->
+        <mxCell id="secConsulta" value="Consulta" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#ffffff;fontSize=13;fontStyle=1;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="70" y="425" width="460" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- Especialidade -->
+        <mxCell id="lblEsp" value="Especialidade" style="whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontSize=12;align=left;" vertex="1" parent="1">
+          <mxGeometry x="80" y="458" width="120" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="inpEsp" value="Selecione..." style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#c0c0c0;fillColor=#ffffff;fontSize=12;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="481" width="210" height="34" as="geometry"/>
+        </mxCell>
+
+        <!-- Médico -->
+        <mxCell id="lblMed" value="Médico(a)" style="whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontSize=12;align=left;" vertex="1" parent="1">
+          <mxGeometry x="310" y="458" width="120" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="inpMed" value="Selecione..." style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#c0c0c0;fillColor=#ffffff;fontSize=12;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="310" y="481" width="210" height="34" as="geometry"/>
+        </mxCell>
+
+        <!-- Tipo atendimento -->
+        <mxCell id="lblTipo" value="Tipo de atendimento" style="whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontSize=12;align=left;" vertex="1" parent="1">
+          <mxGeometry x="80" y="523" width="160" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="inpTipo" value="( ) Particular    ( ) Convênio" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#c0c0c0;fillColor=#ffffff;fontSize=12;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="546" width="440" height="34" as="geometry"/>
+        </mxCell>
+
+        <!-- Observações -->
+        <mxCell id="lblObs" value="Observações" style="whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontSize=12;align=left;" vertex="1" parent="1">
+          <mxGeometry x="80" y="588" width="120" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="inpObs" value="Ex.: Preferência por manhã / retorno / primeira consulta..." style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#c0c0c0;fillColor=#ffffff;fontSize=12;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="611" width="440" height="44" as="geometry"/>
+        </mxCell>
+
+        <!-- Right Panel -->
+        <mxCell id="rightPanel" value="" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#d0d0d0;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="560" y="160" width="540" height="500" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="rightTitle" value="Agenda e Horários" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#d0d0d0;fontSize=14;fontStyle=1;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="560" y="160" width="540" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Filters -->
+        <mxCell id="lblDia" value="Data" style="whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontSize=12;align=left;" vertex="1" parent="1">
+          <mxGeometry x="570" y="210" width="60" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="inpDia" value="26/02/2026" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#c0c0c0;fillColor=#ffffff;fontSize=12;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="570" y="233" width="150" height="34" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lblView" value="Visualização" style="whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;fontSize=12;align=left;" vertex="1" parent="1">
+          <mxGeometry x="740" y="210" width="90" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="inpView" value="( ) Dia   ( ) Semana" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#c0c0c0;fillColor=#ffffff;fontSize=12;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="740" y="233" width="160" height="34" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="btnAtualizar" value="Atualizar" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#808080;fillColor=#f5f5f5;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="920" y="233" width="160" height="34" as="geometry"/>
+        </mxCell>
+
+        <!-- Agenda list -->
+        <mxCell id="agendaBox" value="Horários (exemplo)&#xa;&#xa;08:00  •  Disponível&#xa;08:30  •  Disponível&#xa;09:00  •  Ocupado (João)&#xa;09:30  •  Disponível&#xa;10:00  •  Ocupado (Retorno)&#xa;10:30  •  Disponível&#xa;11:00  •  Disponível&#xa;11:30  •  Disponível&#xa;&#xa;Selecione um horário para agendar." style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#c0c0c0;fillColor=#ffffff;align=left;spacingLeft=12;spacingTop=10;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="570" y="285" width="510" height="300" as="geometry"/>
+        </mxCell>
+
+        <!-- Selected Slot -->
+        <mxCell id="slot" value="Horário selecionado: 09:30" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#c0c0c0;fillColor=#fdfdfd;fontSize=12;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="570" y="595" width="510" height="36" as="geometry"/>
+        </mxCell>
+
+        <!-- Footer Buttons -->
+        <mxCell id="footer" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#e0e0e0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="690" width="1080" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="btnSalvar" value="Salvar Agendamento" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#606060;fillColor=#f5f5f5;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="760" y="655" width="170" height="36" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="btnLimpar" value="Limpar" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#808080;fillColor=#f5f5f5;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="940" y="655" width="80" height="36" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="btnCancelar" value="Cancelar" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#808080;fillColor=#f5f5f5;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="655" width="90" height="36" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

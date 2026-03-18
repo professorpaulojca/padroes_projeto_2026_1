@@ -1,0 +1,173 @@
+{
+  "title": "Padrões Projeto - API Dashboard",
+  "uid": "padroes-projeto-api",
+  "version": 1,
+  "schemaVersion": 36,
+  "refresh": "10s",
+  "time": { "from": "now-1h", "to": "now" },
+  "tags": ["padroes-projeto", "spring", "api"],
+  "panels": [
+    {
+      "id": 1,
+      "title": "Total de Requisições HTTP",
+      "type": "stat",
+      "gridPos": { "x": 0, "y": 0, "w": 4, "h": 4 },
+      "targets": [{
+        "expr": "sum(app_requisicoes_http_total{application=\"padroes-projeto\"})",
+        "legendFormat": "Total"
+      }]
+    },
+    {
+      "id": 2,
+      "title": "Logins (Sucesso vs Falha)",
+      "type": "timeseries",
+      "gridPos": { "x": 4, "y": 0, "w": 10, "h": 8 },
+      "targets": [
+        {
+          "expr": "rate(app_logins_total{application=\"padroes-projeto\"}[1m])",
+          "legendFormat": "Logins/min (total)"
+        },
+        {
+          "expr": "rate(app_logins_falhos_total{application=\"padroes-projeto\"}[1m])",
+          "legendFormat": "Falhas/min"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Usuários Ativos",
+      "type": "stat",
+      "gridPos": { "x": 14, "y": 0, "w": 4, "h": 4 },
+      "targets": [{
+        "expr": "app_usuarios_ativos{application=\"padroes-projeto\"}",
+        "legendFormat": "Ativos"
+      }]
+    },
+    {
+      "id": 4,
+      "title": "Taxa de Erros (%)",
+      "type": "gauge",
+      "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "minVizValue": 0,
+        "maxVizValue": 100
+      },
+      "targets": [{
+        "expr": "100 * sum(rate(app_erros_total{application=\"padroes-projeto\"}[5m])) / (sum(rate(app_operacoes_total{application=\"padroes-projeto\"}[5m])) + 0.001)",
+        "legendFormat": "% Erro"
+      }]
+    },
+    {
+      "id": 5,
+      "title": "Operações por Entidade e Ação",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+      "targets": [{
+        "expr": "rate(app_operacoes_total{application=\"padroes-projeto\"}[1m])",
+        "legendFormat": "{{entidade}} / {{acao}}"
+      }]
+    },
+    {
+      "id": 6,
+      "title": "Duração Média das Operações (ms)",
+      "type": "timeseries",
+      "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+      "targets": [{
+        "expr": "rate(app_duracao_operacao_seconds_sum{application=\"padroes-projeto\"}[1m]) / rate(app_duracao_operacao_seconds_count{application=\"padroes-projeto\"}[1m]) * 1000",
+        "legendFormat": "{{entidade}} / {{acao}} (ms)"
+      }]
+    },
+    {
+      "id": 7,
+      "title": "Requisições HTTP por Status",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 16, "w": 12, "h": 8 },
+      "targets": [{
+        "expr": "rate(app_requisicoes_http_total{application=\"padroes-projeto\"}[1m])",
+        "legendFormat": "{{metodo}} {{uri}} [{{status}}]"
+      }]
+    },
+    {
+      "id": 8,
+      "title": "Latência P95 das Requisições HTTP (ms)",
+      "type": "timeseries",
+      "gridPos": { "x": 12, "y": 16, "w": 12, "h": 8 },
+      "targets": [{
+        "expr": "histogram_quantile(0.95, rate(app_requisicoes_http_duracao_seconds_bucket{application=\"padroes-projeto\"}[5m])) * 1000",
+        "legendFormat": "P95 {{metodo}} {{uri}} (ms)"
+      }]
+    },
+    {
+      "id": 9,
+      "title": "JVM: Uso de Memória (Heap)",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 24, "w": 8, "h": 6 },
+      "targets": [
+        {
+          "expr": "jvm_memory_used_bytes{application=\"padroes-projeto\",area=\"heap\"} / 1048576",
+          "legendFormat": "Heap Usado (MB)"
+        },
+        {
+          "expr": "jvm_memory_max_bytes{application=\"padroes-projeto\",area=\"heap\"} / 1048576",
+          "legendFormat": "Heap Máx (MB)"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "JVM: Threads",
+      "type": "timeseries",
+      "gridPos": { "x": 8, "y": 24, "w": 8, "h": 6 },
+      "targets": [{
+        "expr": "jvm_threads_live_threads{application=\"padroes-projeto\"}",
+        "legendFormat": "Threads Ativas"
+      }]
+    },
+    {
+      "id": 11,
+      "title": "JVM: CPU Usage",
+      "type": "gauge",
+      "gridPos": { "x": 16, "y": 24, "w": 8, "h": 6 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "minVizValue": 0,
+        "maxVizValue": 1
+      },
+      "targets": [{
+        "expr": "process_cpu_usage{application=\"padroes-projeto\"}",
+        "legendFormat": "CPU"
+      }]
+    },
+    {
+      "id": 12,
+      "title": "Conexões do Pool HikariCP",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 30, "w": 12, "h": 6 },
+      "targets": [
+        {
+          "expr": "hikaricp_connections_active{application=\"padroes-projeto\"}",
+          "legendFormat": "Ativas"
+        },
+        {
+          "expr": "hikaricp_connections_idle{application=\"padroes-projeto\"}",
+          "legendFormat": "Ociosas"
+        },
+        {
+          "expr": "hikaricp_connections_max{application=\"padroes-projeto\"}",
+          "legendFormat": "Máx"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "title": "Erros por Entidade",
+      "type": "barchart",
+      "gridPos": { "x": 12, "y": 30, "w": 12, "h": 6 },
+      "targets": [{
+        "expr": "sum by (entidade) (increase(app_erros_total{application=\"padroes-projeto\"}[1h]))",
+        "legendFormat": "{{entidade}}"
+      }]
+    }
+  ]
+}
