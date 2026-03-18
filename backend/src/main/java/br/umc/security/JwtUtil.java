@@ -3,6 +3,8 @@ package br.umc.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -16,6 +18,8 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtil {
+
+    private static final Logger log = LoggerFactory.getLogger(JwtUtil.class);
 
     @Value("${app.jwt.secret}")
     private String secret;
@@ -32,6 +36,7 @@ public class JwtUtil {
     }
 
     public String gerarToken(UserDetails userDetails) {
+        log.debug("[JWT] Gerando token para: {}", userDetails.getUsername());
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", userDetails.getAuthorities()
                 .stream()
@@ -78,8 +83,13 @@ public class JwtUtil {
     public boolean isTokenValido(String token, UserDetails userDetails) {
         try {
             final String email = extrairEmail(token);
-            return email.equals(userDetails.getUsername()) && !isTokenExpirado(token);
+            boolean valido = email.equals(userDetails.getUsername()) && !isTokenExpirado(token);
+            if (!valido) {
+                log.debug("[JWT] Token inválido para usuário: {}", userDetails.getUsername());
+            }
+            return valido;
         } catch (JwtException | IllegalArgumentException e) {
+            log.warn("[JWT] Erro ao validar token: {}", e.getMessage());
             return false;
         }
     }

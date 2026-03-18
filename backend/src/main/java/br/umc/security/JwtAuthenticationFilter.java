@@ -5,6 +5,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +18,8 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     private final JwtUtil jwtUtil;
     private final UsuarioDetailsService usuarioDetailsService;
@@ -41,6 +45,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwt = authHeader.substring(7);
 
         if (!jwtUtil.isTokenAssinadoValido(jwt)) {
+            log.warn("[JWT] Token com assinatura inválida: uri={} | ip={}",
+                    request.getRequestURI(), request.getRemoteAddr());
             filterChain.doFilter(request, response);
             return;
         }
@@ -59,6 +65,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                log.debug("[JWT] Autenticação via token bem-sucedida: email={} | uri={}",
+                        email, request.getRequestURI());
+            } else {
+                log.warn("[JWT] Token inválido ou expirado: email={} | uri={}",
+                        email, request.getRequestURI());
             }
         }
 

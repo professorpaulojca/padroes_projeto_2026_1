@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigate } from 'react-router';
+import { useNavigate, Link as RouterLink } from 'react-router';
 import {
   Box,
   Card,
@@ -217,7 +217,8 @@ export const LoginPage = () => {
                 )}
               />
               <Link
-                href="#"
+                component={RouterLink}
+                to="/esqueci-senha"
                 variant="body2"
                 color="primary"
                 underline="hover"
@@ -249,7 +250,8 @@ export const LoginPage = () => {
             <Typography variant="body2" color="text.secondary">
               Não tem uma conta?{' '}
               <Link
-                href="#"
+                component={RouterLink}
+                to="/cadastro"
                 color="primary"
                 underline="hover"
                 sx={{ fontWeight: 600 }}
@@ -270,7 +272,7 @@ export const LoginPage = () => {
               <br />
               Email: admin@email.com
               <br />
-              Senha: 123456
+              Senha: Senha@123
             </Typography>
           </Alert>
         </CardContent>

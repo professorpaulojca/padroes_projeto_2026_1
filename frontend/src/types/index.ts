@@ -1,18 +1,14 @@
 export interface User {
-  id: string;
+  id: number;
   name: string;
   email: string;
+  perfil: string;
   avatar?: string;
 }
 
-export interface ApiResponse<T> {
-  data: T;
-  message: string;
-  success: boolean;
+export interface ApiError {
+  erro: string;
+  statusCode?: number;
 }
 
-export interface ApiError {
-  message: string;
-  statusCode: number;
-  errors?: Record<string, string[]>;
-}
+export * from './models';

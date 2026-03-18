@@ -8,6 +8,8 @@ import br.umc.models.EnderecoEntity;
 import br.umc.models.PessoaEntity;
 import br.umc.repositories.EnderecoRepository;
 import br.umc.repositories.PessoaJpaRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 @Service
 public class PessoaJpaService {
 
+    private static final Logger log = LoggerFactory.getLogger(PessoaJpaService.class);
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private final PessoaJpaRepository pessoaJpaRepository;
@@ -36,6 +39,7 @@ public class PessoaJpaService {
 
     @Transactional
     public PessoaJpaResponseDTO cadastrar(PessoaRequestDTO dto) {
+        log.info("[PESSOA] Cadastrando pessoa: nome={}", dto.getNome());
         LocalDate dataNascimento = parsarData(dto.getDataNascimento());
 
         PessoaEntity pessoa = new PessoaEntity();
@@ -43,53 +47,73 @@ public class PessoaJpaService {
         pessoa.setDataNascimento(dataNascimento);
 
         pessoa = pessoaJpaRepository.save(pessoa);
+        log.info("[PESSOA] Pessoa cadastrada com sucesso: id={} | nome={}", pessoa.getId(), pessoa.getNome());
         return PessoaJpaResponseDTO.fromEntity(pessoa);
     }
 
     @Transactional(readOnly = true)
     public List<PessoaJpaResponseDTO> listarTodas() {
-        return pessoaJpaRepository.findAllOrderByNome()
+        log.debug("[PESSOA] Listando todas as pessoas");
+        List<PessoaJpaResponseDTO> resultado = pessoaJpaRepository.findAllOrderByNome()
                 .stream()
                 .map(PessoaJpaResponseDTO::fromEntity)
                 .collect(Collectors.toList());
+        log.debug("[PESSOA] Total de pessoas encontradas: {}", resultado.size());
+        return resultado;
     }
 
     @Transactional(readOnly = true)
     public PessoaJpaResponseDTO buscarPorId(Long id) {
+        log.debug("[PESSOA] Buscando pessoa por ID: {}", id);
         PessoaEntity pessoa = pessoaJpaRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Pessoa não encontrada com ID: " + id));
+                .orElseThrow(() -> {
+                    log.warn("[PESSOA] Pessoa não encontrada: id={}", id);
+                    return new IllegalArgumentException("Pessoa não encontrada com ID: " + id);
+                });
         return PessoaJpaResponseDTO.fromEntity(pessoa);
     }
 
     @Transactional(readOnly = true)
     public List<PessoaJpaResponseDTO> buscarPorNome(String nome) {
-        return pessoaJpaRepository.findByNomeContainingIgnoreCase(nome)
+        log.debug("[PESSOA] Buscando pessoas por nome: termo={}", nome);
+        List<PessoaJpaResponseDTO> resultado = pessoaJpaRepository.findByNomeContainingIgnoreCase(nome)
                 .stream()
                 .map(PessoaJpaResponseDTO::fromEntity)
                 .collect(Collectors.toList());
+        log.debug("[PESSOA] Busca por nome concluída: termo={} | resultados={}", nome, resultado.size());
+        return resultado;
     }
 
     @Transactional
     public PessoaJpaResponseDTO atualizar(Long id, PessoaRequestDTO dto) {
+        log.info("[PESSOA] Atualizando pessoa: id={} | nome={}", id, dto.getNome());
         PessoaEntity pessoa = pessoaJpaRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Pessoa não encontrada com ID: " + id));
+                .orElseThrow(() -> {
+                    log.warn("[PESSOA] Pessoa não encontrada para atualização: id={}", id);
+                    return new IllegalArgumentException("Pessoa não encontrada com ID: " + id);
+                });
 
         LocalDate dataNascimento = parsarData(dto.getDataNascimento());
         pessoaJpaRepository.updatePessoa(id, dto.getNome().trim(), dataNascimento);
 
+        log.info("[PESSOA] Pessoa atualizada com sucesso: id={}", id);
         return PessoaJpaResponseDTO.fromEntity(pessoaJpaRepository.findById(id).orElseThrow());
     }
 
     @Transactional
     public void excluir(Long id) {
+        log.info("[PESSOA] Excluindo pessoa: id={}", id);
         if (!pessoaJpaRepository.existsById(id)) {
+            log.warn("[PESSOA] Pessoa não encontrada para exclusão: id={}", id);
             throw new IllegalArgumentException("Pessoa não encontrada com ID: " + id);
         }
         pessoaJpaRepository.deleteById(id);
+        log.info("[PESSOA] Pessoa excluída com sucesso: id={}", id);
     }
 
     @Transactional
     public List<EnderecoJpaResponseDTO> adicionarEnderecos(Long pessoaId, List<EnderecoJpaRequestDTO> dtos) {
+        log.info("[PESSOA] Adicionando {} endereço(s) à pessoa: pessoaId={}", dtos.size(), pessoaId);
         PessoaEntity pessoa = pessoaJpaRepository.findById(pessoaId)
                 .orElseThrow(() -> new IllegalArgumentException("Pessoa não encontrada com ID: " + pessoaId));
 
@@ -102,13 +126,17 @@ public class PessoaJpaService {
 
     @Transactional
     public void desvincularEndereco(Long pessoaId, Long enderecoId) {
+        log.info("[PESSOA] Desvinculando endereço: pessoaId={} | enderecoId={}", pessoaId, enderecoId);
         if (!pessoaJpaRepository.existsById(pessoaId)) {
+            log.warn("[PESSOA] Pessoa não encontrada para desvincular: pessoaId={}", pessoaId);
             throw new IllegalArgumentException("Pessoa não encontrada com ID: " + pessoaId);
         }
         if (!enderecoRepository.existsById(enderecoId)) {
+            log.warn("[PESSOA] Endereço não encontrado para desvincular: enderecoId={}", enderecoId);
             throw new IllegalArgumentException("Endereço não encontrado com ID: " + enderecoId);
         }
         pessoaJpaRepository.desvincularEndereco(pessoaId, enderecoId);
+        log.info("[PESSOA] Endereço desvinculado com sucesso: pessoaId={} | enderecoId={}", pessoaId, enderecoId);
     }
 
     @Transactional(readOnly = true)

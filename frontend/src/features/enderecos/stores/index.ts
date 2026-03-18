@@ -1,0 +1,1 @@
+export { useEnderecoStore } from './enderecoStore';

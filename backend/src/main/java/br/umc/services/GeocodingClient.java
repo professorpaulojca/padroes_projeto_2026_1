@@ -3,6 +3,8 @@ package br.umc.services;
 import br.umc.models.valueObjects.Geolocalizacao;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -14,6 +16,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 public class GeocodingClient {
 
+    private static final Logger log = LoggerFactory.getLogger(GeocodingClient.class);
+
     private static final String NOMINATIM_URL = "https://nominatim.openstreetmap.org/search";
 
     private final RestTemplate restTemplate;
@@ -23,6 +27,7 @@ public class GeocodingClient {
     }
 
     public Geolocalizacao buscarCoordenadas(String logradouro, String numero, String cidade, String estado, String pais) {
+        log.debug("[GEO] Buscando coordenadas: {} {}, {}, {}", logradouro, numero, cidade, estado);
         try {
             String query = String.join(", ", logradouro + " " + numero, cidade, estado, pais);
 
@@ -41,13 +46,15 @@ public class GeocodingClient {
 
             if (response.getBody() != null && response.getBody().length > 0) {
                 NominatimResultDTO resultado = response.getBody()[0];
+                log.debug("[GEO] Coordenadas encontradas: lat={} | lon={}", resultado.getLat(), resultado.getLon());
                 return new Geolocalizacao(
                         Double.parseDouble(resultado.getLat()),
                         Double.parseDouble(resultado.getLon())
                 );
             }
+            log.debug("[GEO] Nenhuma coordenada encontrada para o endereço");
         } catch (Exception e) {
-            // Georreferenciamento não é bloqueante; endereço será salvo sem coordenadas
+            log.warn("[GEO] Falha ao buscar coordenadas (não bloqueante): {}", e.getMessage());
         }
         return new Geolocalizacao(null, null);
     }

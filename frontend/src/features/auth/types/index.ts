@@ -1,7 +1,8 @@
 export interface AuthUser {
-  id: string;
+  id: number;
   name: string;
   email: string;
+  perfil: string;
   avatar?: string;
 }
 
@@ -10,10 +11,18 @@ export interface LoginRequest {
   password: string;
 }
 
+/** Espelha LoginResponseDTO do backend */
+export interface LoginResponseBackend {
+  token: string;
+  tipo: string;
+  email: string;
+  nomeExibicao: string;
+  perfil: string;
+}
+
 export interface LoginResponse {
   user: AuthUser;
   accessToken: string;
-  refreshToken?: string;
 }
 
 export interface AuthState {

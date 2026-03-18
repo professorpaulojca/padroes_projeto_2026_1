@@ -8,6 +8,8 @@ import br.umc.models.PerfilUsuario;
 import br.umc.models.UsuarioEntity;
 import br.umc.repositories.PessoaJpaRepository;
 import br.umc.repositories.UsuarioRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
+
+    private static final Logger log = LoggerFactory.getLogger(UsuarioService.class);
 
     private final UsuarioRepository usuarioRepository;
     private final PessoaJpaRepository pessoaJpaRepository;
@@ -33,8 +37,12 @@ public class UsuarioService {
 
     @Transactional(readOnly = true)
     public UsuarioResponseDTO buscarPorId(Long id) {
+        log.debug("[USUARIO] Buscando usuário por ID: {}", id);
         UsuarioEntity usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado: " + id));
+                .orElseThrow(() -> {
+                    log.warn("[USUARIO] Usuário não encontrado: id={}", id);
+                    return new IllegalArgumentException("Usuário não encontrado: " + id);
+                });
         return UsuarioResponseDTO.fromEntity(usuario);
     }
 
@@ -47,6 +55,7 @@ public class UsuarioService {
 
     @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> listarTodos() {
+        log.debug("[USUARIO] Listando todos os usuários ativos");
         return usuarioRepository.findAllAtivos()
                 .stream()
                 .map(UsuarioResponseDTO::fromEntity)
@@ -55,6 +64,7 @@ public class UsuarioService {
 
     @Transactional
     public UsuarioResponseDTO atualizarPerfil(Long id, AtualizarPerfilRequestDTO dto, String emailAutenticado) {
+        log.info("[USUARIO] Atualizando perfil: id={} | solicitante={}", id, emailAutenticado);
         UsuarioEntity usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado: " + id));
 
@@ -77,20 +87,24 @@ public class UsuarioService {
 
     @Transactional
     public void alterarSenha(Long id, AlterarSenhaRequestDTO dto, String emailAutenticado) {
+        log.info("[USUARIO] Alteração de senha solicitada: id={} | solicitante={}", id, emailAutenticado);
         UsuarioEntity usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado: " + id));
 
         verificarAutorizacao(usuario, emailAutenticado);
 
         if (!passwordEncoder.matches(dto.getSenhaAtual(), usuario.getSenha())) {
+            log.warn("[USUARIO] Senha atual incorreta: id={}", id);
             throw new IllegalArgumentException("Senha atual incorreta");
         }
 
         usuarioRepository.updateSenha(id, passwordEncoder.encode(dto.getNovaSenha()));
+        log.info("[USUARIO] Senha alterada com sucesso: id={}", id);
     }
 
     @Transactional
     public void desativarUsuario(Long id, String emailAutenticado) {
+        log.info("[USUARIO] Desativando usuário: id={} | solicitante={}", id, emailAutenticado);
         UsuarioEntity usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado: " + id));
 

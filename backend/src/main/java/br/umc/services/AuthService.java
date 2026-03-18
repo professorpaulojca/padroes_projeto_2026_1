@@ -94,7 +94,9 @@ public class AuthService {
 
     @Transactional
     public LoginResponseDTO cadastrar(CadastroRequestDTO dto) {
+        log.info("[AUTH] Tentativa de cadastro: email={}", dto.getEmail());
         if (usuarioRepository.existsByEmail(dto.getEmail())) {
+            log.warn("[AUTH] Cadastro rejeitado - e-mail já cadastrado: {}", dto.getEmail());
             throw new IllegalArgumentException("E-mail já cadastrado: " + dto.getEmail());
         }
 
@@ -105,6 +107,7 @@ public class AuthService {
         usuario.setPerfil(PerfilUsuario.USUARIO);
 
         usuario = usuarioRepository.save(usuario);
+        log.info("[AUTH] Cadastro realizado com sucesso: email={} | id={}", usuario.getEmail(), usuario.getId());
 
         String token = jwtUtil.gerarToken(usuario);
         return new LoginResponseDTO(
@@ -117,24 +120,34 @@ public class AuthService {
 
     @Transactional
     public String esqueciSenha(EsqueciSenhaRequestDTO dto) {
+        log.info("[AUTH] Solicitação de redefinição de senha: email={}", dto.getEmail());
         UsuarioEntity usuario = usuarioRepository.findByEmailAndAtivoTrue(dto.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("E-mail não encontrado: " + dto.getEmail()));
+                .orElseThrow(() -> {
+                    log.warn("[AUTH] E-mail não encontrado para redefinição: {}", dto.getEmail());
+                    return new IllegalArgumentException("E-mail não encontrado: " + dto.getEmail());
+                });
 
         String token = jwtUtil.gerarTokenResetSenha();
         LocalDateTime expiracao = LocalDateTime.now().plusHours(1);
 
         usuarioRepository.updateTokenReset(usuario.getId(), token, expiracao);
 
+        log.info("[AUTH] Token de redefinição gerado: email={}", dto.getEmail());
         return token;
     }
 
     @Transactional
     public void redefinirSenha(RedefinirSenhaRequestDTO dto) {
+        log.info("[AUTH] Tentativa de redefinição de senha com token");
         UsuarioEntity usuario = usuarioRepository
                 .findByTokenResetSenhaAndTokenResetExpiracaoAfter(dto.getToken(), LocalDateTime.now())
-                .orElseThrow(() -> new IllegalArgumentException("Token inválido ou expirado"));
+                .orElseThrow(() -> {
+                    log.warn("[AUTH] Token de redefinição inválido ou expirado");
+                    return new IllegalArgumentException("Token inválido ou expirado");
+                });
 
         usuarioRepository.updateSenha(usuario.getId(), passwordEncoder.encode(dto.getNovaSenha()));
         usuarioRepository.clearTokenReset(usuario.getId());
+        log.info("[AUTH] Senha redefinida com sucesso: email={}", usuario.getEmail());
     }
 }

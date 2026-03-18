@@ -8,6 +8,8 @@ import br.umc.models.enums.EnderecoPrincipal;
 import br.umc.models.enums.TipoEndereco;
 import br.umc.models.valueObjects.Geolocalizacao;
 import br.umc.repositories.EnderecoRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 @Service
 public class EnderecoJpaService {
 
+    private static final Logger log = LoggerFactory.getLogger(EnderecoJpaService.class);
     private static final String PAIS_PADRAO = "Brasil";
 
     private final EnderecoRepository enderecoRepository;
@@ -34,6 +37,7 @@ public class EnderecoJpaService {
 
     @Transactional
     public EnderecoEntity construirEPersistirEndereco(EnderecoJpaRequestDTO dto) {
+        log.info("[ENDERECO] Construindo endereço: cep={} | numero={}", dto.getCep(), dto.getNumero());
         ViaCepResponseDTO viaCep = viaCepClient.buscarPorCep(dto.getCep());
 
         String logradouro = resolverLogradouro(viaCep);
@@ -48,11 +52,13 @@ public class EnderecoJpaService {
                 : enderecoRepository.findByCepAndNumeroSemComplemento(cepFormatado, dto.getNumero());
 
         if (existente.isPresent()) {
+            log.info("[ENDERECO] Endereço já existente reutilizado: id={} | cep={}", existente.get().getId(), cepFormatado);
             return existente.get();
         }
 
         Geolocalizacao geo = geocodingClient.buscarCoordenadas(
                 logradouro, dto.getNumero(), cidade, estado, PAIS_PADRAO);
+        log.debug("[ENDERECO] Geolocalização obtida: lat={} | lon={}", geo.getLatitude(), geo.getLongitude());
 
         EnderecoEntity endereco = new EnderecoEntity();
         endereco.setCep(cepFormatado);
@@ -76,21 +82,29 @@ public class EnderecoJpaService {
 
     @Transactional(readOnly = true)
     public List<EnderecoJpaResponseDTO> listarTodos() {
-        return enderecoRepository.findAllOrderByLogradouro()
+        log.debug("[ENDERECO] Listando todos os endereços");
+        List<EnderecoJpaResponseDTO> resultado = enderecoRepository.findAllOrderByLogradouro()
                 .stream()
                 .map(EnderecoJpaResponseDTO::fromEntity)
                 .collect(Collectors.toList());
+        log.debug("[ENDERECO] Total de endereços encontrados: {}", resultado.size());
+        return resultado;
     }
 
     @Transactional(readOnly = true)
     public EnderecoJpaResponseDTO buscarPorId(Long id) {
+        log.debug("[ENDERECO] Buscando endereço por ID: {}", id);
         EnderecoEntity endereco = enderecoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Endereço não encontrado com ID: " + id));
+                .orElseThrow(() -> {
+                    log.warn("[ENDERECO] Endereço não encontrado: id={}", id);
+                    return new IllegalArgumentException("Endereço não encontrado com ID: " + id);
+                });
         return EnderecoJpaResponseDTO.fromEntity(endereco);
     }
 
     @Transactional(readOnly = true)
     public List<EnderecoJpaResponseDTO> buscarPorCep(String cep) {
+        log.debug("[ENDERECO] Buscando endereços por CEP: {}", cep);
         String cepNormalizado = cep.replaceAll("[^0-9]", "");
         String cepFormatado = cepNormalizado.length() == 8
                 ? cepNormalizado.substring(0, 5) + "-" + cepNormalizado.substring(5)
@@ -103,8 +117,12 @@ public class EnderecoJpaService {
 
     @Transactional
     public EnderecoJpaResponseDTO atualizar(Long id, EnderecoJpaRequestDTO dto) {
+        log.info("[ENDERECO] Atualizando endereço: id={} | cep={}", id, dto.getCep());
         EnderecoEntity existente = enderecoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Endereço não encontrado com ID: " + id));
+                .orElseThrow(() -> {
+                    log.warn("[ENDERECO] Endereço não encontrado para atualização: id={}", id);
+                    return new IllegalArgumentException("Endereço não encontrado com ID: " + id);
+                });
 
         ViaCepResponseDTO viaCep = viaCepClient.buscarPorCep(dto.getCep());
         String logradouro = resolverLogradouro(viaCep);
@@ -133,15 +151,19 @@ public class EnderecoJpaService {
                 geo.isPresente() ? geo.getLongitude() : existente.getLongitude()
         );
 
+        log.info("[ENDERECO] Endereço atualizado com sucesso: id={}", id);
         return EnderecoJpaResponseDTO.fromEntity(enderecoRepository.findById(id).orElseThrow());
     }
 
     @Transactional
     public void excluir(Long id) {
+        log.info("[ENDERECO] Excluindo endereço: id={}", id);
         if (!enderecoRepository.existsById(id)) {
+            log.warn("[ENDERECO] Endereço não encontrado para exclusão: id={}", id);
             throw new IllegalArgumentException("Endereço não encontrado com ID: " + id);
         }
         enderecoRepository.deleteById(id);
+        log.info("[ENDERECO] Endereço excluído com sucesso: id={}", id);
     }
 
     private String resolverLogradouro(ViaCepResponseDTO viaCep) {
