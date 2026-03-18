@@ -272,7 +272,7 @@ export const LoginPage = () => {
               <br />
               Email: admin@email.com
               <br />
-              Senha: Senha@123
+              Senha: 123456
             </Typography>
           </Alert>
         </CardContent>
