@@ -1,0 +1,1 @@
+export { enderecoService } from './enderecoService';

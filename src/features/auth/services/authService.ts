@@ -1,47 +1,40 @@
-﻿import axios from 'axios';
-import type { LoginRequest, LoginResponse } from '../types';
+﻿import { createLogger } from '@/lib/logger';
+import { api } from '@/lib/axios';
+import type { LoginRequest, LoginResponse, LoginResponseBackend } from '../types';
 
-// Instância dedicada ao backend (sem o prefixo /api)
-const backendApi = axios.create({
-  baseURL: import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:8080',
-  timeout: 15000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+const log = createLogger('AUTH_SERVICE');
 
 /**
- * Serviço de autenticação
+ * Serviço de autenticação — integra com /auth/* do backend
  */
 export const authService = {
   /**
-   * Realiza o login do usuário chamando POST /login no backend
-   * Payload: { usuario: string, senha: string }
-   * Resposta: { sucesso: boolean, mensagem: string }
+   * Realiza o login do usuário chamando POST /auth/login no backend
+   * Payload: { email: string, senha: string }
+   * Resposta: LoginResponseDTO { token, tipo, email, nomeExibicao, perfil }
    */
   async login(credentials: LoginRequest): Promise<LoginResponse> {
-    const payload = {
-      usuario: credentials.email,
-      senha: credentials.password,
-    };
+    log.info(`Tentativa de login: email=${credentials.email}`);
 
-    const response = await backendApi.post<{ sucesso: boolean; mensagem: string }>(
-      '/login',
-      payload,
+    const response = await api.post<LoginResponseBackend>(
+      '/auth/login',
+      {
+        email: credentials.email,
+        senha: credentials.password,
+      },
     );
 
-    if (!response.data.sucesso) {
-      throw new Error(response.data.mensagem);
-    }
+    const data = response.data;
+    log.info(`Login bem-sucedido: email=${data.email} | perfil=${data.perfil}`);
 
     return {
       user: {
-        id: '1',
-        name: 'Administrador',
-        email: credentials.email,
-        avatar: undefined,
+        id: 0,
+        name: data.nomeExibicao,
+        email: data.email,
+        perfil: data.perfil,
       },
-      accessToken: 'session-token',
+      accessToken: data.token,
     };
   },
 
@@ -49,8 +42,7 @@ export const authService = {
    * Realiza o logout do usuário
    */
   async logout(): Promise<void> {
-    // TODO: Substituir pelo endpoint real
-    // await api.post('/auth/logout');
+    log.info('Logout realizado');
     localStorage.removeItem('access_token');
   },
 };

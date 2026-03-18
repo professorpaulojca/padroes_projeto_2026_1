@@ -1,0 +1,1 @@
+export { usuarioService } from './usuarioService';
