@@ -1,1 +1,0 @@
-export { EnderecosPage } from './EnderecosPage';
