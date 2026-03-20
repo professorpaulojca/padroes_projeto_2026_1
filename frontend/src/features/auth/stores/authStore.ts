@@ -12,17 +12,33 @@ interface AuthActions {
   clearError: () => void;
 }
 
-type AuthStore = AuthState & AuthActions;
+interface LoginProtection {
+  failedAttempts: number;
+  lockedUntil: number | null;
+}
 
-export const useAuthStore = create<AuthStore>((set) => ({
+type AuthStore = AuthState & AuthActions & LoginProtection;
+
+export const useAuthStore = create<AuthStore>((set, get) => ({
   // State
   user: null,
   isAuthenticated: false,
   isLoading: false,
   error: null,
+  failedAttempts: 0,
+  lockedUntil: null,
 
   // Actions
   login: async (email: string, password: string) => {
+    const state = get();
+
+    // Verificar bloqueio temporário no frontend
+    if (state.lockedUntil && Date.now() < state.lockedUntil) {
+      const secondsLeft = Math.ceil((state.lockedUntil - Date.now()) / 1000);
+      set({ error: `Aguarde ${secondsLeft} segundos antes de tentar novamente.` });
+      throw new Error('Temporarily locked');
+    }
+
     log.info(`Iniciando login: email=${email}`);
     set({ isLoading: true, error: null });
 
@@ -36,6 +52,8 @@ export const useAuthStore = create<AuthStore>((set) => ({
         isAuthenticated: true,
         isLoading: false,
         error: null,
+        failedAttempts: 0,
+        lockedUntil: null,
       });
       log.info(`Login concluído com sucesso: email=${email}`);
     } catch (error) {
@@ -47,19 +65,28 @@ export const useAuthStore = create<AuthStore>((set) => ({
       // Axios error com resposta do backend (formato: { erro: "..." })
       if (typeof error === 'object' && error !== null && 'response' in error) {
         const axiosErr = error as { response?: { data?: { erro?: string }; status?: number } };
-        if (axiosErr.response?.data?.erro) {
+        if (axiosErr.response?.status === 429) {
+          message = axiosErr.response?.data?.erro || 'Muitas tentativas. Aguarde antes de tentar novamente.';
+        } else if (axiosErr.response?.data?.erro) {
           message = axiosErr.response.data.erro;
         } else if (axiosErr.response?.status === 401) {
           message = 'E-mail ou senha inválidos';
         }
       }
 
-      log.error(`Falha no login: email=${email} | erro=${message}`);
+      const newFailedAttempts = state.failedAttempts + 1;
+      // Delay progressivo: 2s, 4s, 8s, 16s, 30s (máximo)
+      const delayMs = Math.min(Math.pow(2, newFailedAttempts) * 1000, 30000);
+      const lockedUntil = Date.now() + delayMs;
+
+      log.error(`Falha no login: email=${email} | erro=${message} | tentativa=${newFailedAttempts} | bloqueio=${delayMs}ms`);
       set({
         user: null,
         isAuthenticated: false,
         isLoading: false,
         error: message,
+        failedAttempts: newFailedAttempts,
+        lockedUntil,
       });
 
       throw error;

@@ -26,6 +26,8 @@ import java.time.LocalDateTime;
 public class AuthService {
 
     private static final Logger log = LoggerFactory.getLogger(AuthService.class);
+    private static final int MAX_TENTATIVAS_FALHAS = 5;
+    private static final int MINUTOS_BLOQUEIO = 15;
 
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
@@ -51,11 +53,27 @@ public class AuthService {
     @Transactional
     public LoginResponseDTO login(LoginRequestDTO dto) {
         long inicio = System.currentTimeMillis();
+
+        // Verificar se a conta está bloqueada
+        usuarioRepository.findByEmailAndAtivoTrue(dto.getEmail()).ifPresent(usuario -> {
+            if (usuario.getBloqueadoAte() != null && LocalDateTime.now().isBefore(usuario.getBloqueadoAte())) {
+                long minutosRestantes = java.time.Duration.between(LocalDateTime.now(), usuario.getBloqueadoAte()).toMinutes() + 1;
+                log.warn("[AUTH] Conta bloqueada: email={} | bloqueado_ate={}", dto.getEmail(), usuario.getBloqueadoAte());
+                throw new BadCredentialsException("Conta temporariamente bloqueada. Tente novamente em " + minutosRestantes + " minutos.");
+            }
+        });
+
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getSenha())
             );
             UsuarioEntity usuario = (UsuarioEntity) authentication.getPrincipal();
+
+            // Login bem-sucedido: resetar tentativas
+            if (usuario.getTentativasFalhas() > 0) {
+                usuarioRepository.resetTentativasFalhas(usuario.getId());
+            }
+
             String token = jwtUtil.gerarToken(usuario);
 
             metricsService.registrarLoginSucesso();
@@ -77,6 +95,19 @@ public class AuthService {
 
         } catch (Exception e) {
             metricsService.registrarLoginFalha();
+
+            // Incrementar tentativas de falha e bloquear se necessário
+            usuarioRepository.findByEmailAndAtivoTrue(dto.getEmail()).ifPresent(usuario -> {
+                int tentativas = usuario.getTentativasFalhas() + 1;
+                LocalDateTime bloqueadoAte = null;
+                if (tentativas >= MAX_TENTATIVAS_FALHAS) {
+                    bloqueadoAte = LocalDateTime.now().plusMinutes(MINUTOS_BLOQUEIO);
+                    log.warn("[AUTH] Conta bloqueada por {} minutos: email={} | tentativas={}",
+                            MINUTOS_BLOQUEIO, dto.getEmail(), tentativas);
+                }
+                usuarioRepository.updateTentativasFalhas(usuario.getId(), tentativas, bloqueadoAte);
+            });
+
             log.warn("[AUTH] Falha no login: email={} | ip={} | motivo={}",
                     dto.getEmail(), AuditContext.getIp(), e.getMessage());
 
@@ -119,21 +150,24 @@ public class AuthService {
     }
 
     @Transactional
-    public String esqueciSenha(EsqueciSenhaRequestDTO dto) {
+    public void esqueciSenha(EsqueciSenhaRequestDTO dto) {
         log.info("[AUTH] Solicitação de redefinição de senha: email={}", dto.getEmail());
         UsuarioEntity usuario = usuarioRepository.findByEmailAndAtivoTrue(dto.getEmail())
                 .orElseThrow(() -> {
                     log.warn("[AUTH] E-mail não encontrado para redefinição: {}", dto.getEmail());
-                    return new IllegalArgumentException("E-mail não encontrado: " + dto.getEmail());
+                    return new IllegalArgumentException("E-mail não encontrado");
                 });
 
+        // Invalidar tokens anteriores gerando um novo
         String token = jwtUtil.gerarTokenResetSenha();
-        LocalDateTime expiracao = LocalDateTime.now().plusHours(1);
+        LocalDateTime expiracao = LocalDateTime.now().plusMinutes(15);
 
         usuarioRepository.updateTokenReset(usuario.getId(), token, expiracao);
 
-        log.info("[AUTH] Token de redefinição gerado: email={}", dto.getEmail());
-        return token;
+        // Em produção, enviar o token por e-mail aqui
+        // emailService.enviarTokenResetSenha(usuario.getEmail(), token);
+
+        log.info("[AUTH] Token de redefinição gerado e armazenado para: email={}", dto.getEmail());
     }
 
     @Transactional

@@ -1,0 +1,21 @@
+{
+  "name": "testese2e",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "test:debug": "npx playwright test --debug",
+    "test:seguranca": "npx playwright test tests/seguranca.spec.ts --headed",
+    "report": "npx playwright show-report relatorio-html",
+    "report:seguranca": "node gerar-relatorio-seguranca.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
+  }
+}

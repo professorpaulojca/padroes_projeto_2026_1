@@ -1,0 +1,1179 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\playwright.config.ts",
+    "rootDir": "C:/Users/alunocmc/Documents/padroes_projeto_2026_1-master/testesE2E/tests",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/alunocmc/Documents/padroes_projeto_2026_1-master/testesE2E/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Users/alunocmc/Documents/padroes_projeto_2026_1-master/testesE2E/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "open": "never",
+          "outputFolder": "relatorio-html"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "relatorio/resultados.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "runAgents": "none",
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.58.2",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "seguranca.spec.ts",
+      "file": "seguranca.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "1. BRUTE FORCE — Ataque de Força Bruta",
+          "file": "seguranca.spec.ts",
+          "line": 62,
+          "column": 6,
+          "specs": [
+            {
+              "title": "SEC-01: Enviar 20 tentativas de login com senhas erradas em sequência rápida",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6660,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n🔴 SEC-01: Teste de força bruta — 20 tentativas rápidas...\n"
+                        },
+                        {
+                          "text": "  📊 Tentativa 5: HTTP 401 — 281ms\n"
+                        },
+                        {
+                          "text": "  🛡️ Bloqueado na tentativa 6 (HTTP 429) — 7ms\n"
+                        },
+                        {
+                          "text": "  🟢 [CRÍTICA] SEGURO: Rate Limiting no endpoint de login\n"
+                        },
+                        {
+                          "text": "  🟢 [ALTA] SEGURO: Account Lockout após tentativas falhas\n"
+                        },
+                        {
+                          "text": "  📊 Tempo médio de resposta: 322ms\n"
+                        },
+                        {
+                          "text": "  📊 Bloqueado: SIM\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-20T00:48:11.305Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-1-BRUTE-FORCE-—--53248-erradas-em-sequência-rápida-chromium\\test-finished-1.png"
+                        },
+                        {
+                          "name": "security-findings",
+                          "contentType": "text/plain",
+                          "body": "W0NSw41USUNBXSBTRUdVUk86IFJhdGUgTGltaXRpbmcgbm8gZW5kcG9pbnQgZGUgbG9naW4KICDihpIgU2Vydmlkb3IgYmxvcXVlb3UgYXDDs3MgdGVudGF0aXZhcyByw6FwaWRhcwogIOKGkiBSZWNvbWVuZGHDp8OjbzogSW1wbGVtZW50YXIgcmF0ZSBsaW1pdGluZyAoZXg6IEJ1Y2tldDRqLCBSZXNpbGllbmNlNGopIGxpbWl0YW5kbyBhIDUgdGVudGF0aXZhcy9taW51dG8gcG9yIElQLiBSZXRvcm5hciBIVFRQIDQyOSBUb28gTWFueSBSZXF1ZXN0cy4KCltBTFRBXSBTRUdVUk86IEFjY291bnQgTG9ja291dCBhcMOzcyB0ZW50YXRpdmFzIGZhbGhhcwogIOKGkiBDb250YSBmb2kgYmxvcXVlYWRhIGFww7NzIHRlbnRhdGl2YXMgZmFsaGFzLgogIOKGkiBSZWNvbWVuZGHDp8OjbzogSW1wbGVtZW50YXIgbG9ja291dCB0ZW1wb3LDoXJpbyAoMTVtaW4pIGFww7NzIDUgdGVudGF0aXZhcyBmYWxoYXMuIFJlZ2lzdHJhciBjb250YWRvciBkZSBmYWxoYXMgbm8gYmFuY28gZGUgZGFkb3Mu"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-1-BRUTE-FORCE-—--53248-erradas-em-sequência-rápida-chromium\\video.webm"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-1-BRUTE-FORCE-—--53248-erradas-em-sequência-rápida-chromium\\trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a9af0cc63c9578f669bd-9bac67dc19ca54c95a6f",
+              "file": "seguranca.spec.ts",
+              "line": 64,
+              "column": 7
+            },
+            {
+              "title": "SEC-02: Brute force via interface gráfica — 10 tentativas visuais",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 28683,
+                      "error": {
+                        "message": "TimeoutError: locator.fill: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByLabel('Email')\u001b[22m\n\u001b[2m    - locator resolved to <input disabled id=\"_r_1_\" type=\"email\" name=\"email\" aria-invalid=\"false\" autocomplete=\"email\" value=\"admin@email.com\" placeholder=\"seu@email.com\" class=\"MuiInputBase-input MuiOutlinedInput-input Mui-disabled css-16wblaj-MuiInputBase-input-MuiOutlinedInput-input\"/>\u001b[22m\n\u001b[2m    - fill(\"admin@email.com\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    19 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying fill action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
+                        "stack": "TimeoutError: locator.fill: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByLabel('Email')\u001b[22m\n\u001b[2m    - locator resolved to <input disabled id=\"_r_1_\" type=\"email\" name=\"email\" aria-invalid=\"false\" autocomplete=\"email\" value=\"admin@email.com\" placeholder=\"seu@email.com\" class=\"MuiInputBase-input MuiOutlinedInput-input Mui-disabled css-16wblaj-MuiInputBase-input-MuiOutlinedInput-input\"/>\u001b[22m\n\u001b[2m    - fill(\"admin@email.com\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    19 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying fill action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\tests\\seguranca.spec.ts:144:38",
+                        "location": {
+                          "file": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\tests\\seguranca.spec.ts",
+                          "column": 38,
+                          "line": 144
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 142 |\u001b[39m\n \u001b[90m 143 |\u001b[39m     \u001b[36mfor\u001b[39m (\u001b[36mlet\u001b[39m i \u001b[33m=\u001b[39m \u001b[35m0\u001b[39m\u001b[33m;\u001b[39m i \u001b[33m<\u001b[39m senhasTentadas\u001b[33m.\u001b[39mlength\u001b[33m;\u001b[39m i\u001b[33m++\u001b[39m) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 144 |\u001b[39m       \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByLabel(\u001b[32m'Email'\u001b[39m)\u001b[33m.\u001b[39mfill(\u001b[33mVALID_EMAIL\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                      \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 145 |\u001b[39m       \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'textbox'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Senha'\u001b[39m })\u001b[33m.\u001b[39mfill(senhasTentadas[i])\u001b[33m;\u001b[39m\n \u001b[90m 146 |\u001b[39m       \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'button'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Entrar'\u001b[39m })\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m 147 |\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\tests\\seguranca.spec.ts",
+                            "column": 38,
+                            "line": 144
+                          },
+                          "message": "TimeoutError: locator.fill: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByLabel('Email')\u001b[22m\n\u001b[2m    - locator resolved to <input disabled id=\"_r_1_\" type=\"email\" name=\"email\" aria-invalid=\"false\" autocomplete=\"email\" value=\"admin@email.com\" placeholder=\"seu@email.com\" class=\"MuiInputBase-input MuiOutlinedInput-input Mui-disabled css-16wblaj-MuiInputBase-input-MuiOutlinedInput-input\"/>\u001b[22m\n\u001b[2m    - fill(\"admin@email.com\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    19 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying fill action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n\n\u001b[0m \u001b[90m 142 |\u001b[39m\n \u001b[90m 143 |\u001b[39m     \u001b[36mfor\u001b[39m (\u001b[36mlet\u001b[39m i \u001b[33m=\u001b[39m \u001b[35m0\u001b[39m\u001b[33m;\u001b[39m i \u001b[33m<\u001b[39m senhasTentadas\u001b[33m.\u001b[39mlength\u001b[33m;\u001b[39m i\u001b[33m++\u001b[39m) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 144 |\u001b[39m       \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByLabel(\u001b[32m'Email'\u001b[39m)\u001b[33m.\u001b[39mfill(\u001b[33mVALID_EMAIL\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                      \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 145 |\u001b[39m       \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'textbox'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Senha'\u001b[39m })\u001b[33m.\u001b[39mfill(senhasTentadas[i])\u001b[33m;\u001b[39m\n \u001b[90m 146 |\u001b[39m       \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'button'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Entrar'\u001b[39m })\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m 147 |\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\tests\\seguranca.spec.ts:144:38\u001b[22m"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "\n🔴 SEC-02: Brute force pela UI — 10 tentativas...\n"
+                        },
+                        {
+                          "text": "  ❌ Tentativa 1: \"password\" — sem bloqueio\n"
+                        },
+                        {
+                          "text": "  ❌ Tentativa 2: \"123456789\" — sem bloqueio\n"
+                        },
+                        {
+                          "text": "  ❌ Tentativa 3: \"admin123\" — sem bloqueio\n"
+                        },
+                        {
+                          "text": "  ❌ Tentativa 4: \"qwerty\" — sem bloqueio\n"
+                        },
+                        {
+                          "text": "\n📁 2 findings salvos em relatorio/security-findings.json\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-20T00:48:18.727Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-1-BRUTE-FORCE-—--f950e-ica-—-10-tentativas-visuais-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-1-BRUTE-FORCE-—--f950e-ica-—-10-tentativas-visuais-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-1-BRUTE-FORCE-—--f950e-ica-—-10-tentativas-visuais-chromium\\error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-1-BRUTE-FORCE-—--f950e-ica-—-10-tentativas-visuais-chromium\\trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\tests\\seguranca.spec.ts",
+                        "column": 38,
+                        "line": 144
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a9af0cc63c9578f669bd-364cad850bd1bcf87929",
+              "file": "seguranca.spec.ts",
+              "line": 130,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "2. SQL INJECTION — Tentativas de Injeção SQL",
+          "file": "seguranca.spec.ts",
+          "line": 178,
+          "column": 6,
+          "specs": [
+            {
+              "title": "SEC-03: SQL Injection no endpoint de login via API",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1926,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n🔴 SEC-03: SQL Injection no login — 10 payloads...\n"
+                        },
+                        {
+                          "text": "  🟢 Payload \"OR 1=1 básico\": HTTP 429 — 31ms\n"
+                        },
+                        {
+                          "text": "  🟢 Payload \"OR 1=1 com comentário\": HTTP 429 — 7ms\n"
+                        },
+                        {
+                          "text": "  🟢 Payload \"UNION SELECT\": HTTP 429 — 7ms\n"
+                        },
+                        {
+                          "text": "  🟢 Payload \"Aspas simples\": HTTP 429 — 7ms\n"
+                        },
+                        {
+                          "text": "  🟢 Payload \"Ponto-e-vírgula DROP\": HTTP 429 — 7ms\n"
+                        },
+                        {
+                          "text": "  🟢 Payload \"Comentário MySQL\": HTTP 429 — 6ms\n"
+                        },
+                        {
+                          "text": "  🟢 Payload \"SLEEP injection\": HTTP 429 — 7ms\n"
+                        },
+                        {
+                          "text": "  🟢 Payload \"Hex encoding\": HTTP 429 — 7ms\n"
+                        },
+                        {
+                          "text": "  🟢 Payload \"Double encoding\": HTTP 429 — 7ms\n"
+                        },
+                        {
+                          "text": "  🟢 Payload \"Backtick injection\": HTTP 429 — 5ms\n"
+                        },
+                        {
+                          "text": "  🟢 [CRÍTICA] SEGURO: SQL Injection no endpoint de autenticação\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-20T00:48:49.085Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-2-SQL-INJECTION--1b371-o-endpoint-de-login-via-API-chromium\\test-finished-1.png"
+                        },
+                        {
+                          "name": "security-findings",
+                          "contentType": "text/plain",
+                          "body": "W0NSw41USUNBXSBTRUdVUk86IFNRTCBJbmplY3Rpb24gbm8gZW5kcG9pbnQgZGUgYXV0ZW50aWNhw6fDo28KICDihpIgMTAgcGF5bG9hZHMgdGVzdGFkb3MsIHRvZG9zIHJlamVpdGFkb3MuCiAgT1IgMT0xIGLDoXNpY286IEhUVFAgNDI5ICgzMW1zKQogIE9SIDE9MSBjb20gY29tZW50w6FyaW86IEhUVFAgNDI5ICg3bXMpCiAgVU5JT04gU0VMRUNUOiBIVFRQIDQyOSAoN21zKQogIEFzcGFzIHNpbXBsZXM6IEhUVFAgNDI5ICg3bXMpCiAgUG9udG8tZS12w61yZ3VsYSBEUk9QOiBIVFRQIDQyOSAoN21zKQogIENvbWVudMOhcmlvIE15U1FMOiBIVFRQIDQyOSAoNm1zKQogIFNMRUVQIGluamVjdGlvbjogSFRUUCA0MjkgKDdtcykKICBIZXggZW5jb2Rpbmc6IEhUVFAgNDI5ICg3bXMpCiAgRG91YmxlIGVuY29kaW5nOiBIVFRQIDQyOSAoN21zKQogIEJhY2t0aWNrIGluamVjdGlvbjogSFRUUCA0MjkgKDVtcykKICDihpIgUmVjb21lbmRhw6fDo286IE1hbnRlciB1c28gZGUgY29uc3VsdGFzIHBhcmFtZXRyaXphZGFzIHZpYSBTcHJpbmcgRGF0YSBKUEEuIEFkaWNpb25hciBXQUYgY29tbyBjYW1hZGEgYWRpY2lvbmFsIGRlIHByb3Rlw6fDo28u"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-2-SQL-INJECTION--1b371-o-endpoint-de-login-via-API-chromium\\video.webm"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-2-SQL-INJECTION--1b371-o-endpoint-de-login-via-API-chromium\\trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a9af0cc63c9578f669bd-01e8d7014584e870ce89",
+              "file": "seguranca.spec.ts",
+              "line": 194,
+              "column": 7
+            },
+            {
+              "title": "SEC-04: SQL Injection na interface de login via UI",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 8205,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n🔴 SEC-04: SQL Injection via formulário visual...\n"
+                        },
+                        {
+                          "text": "  🟢 Payload \"' OR '1'='1' --\" — permaneceu em /login\n"
+                        },
+                        {
+                          "text": "  🟢 Payload \"admin@email.com' OR 1=1 --\" — permaneceu em /login\n"
+                        },
+                        {
+                          "text": "  🟢 Payload \"'; DROP TABLE usuarios;--\" — permaneceu em /login\n"
+                        },
+                        {
+                          "text": "  🟢 [CRÍTICA] SEGURO: SQL Injection bypass via interface de login\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-20T00:48:51.510Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-2-SQL-INJECTION--f7de9-a-interface-de-login-via-UI-chromium\\test-finished-1.png"
+                        },
+                        {
+                          "name": "security-findings",
+                          "contentType": "text/plain",
+                          "body": "W0NSw41USUNBXSBTRUdVUk86IFNRTCBJbmplY3Rpb24gYnlwYXNzIHZpYSBpbnRlcmZhY2UgZGUgbG9naW4KICDihpIgMyBwYXlsb2FkcyB0ZXN0YWRvcyB2aWEgZm9ybXVsw6FyaW8gdmlzdWFsLiBOZW5odW0gcGVybWl0aXUgYnlwYXNzLgogIOKGkiBSZWNvbWVuZGHDp8OjbzogTWFudGVyIHZhbGlkYcOnw6NvIHNlcnZlci1zaWRlLiBBZGljaW9uYXIgdmFsaWRhw6fDo28gZGUgZm9ybWF0byBkZSBlbWFpbCBubyBiYWNrZW5kIChyZWdleCku"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-2-SQL-INJECTION--f7de9-a-interface-de-login-via-UI-chromium\\video.webm"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-2-SQL-INJECTION--f7de9-a-interface-de-login-via-UI-chromium\\trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a9af0cc63c9578f669bd-45ee2f29eadbb16a89d8",
+              "file": "seguranca.spec.ts",
+              "line": 249,
+              "column": 7
+            },
+            {
+              "title": "SEC-05: SQL Injection na busca de pessoas",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 17666,
+                      "error": {
+                        "message": "TimeoutError: page.waitForURL: Timeout 15000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/dashboard\" until \"load\"\n============================================================",
+                        "stack": "TimeoutError: page.waitForURL: Timeout 15000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/dashboard\" until \"load\"\n============================================================\n    at C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\tests\\seguranca.spec.ts:356:16",
+                        "location": {
+                          "file": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\tests\\seguranca.spec.ts",
+                          "column": 16,
+                          "line": 356
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 354 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'textbox'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Senha'\u001b[39m })\u001b[33m.\u001b[39mfill(\u001b[33mVALID_PASSWORD\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 355 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'button'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Entrar'\u001b[39m })\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 356 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'**/dashboard'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m15000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 357 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'link'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Pessoas'\u001b[39m })\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m 358 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'**/pessoas'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m 359 |\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\tests\\seguranca.spec.ts",
+                            "column": 16,
+                            "line": 356
+                          },
+                          "message": "TimeoutError: page.waitForURL: Timeout 15000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/dashboard\" until \"load\"\n============================================================\n\n\u001b[0m \u001b[90m 354 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'textbox'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Senha'\u001b[39m })\u001b[33m.\u001b[39mfill(\u001b[33mVALID_PASSWORD\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 355 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'button'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Entrar'\u001b[39m })\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 356 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'**/dashboard'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m15000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 357 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'link'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Pessoas'\u001b[39m })\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m 358 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'**/pessoas'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m 359 |\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\tests\\seguranca.spec.ts:356:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "\n🔴 SEC-05: SQL Injection na busca de pessoas...\n"
+                        },
+                        {
+                          "text": "  🟢 Payload \"' OR '1'='1\": HTTP 403\n"
+                        },
+                        {
+                          "text": "  🟢 Payload \"'; DROP TABLE pessoa; --\": HTTP 403\n"
+                        },
+                        {
+                          "text": "  🟢 Payload \"' UNION SELECT id,nome,null,null FROM usuario --\": HTTP 403\n"
+                        },
+                        {
+                          "text": "  🟢 Payload \"1' AND (SELECT COUNT(*) FROM usuario) > 0 --\": HTTP 403\n"
+                        },
+                        {
+                          "text": "  🟢 Payload \"' OR 1=1; --\": HTTP 403\n"
+                        },
+                        {
+                          "text": "  🟢 [ALTA] SEGURO: SQL Injection na busca de pessoas\n"
+                        },
+                        {
+                          "text": "\n📁 3 findings salvos em relatorio/security-findings.json\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-20T00:48:59.814Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-2-SQL-INJECTION--31007-jection-na-busca-de-pessoas-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "security-findings",
+                          "contentType": "text/plain",
+                          "body": "W0FMVEFdIFNFR1VSTzogU1FMIEluamVjdGlvbiBuYSBidXNjYSBkZSBwZXNzb2FzCiAg4oaSIDUgcGF5bG9hZHMgdGVzdGFkb3Mgbm8gZW5kcG9pbnQgZGUgYnVzY2EuIENvbnN1bHRhcyBwYXJhbWV0cml6YWRhcyBmdW5jaW9uYW5kbyBjb3JyZXRhbWVudGUuCiAg4oaSIFJlY29tZW5kYcOnw6NvOiBNYW50ZXIgcXVlcmllcyBwYXJhbWV0cml6YWRhcy4gSW1wbGVtZW50YXIgc2FuaXRpemHDp8OjbyBkZSBpbnB1dCBubyBzZXJ2aWRvci4gTGltaXRhciB0YW1hbmhvIGRvIHJlc3VsdGFkbyBjb20gcGFnaW5hw6fDo28u"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-2-SQL-INJECTION--31007-jection-na-busca-de-pessoas-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-2-SQL-INJECTION--31007-jection-na-busca-de-pessoas-chromium\\error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-2-SQL-INJECTION--31007-jection-na-busca-de-pessoas-chromium\\trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\tests\\seguranca.spec.ts",
+                        "column": 16,
+                        "line": 356
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a9af0cc63c9578f669bd-a4645c4139b05a272e59",
+              "file": "seguranca.spec.ts",
+              "line": 294,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "3. XSS — Cross-Site Scripting",
+          "file": "seguranca.spec.ts",
+          "line": 370,
+          "column": 6,
+          "specs": [
+            {
+              "title": "SEC-06: XSS armazenado no cadastro de pessoa",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 778,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n🔴 SEC-06: Teste de XSS armazenado no nome de pessoa...\n"
+                        },
+                        {
+                          "text": "  🟢 Payload \"Script tag\": HTTP 500 — rejeitado\n"
+                        },
+                        {
+                          "text": "  🟢 Payload \"Event handler\": HTTP 500 — rejeitado\n"
+                        },
+                        {
+                          "text": "  🟢 Payload \"SVG onload\": HTTP 500 — rejeitado\n"
+                        },
+                        {
+                          "text": "  🟢 Payload \"JavaScript URI\": HTTP 500 — rejeitado\n"
+                        },
+                        {
+                          "text": "  🟢 Payload \"Data URI\": HTTP 500 — rejeitado\n"
+                        },
+                        {
+                          "text": "  🟢 [MÉDIA] SEGURO: XSS armazenado (Stored XSS) no campo nome de pessoa\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-20T00:49:18.729Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-3-XSS-—-Cross-Si-35243-enado-no-cadastro-de-pessoa-chromium\\test-finished-1.png"
+                        },
+                        {
+                          "name": "security-findings",
+                          "contentType": "text/plain",
+                          "body": "W03DiURJQV0gU0VHVVJPOiBYU1MgYXJtYXplbmFkbyAoU3RvcmVkIFhTUykgbm8gY2FtcG8gbm9tZSBkZSBwZXNzb2EKICDihpIgVG9kb3Mgb3MgcGF5bG9hZHMgWFNTIGZvcmFtIHJlamVpdGFkb3MgcGVsbyBzZXJ2aWRvci4KICDihpIgUmVjb21lbmRhw6fDo286IEltcGxlbWVudGFyIHNhbml0aXphw6fDo28gZGUgSFRNTCBubyBiYWNrZW5kIChPV0FTUCBKYXZhIEhUTUwgU2FuaXRpemVyKS4gUmVqZWl0YXIgaW5wdXRzIGNvbnRlbmRvIHRhZ3MgSFRNTCAoPCwgPiwgc2NyaXB0KS4="
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-3-XSS-—-Cross-Si-35243-enado-no-cadastro-de-pessoa-chromium\\video.webm"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-3-XSS-—-Cross-Si-35243-enado-no-cadastro-de-pessoa-chromium\\trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a9af0cc63c9578f669bd-cba16cfb8c3a173a6a71",
+              "file": "seguranca.spec.ts",
+              "line": 372,
+              "column": 7
+            },
+            {
+              "title": "SEC-07: XSS no cadastro de usuário (nomeExibicao)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1777,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n🔴 SEC-07: Teste de XSS no registro de usuário...\n"
+                        },
+                        {
+                          "text": "  🟢 [MÉDIA] SEGURO: XSS armazenado no nome de exibição do usuário\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-20T00:49:19.801Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-3-XSS-—-Cross-Si-613e6-ro-de-usuário-nomeExibicao--chromium\\test-finished-1.png"
+                        },
+                        {
+                          "name": "security-findings",
+                          "contentType": "text/plain",
+                          "body": "W03DiURJQV0gU0VHVVJPOiBYU1MgYXJtYXplbmFkbyBubyBub21lIGRlIGV4aWJpw6fDo28gZG8gdXN1w6FyaW8KICDihpIgUGF5bG9hZCBYU1MgcmVqZWl0YWRvOiBIVFRQIDQwMAogIOKGkiBSZWNvbWVuZGHDp8OjbzogU2FuaXRpemFyIGNhbXBvIG5vbWVFeGliaWNhby4gUmVqZWl0YXIgY2FyYWN0ZXJlcyBIVE1MIGVzcGVjaWFpcyAoPCwgPiwgJiku"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-3-XSS-—-Cross-Si-613e6-ro-de-usuário-nomeExibicao--chromium\\video.webm"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-3-XSS-—-Cross-Si-613e6-ro-de-usuário-nomeExibicao--chromium\\trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a9af0cc63c9578f669bd-bce43463b9d4f49b10cd",
+              "file": "seguranca.spec.ts",
+              "line": 436,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "4. AUTH BYPASS — Acesso sem Autenticação",
+          "file": "seguranca.spec.ts",
+          "line": 472,
+          "column": 6,
+          "specs": [
+            {
+              "title": "SEC-08: Acessar endpoints protegidos sem token",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3594,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n🔴 SEC-08: Testando acesso sem autenticação...\n"
+                        },
+                        {
+                          "text": "  🟢 GET /api/pessoas — HTTP 403 — bloqueado\n"
+                        },
+                        {
+                          "text": "  🟢 GET /api/enderecos — HTTP 403 — bloqueado\n"
+                        },
+                        {
+                          "text": "  🟢 GET /api/usuarios/me — HTTP 403 — bloqueado\n"
+                        },
+                        {
+                          "text": "  🟢 GET /api/usuarios — HTTP 403 — bloqueado\n"
+                        },
+                        {
+                          "text": "  🟢 GET /api/auditoria — HTTP 403 — bloqueado\n"
+                        },
+                        {
+                          "text": "  🟢 POST /api/pessoas — HTTP 403 — bloqueado\n"
+                        },
+                        {
+                          "text": "  🟢 DELETE /api/pessoas/1 — HTTP 403 — bloqueado\n"
+                        },
+                        {
+                          "text": "  🟢 [CRÍTICA] SEGURO: Endpoints protegidos acessíveis sem autenticação\n"
+                        },
+                        {
+                          "text": "  🟢 Acesso direto a /pessoas redirecionou para /login\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-20T00:49:21.632Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-4-AUTH-BYPASS-—--333dc-points-protegidos-sem-token-chromium\\test-finished-1.png"
+                        },
+                        {
+                          "name": "security-findings",
+                          "contentType": "text/plain",
+                          "body": "W0NSw41USUNBXSBTRUdVUk86IEVuZHBvaW50cyBwcm90ZWdpZG9zIGFjZXNzw612ZWlzIHNlbSBhdXRlbnRpY2HDp8OjbwogIOKGkiBUb2RvcyBvcyA3IGVuZHBvaW50cyBwcm90ZWdpZG9zIHJldG9ybmFyYW0gNDAxLzQwMyBzZW0gdG9rZW4uCiAg4oaSIFJlY29tZW5kYcOnw6NvOiBWZXJpZmljYXIgY29uZmlndXJhw6fDo28gZG8gU3ByaW5nIFNlY3VyaXR5LiBHYXJhbnRpciBxdWUgYXBlbmFzIC9hdXRoLyoqLCAvc3dhZ2dlci11aS8qKiwgL2FjdHVhdG9yL2hlYWx0aCBzw6NvIHDDumJsaWNvcy4="
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-4-AUTH-BYPASS-—--333dc-points-protegidos-sem-token-chromium\\video.webm"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-4-AUTH-BYPASS-—--333dc-points-protegidos-sem-token-chromium\\trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a9af0cc63c9578f669bd-ada72e95c04664f63b69",
+              "file": "seguranca.spec.ts",
+              "line": 474,
+              "column": 7
+            },
+            {
+              "title": "SEC-09: Acessar endpoints com token JWT inválido/expirado",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1933,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n🔴 SEC-09: Testando token JWT manipulado...\n"
+                        },
+                        {
+                          "text": "  🟢 \"Token vazio\" — HTTP 403 — rejeitado\n"
+                        },
+                        {
+                          "text": "  🟢 \"Token lixo\" — HTTP 403 — rejeitado\n"
+                        },
+                        {
+                          "text": "  🟢 \"Token com payload modificado\" — HTTP 403 — rejeitado\n"
+                        },
+                        {
+                          "text": "  🟢 \"Token None algorithm\" — HTTP 403 — rejeitado\n"
+                        },
+                        {
+                          "text": "  🟢 [CRÍTICA] SEGURO: Validação de tokens JWT inválidos/manipulados\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-20T00:49:25.302Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-4-AUTH-BYPASS-—--68af6-token-JWT-inválido-expirado-chromium\\test-finished-1.png"
+                        },
+                        {
+                          "name": "security-findings",
+                          "contentType": "text/plain",
+                          "body": "W0NSw41USUNBXSBTRUdVUk86IFZhbGlkYcOnw6NvIGRlIHRva2VucyBKV1QgaW52w6FsaWRvcy9tYW5pcHVsYWRvcwogIOKGkiA0IHRva2VucyBtYW5pcHVsYWRvcyB0ZXN0YWRvcyAodmF6aW8sIGxpeG8sIHBheWxvYWQgbW9kaWZpY2FkbywgTm9uZSBhbGdvcml0aG0pLiBUb2RvcyByZWplaXRhZG9zIGNvcnJldGFtZW50ZS4KICDihpIgUmVjb21lbmRhw6fDo286IE1hbnRlciB2YWxpZGHDp8OjbyBITUFDLVNIQTI1Ni4gUmVqZWl0YXIgYWxnb3JpdG1vICJub25lIi4gVmFsaWRhciBleHBpcmHDp8Ojby4="
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-4-AUTH-BYPASS-—--68af6-token-JWT-inválido-expirado-chromium\\video.webm"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-4-AUTH-BYPASS-—--68af6-token-JWT-inválido-expirado-chromium\\trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a9af0cc63c9578f669bd-a298ee2e00a20eb361ad",
+              "file": "seguranca.spec.ts",
+              "line": 531,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "5. IDOR e Informações Expostas",
+          "file": "seguranca.spec.ts",
+          "line": 576,
+          "column": 6,
+          "specs": [
+            {
+              "title": "SEC-10: Acessar dados de outros usuários (IDOR)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1962,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n🔴 SEC-10: Teste de IDOR — acesso a dados de outros usuários...\n"
+                        },
+                        {
+                          "text": "  🟢 ID 1: HTTP 500 — bloqueado/não existe\n"
+                        },
+                        {
+                          "text": "  🟢 ID 2: HTTP 500 — bloqueado/não existe\n"
+                        },
+                        {
+                          "text": "  🟢 ID 3: HTTP 500 — bloqueado/não existe\n"
+                        },
+                        {
+                          "text": "  🟢 ID 4: HTTP 500 — bloqueado/não existe\n"
+                        },
+                        {
+                          "text": "  🟢 ID 5: HTTP 500 — bloqueado/não existe\n"
+                        },
+                        {
+                          "text": "  🟢 [ALTA] SEGURO: IDOR — Acesso a dados de outros usuários via enumeração de ID\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-20T00:49:27.291Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-5-IDOR-e-Informa-a8768-os-de-outros-usuários-IDOR--chromium\\test-finished-1.png"
+                        },
+                        {
+                          "name": "security-findings",
+                          "contentType": "text/plain",
+                          "body": "W0FMVEFdIFNFR1VSTzogSURPUiDigJQgQWNlc3NvIGEgZGFkb3MgZGUgb3V0cm9zIHVzdcOhcmlvcyB2aWEgZW51bWVyYcOnw6NvIGRlIElECiAg4oaSIEFjZXNzbyBhIGRhZG9zIGRlIG91dHJvcyB1c3XDoXJpb3MgZm9pIGJsb3F1ZWFkbyBjb3JyZXRhbWVudGUuCiAg4oaSIFJlY29tZW5kYcOnw6NvOiBJbXBsZW1lbnRhciB2ZXJpZmljYcOnw6NvIGRlIG93bmVyc2hpcDogbyB1c3XDoXJpbyBzw7MgcG9kZSBhY2Vzc2FyIHNldXMgcHLDs3ByaW9zIGRhZG9zIChleGNldG8gQURNSU4pLiBVc2FyIFVVSURzIGVtIHZleiBkZSBJRHMgc2VxdWVuY2lhaXMu"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-5-IDOR-e-Informa-a8768-os-de-outros-usuários-IDOR--chromium\\video.webm"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-5-IDOR-e-Informa-a8768-os-de-outros-usuários-IDOR--chromium\\trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a9af0cc63c9578f669bd-47e9aae71b779a43797d",
+              "file": "seguranca.spec.ts",
+              "line": 578,
+              "column": 7
+            },
+            {
+              "title": "SEC-11: Endpoints de monitoramento expostos publicamente",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1747,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n🔴 SEC-11: Verificando endpoints de monitoramento...\n"
+                        },
+                        {
+                          "text": "  🟢 /actuator/health — HTTP 404 — protegido\n"
+                        },
+                        {
+                          "text": "  🟢 /actuator/info — HTTP 404 — protegido\n"
+                        },
+                        {
+                          "text": "  🟢 /actuator/prometheus — HTTP 404 — protegido\n"
+                        },
+                        {
+                          "text": "  🟢 /actuator/metrics — HTTP 404 — protegido\n"
+                        },
+                        {
+                          "text": "  🟢 /actuator/env — HTTP 404 — protegido\n"
+                        },
+                        {
+                          "text": "  🟢 /actuator/beans — HTTP 404 — protegido\n"
+                        },
+                        {
+                          "text": "  🟢 /actuator/loggers — HTTP 404 — protegido\n"
+                        },
+                        {
+                          "text": "  🟢 [MÉDIA] SEGURO: Endpoints Actuator/monitoramento expostos sem autenticação\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-20T00:49:29.311Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-5-IDOR-e-Informa-7de0a-mento-expostos-publicamente-chromium\\test-finished-1.png"
+                        },
+                        {
+                          "name": "security-findings",
+                          "contentType": "text/plain",
+                          "body": "W03DiURJQV0gU0VHVVJPOiBFbmRwb2ludHMgQWN0dWF0b3IvbW9uaXRvcmFtZW50byBleHBvc3RvcyBzZW0gYXV0ZW50aWNhw6fDo28KICDihpIgVG9kb3Mgb3MgZW5kcG9pbnRzIGRlIG1vbml0b3JhbWVudG8gZXN0w6NvIHByb3RlZ2lkb3MuCiAg4oaSIFJlY29tZW5kYcOnw6NvOiBSZXN0cmluZ2lyIEFjdHVhdG9yIGEgYXBlbmFzIC9oZWFsdGggKHNlbSBkZXRhaWxzKS4gTW92ZXIgL3Byb21ldGhldXMgcGFyYSByZWRlIGludGVybmEuIFByb3RlZ2VyIC9tZXRyaWNzLCAvZW52LCAvbG9nZ2VycyBjb20gYXV0ZW50aWNhw6fDo28u"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-5-IDOR-e-Informa-7de0a-mento-expostos-publicamente-chromium\\video.webm"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-5-IDOR-e-Informa-7de0a-mento-expostos-publicamente-chromium\\trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a9af0cc63c9578f669bd-6147c49c407c8503bb89",
+              "file": "seguranca.spec.ts",
+              "line": 622,
+              "column": 7
+            },
+            {
+              "title": "SEC-12: Token de reset de senha exposto na resposta",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1767,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n🔴 SEC-12: Verificando exposição de token de reset...\n"
+                        },
+                        {
+                          "text": "  HTTP 200 — Tamanho resposta: 93 bytes\n"
+                        },
+                        {
+                          "text": "  🟢 [ALTA] SEGURO: Token de recuperação de senha retornado na resposta HTTP\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-20T00:49:31.110Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-5-IDOR-e-Informa-1e75b-e-senha-exposto-na-resposta-chromium\\test-finished-1.png"
+                        },
+                        {
+                          "name": "security-findings",
+                          "contentType": "text/plain",
+                          "body": "W0FMVEFdIFNFR1VSTzogVG9rZW4gZGUgcmVjdXBlcmHDp8OjbyBkZSBzZW5oYSByZXRvcm5hZG8gbmEgcmVzcG9zdGEgSFRUUAogIOKGkiBUb2tlbiBkZSByZXNldCBuw6NvIMOpIGV4cG9zdG8gbmEgcmVzcG9zdGEuCiAg4oaSIFJlY29tZW5kYcOnw6NvOiBOVU5DQSByZXRvcm5hciBvIHRva2VuIG5hIHJlc3Bvc3RhLiBFbnZpYXIgYXBlbmFzIHBvciBlbWFpbC4gUmVzcG9uZGVyIGNvbSBtZW5zYWdlbSBnZW7DqXJpY2E6ICJTZSBvIGVtYWlsIGV4aXN0aXIsIGVudmlhcmVtb3MgaW5zdHJ1w6fDtWVzLiI="
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-5-IDOR-e-Informa-1e75b-e-senha-exposto-na-resposta-chromium\\video.webm"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-5-IDOR-e-Informa-1e75b-e-senha-exposto-na-resposta-chromium\\trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a9af0cc63c9578f669bd-e42fe8617f875a12db27",
+              "file": "seguranca.spec.ts",
+              "line": 664,
+              "column": 7
+            },
+            {
+              "title": "SEC-13: Credenciais padrão hardcoded",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5739,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n🔴 SEC-13: Verificando credenciais padrão...\n"
+                        },
+                        {
+                          "text": "  🔴 Admin padrão: admin@email.com/123456 — LOGIN OK!\n"
+                        },
+                        {
+                          "text": "  🟢 Admin genérico: admin@admin.com/admin — rejeitado\n"
+                        },
+                        {
+                          "text": "  🟢 Admin + admin: admin@email.com/admin — rejeitado\n"
+                        },
+                        {
+                          "text": "  🟢 Root: root@email.com/root — rejeitado\n"
+                        },
+                        {
+                          "text": "  🟢 Test: test@test.com/test — rejeitado\n"
+                        },
+                        {
+                          "text": "  🔴 [ALTA] VULNERÁVEL: Credenciais padrão/hardcoded ativas no sistema\n"
+                        },
+                        {
+                          "text": "\n📁 8 findings salvos em relatorio/security-findings.json\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-20T00:49:32.927Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-5-IDOR-e-Informa-1a9ff-redenciais-padrão-hardcoded-chromium\\test-finished-1.png"
+                        },
+                        {
+                          "name": "security-findings",
+                          "contentType": "text/plain",
+                          "body": "W0FMVEFdIFZVTE5FUsOBVkVMOiBDcmVkZW5jaWFpcyBwYWRyw6NvL2hhcmRjb2RlZCBhdGl2YXMgbm8gc2lzdGVtYQogIOKGkiBDcmVkZW5jaWFpcyBlbmNvbnRyYWRhczogQWRtaW4gcGFkcsOjbyAoYWRtaW5AZW1haWwuY29tOjEyMzQ1NikKICDihpIgUmVjb21lbmRhw6fDo286IFJlbW92ZXIgRGF0YUluaXRpYWxpemVyIGVtIHByb2R1w6fDo28uIEV4aWdpciB0cm9jYSBkZSBzZW5oYSBubyBwcmltZWlybyBsb2dpbi4gVXNhciBzZW5oYXMgZm9ydGVzIGdlcmFkYXMgYXV0b21hdGljYW1lbnRlLg=="
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-5-IDOR-e-Informa-1a9ff-redenciais-padrão-hardcoded-chromium\\video.webm"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\Users\\alunocmc\\Documents\\padroes_projeto_2026_1-master\\testesE2E\\test-results\\seguranca-5-IDOR-e-Informa-1a9ff-redenciais-padrão-hardcoded-chromium\\trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a9af0cc63c9578f669bd-faf90ca7ecae614c48a3",
+              "file": "seguranca.spec.ts",
+              "line": 692,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-03-20T00:48:10.144Z",
+    "duration": 88800.008,
+    "expected": 11,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  }
+}

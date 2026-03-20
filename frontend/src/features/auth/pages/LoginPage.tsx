@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate, Link as RouterLink } from 'react-router';
@@ -30,8 +30,28 @@ import { loginSchema, type LoginFormData } from '../schemas';
 export const LoginPage = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [cooldownSeconds, setCooldownSeconds] = useState(0);
 
-  const { login, isLoading, error, clearError } = useAuthStore();
+  const { login, isLoading, error, clearError, failedAttempts, lockedUntil } = useAuthStore();
+
+  // Countdown timer para o bloqueio temporário
+  useEffect(() => {
+    if (!lockedUntil) {
+      setCooldownSeconds(0);
+      return;
+    }
+
+    const updateCooldown = () => {
+      const remaining = Math.ceil((lockedUntil - Date.now()) / 1000);
+      setCooldownSeconds(remaining > 0 ? remaining : 0);
+    };
+
+    updateCooldown();
+    const interval = setInterval(updateCooldown, 1000);
+    return () => clearInterval(interval);
+  }, [lockedUntil]);
+
+  const isLocked = cooldownSeconds > 0;
 
   const {
     control,
@@ -46,7 +66,8 @@ export const LoginPage = () => {
     },
   });
 
-  const onSubmit = async (data: LoginFormData) => {
+  const onSubmit = useCallback(async (data: LoginFormData) => {
+    if (isLocked) return;
     try {
       clearError();
       await login(data.email, data.password);
@@ -54,7 +75,7 @@ export const LoginPage = () => {
     } catch {
       // Erro já tratado pelo store
     }
-  };
+  }, [isLocked, clearError, login, navigate]);
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -118,6 +139,15 @@ export const LoginPage = () => {
             </Fade>
           )}
 
+          {/* Lockout Warning */}
+          {isLocked && (
+            <Fade in>
+              <Alert severity="warning" sx={{ mb: 3, borderRadius: 2 }}>
+                Muitas tentativas falhas ({failedAttempts}). Aguarde {cooldownSeconds}s para tentar novamente.
+              </Alert>
+            </Fade>
+          )}
+
           {/* Login Form */}
           <Box
             component="form"
@@ -140,7 +170,7 @@ export const LoginPage = () => {
                   autoFocus
                   error={!!errors.email}
                   helperText={errors.email?.message}
-                  disabled={isLoading}
+                  disabled={isLoading || isLocked}
                   slotProps={{
                     inputLabel: { shrink: true },
                   }}
@@ -162,7 +192,7 @@ export const LoginPage = () => {
                   autoComplete="current-password"
                   error={!!errors.password}
                   helperText={errors.password?.message}
-                  disabled={isLoading}
+                  disabled={isLoading || isLocked}
                   slotProps={{
                     input: {
                       endAdornment: (
@@ -235,13 +265,14 @@ export const LoginPage = () => {
               size="large"
               fullWidth
               loading={isLoading}
+              disabled={isLocked}
               sx={{
                 mt: 1,
                 py: 1.5,
                 fontSize: '1rem',
               }}
             >
-              Entrar
+              {isLocked ? `Aguarde ${cooldownSeconds}s` : 'Entrar'}
             </LoadingButton>
           </Box>
 
@@ -261,20 +292,7 @@ export const LoginPage = () => {
             </Typography>
           </Box>
 
-          {/* Demo credentials hint */}
-          <Alert
-            severity="info"
-            variant="outlined"
-            sx={{ mt: 3, borderRadius: 2 }}
-          >
-            <Typography variant="caption" component="div">
-              <strong>Credenciais de teste:</strong>
-              <br />
-              Email: admin@email.com
-              <br />
-              Senha: 123456
-            </Typography>
-          </Alert>
+          
         </CardContent>
       </Card>
     </Fade>

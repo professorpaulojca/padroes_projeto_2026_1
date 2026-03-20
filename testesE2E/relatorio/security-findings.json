@@ -1,0 +1,66 @@
+[
+  {
+    "teste": "SEC-06: XSS armazenado no cadastro de pessoa",
+    "severidade": "MÉDIA",
+    "vulneravel": false,
+    "descricao": "XSS armazenado (Stored XSS) no campo nome de pessoa",
+    "detalhes": "Todos os payloads XSS foram rejeitados pelo servidor.",
+    "recomendacao": "Implementar sanitização de HTML no backend (OWASP Java HTML Sanitizer). Rejeitar inputs contendo tags HTML (<, >, script)."
+  },
+  {
+    "teste": "SEC-07: XSS no cadastro de usuário (nomeExibicao)",
+    "severidade": "MÉDIA",
+    "vulneravel": false,
+    "descricao": "XSS armazenado no nome de exibição do usuário",
+    "detalhes": "Payload XSS rejeitado: HTTP 400",
+    "recomendacao": "Sanitizar campo nomeExibicao. Rejeitar caracteres HTML especiais (<, >, &)."
+  },
+  {
+    "teste": "SEC-08: Acessar endpoints protegidos sem token",
+    "severidade": "CRÍTICA",
+    "vulneravel": false,
+    "descricao": "Endpoints protegidos acessíveis sem autenticação",
+    "detalhes": "Todos os 7 endpoints protegidos retornaram 401/403 sem token.",
+    "recomendacao": "Verificar configuração do Spring Security. Garantir que apenas /auth/**, /swagger-ui/**, /actuator/health são públicos."
+  },
+  {
+    "teste": "SEC-09: Acessar endpoints com token JWT inválido/expirado",
+    "severidade": "CRÍTICA",
+    "vulneravel": false,
+    "descricao": "Validação de tokens JWT inválidos/manipulados",
+    "detalhes": "4 tokens manipulados testados (vazio, lixo, payload modificado, None algorithm). Todos rejeitados corretamente.",
+    "recomendacao": "Manter validação HMAC-SHA256. Rejeitar algoritmo \"none\". Validar expiração."
+  },
+  {
+    "teste": "SEC-10: Acessar dados de outros usuários (IDOR)",
+    "severidade": "ALTA",
+    "vulneravel": false,
+    "descricao": "IDOR — Acesso a dados de outros usuários via enumeração de ID",
+    "detalhes": "Acesso a dados de outros usuários foi bloqueado corretamente.",
+    "recomendacao": "Implementar verificação de ownership: o usuário só pode acessar seus próprios dados (exceto ADMIN). Usar UUIDs em vez de IDs sequenciais."
+  },
+  {
+    "teste": "SEC-11: Endpoints de monitoramento expostos publicamente",
+    "severidade": "MÉDIA",
+    "vulneravel": false,
+    "descricao": "Endpoints Actuator/monitoramento expostos sem autenticação",
+    "detalhes": "Todos os endpoints de monitoramento estão protegidos.",
+    "recomendacao": "Restringir Actuator a apenas /health (sem details). Mover /prometheus para rede interna. Proteger /metrics, /env, /loggers com autenticação."
+  },
+  {
+    "teste": "SEC-12: Token de reset de senha exposto na resposta",
+    "severidade": "ALTA",
+    "vulneravel": false,
+    "descricao": "Token de recuperação de senha retornado na resposta HTTP",
+    "detalhes": "Token de reset não é exposto na resposta.",
+    "recomendacao": "NUNCA retornar o token na resposta. Enviar apenas por email. Responder com mensagem genérica: \"Se o email existir, enviaremos instruções.\""
+  },
+  {
+    "teste": "SEC-13: Credenciais padrão hardcoded",
+    "severidade": "ALTA",
+    "vulneravel": true,
+    "descricao": "Credenciais padrão/hardcoded ativas no sistema",
+    "detalhes": "Credenciais encontradas: Admin padrão (admin@email.com:123456)",
+    "recomendacao": "Remover DataInitializer em produção. Exigir troca de senha no primeiro login. Usar senhas fortes geradas automaticamente."
+  }
+]

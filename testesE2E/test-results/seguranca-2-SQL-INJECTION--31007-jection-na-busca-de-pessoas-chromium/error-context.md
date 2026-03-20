@@ -1,0 +1,46 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e6]:
+  - generic [ref=e7]:
+    - img [ref=e9]
+    - heading "Bem-vindo" [level=1] [ref=e11]
+    - paragraph [ref=e12]: Faça login para acessar o sistema
+  - alert [ref=e13]:
+    - img [ref=e15]
+    - generic [ref=e17]: Network Error
+    - button "Close" [ref=e19] [cursor=pointer]:
+      - img [ref=e20]
+  - generic [ref=e22]:
+    - generic [ref=e23]:
+      - generic [ref=e24]: Email
+      - generic [ref=e25]:
+        - textbox "Email" [ref=e26]:
+          - /placeholder: seu@email.com
+          - text: admin@email.com
+        - group:
+          - generic: Email
+    - generic [ref=e27]:
+      - generic [ref=e28]: Senha
+      - generic [ref=e29]:
+        - textbox "Senha" [ref=e30]:
+          - /placeholder: ••••••
+          - text: "123456"
+        - button "alternar visibilidade da senha" [ref=e32] [cursor=pointer]:
+          - img [ref=e33]
+        - group:
+          - generic: Senha
+    - generic [ref=e35]:
+      - generic [ref=e36] [cursor=pointer]:
+        - generic [ref=e37]:
+          - checkbox "Lembrar-me" [ref=e38]
+          - img [ref=e39]
+        - paragraph [ref=e41]: Lembrar-me
+      - link "Esqueceu a senha?" [ref=e42] [cursor=pointer]:
+        - /url: /esqueci-senha
+    - button "Entrar" [ref=e43] [cursor=pointer]: Entrar
+  - paragraph [ref=e45]:
+    - text: Não tem uma conta?
+    - link "Criar conta" [ref=e46] [cursor=pointer]:
+      - /url: /cadastro
+```

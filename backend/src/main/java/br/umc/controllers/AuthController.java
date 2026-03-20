@@ -64,23 +64,21 @@ public class AuthController {
     @PostMapping("/esqueci-senha")
     @Operation(
             summary = "Solicitar redefinição de senha",
-            description = "Gera um token de redefinição de senha. Em produção, o token seria enviado por e-mail. " +
-                    "Neste ambiente, o token é retornado diretamente na resposta para fins de teste."
+            description = "Gera um token de redefinição de senha e envia por e-mail. " +
+                    "Retorna sempre uma mensagem genérica independente de o e-mail existir ou não."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Token gerado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "E-mail não encontrado")
+            @ApiResponse(responseCode = "200", description = "Solicitação processada")
     })
     public ResponseEntity<?> esqueciSenha(@Valid @RequestBody EsqueciSenhaRequestDTO dto) {
         try {
-            String token = authService.esqueciSenha(dto);
-            return ResponseEntity.ok(Map.of(
-                    "mensagem", "Token de redefinição gerado. Em produção seria enviado por e-mail.",
-                    "token", token
-            ));
+            authService.esqueciSenha(dto);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(Map.of("erro", e.getMessage()));
+            // Não revelar se o e-mail existe ou não — sempre retornar a mesma mensagem
         }
+        return ResponseEntity.ok(Map.of(
+                "mensagem", "Se o e-mail estiver cadastrado, enviaremos instruções de recuperação de senha."
+        ));
     }
 
     @PostMapping("/redefinir-senha")

@@ -17,7 +17,14 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long> {
     @Query(value = "SELECT * FROM usuarios WHERE email = :email", nativeQuery = true)
     Optional<UsuarioEntity> findByEmail(@Param("email") String email);
 
-    @Query(value = "SELECT * FROM usuarios WHERE email = :email AND ativo = true", nativeQuery = true)
+    @Query(value = "SELECT * FROM usuarios WHERE id = :id AND id_situacao != 3", nativeQuery = true)
+    Optional<UsuarioEntity> findByIdAtivo(@Param("id") Long id);
+
+    @Modifying(clearAutomatically = true)
+    @Query(value = "UPDATE usuarios SET id_situacao = 3, ativo = false, atualizado_em = NOW() WHERE id = :id", nativeQuery = true)
+    void softDelete(@Param("id") Long id);
+
+    @Query(value = "SELECT * FROM usuarios WHERE email = :email AND id_situacao != 3", nativeQuery = true)
     Optional<UsuarioEntity> findByEmailAndAtivoTrue(@Param("email") String email);
 
     @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM usuarios WHERE email = :email", nativeQuery = true)
@@ -28,7 +35,7 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long> {
             @Param("token") String token,
             @Param("agora") LocalDateTime agora);
 
-    @Query(value = "SELECT * FROM usuarios WHERE ativo = true ORDER BY id", nativeQuery = true)
+    @Query(value = "SELECT * FROM usuarios WHERE id_situacao != 3 ORDER BY id", nativeQuery = true)
     List<UsuarioEntity> findAllAtivos();
 
     @Modifying(clearAutomatically = true)
@@ -57,4 +64,12 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long> {
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE usuarios SET pessoa_id = :pessoaId, atualizado_em = NOW() WHERE id = :id", nativeQuery = true)
     void updatePessoa(@Param("id") Long id, @Param("pessoaId") Long pessoaId);
+
+    @Modifying(clearAutomatically = true)
+    @Query(value = "UPDATE usuarios SET tentativas_falhas = :tentativas, bloqueado_ate = :bloqueadoAte, atualizado_em = NOW() WHERE id = :id", nativeQuery = true)
+    void updateTentativasFalhas(@Param("id") Long id, @Param("tentativas") int tentativas, @Param("bloqueadoAte") LocalDateTime bloqueadoAte);
+
+    @Modifying(clearAutomatically = true)
+    @Query(value = "UPDATE usuarios SET tentativas_falhas = 0, bloqueado_ate = NULL, atualizado_em = NOW() WHERE id = :id", nativeQuery = true)
+    void resetTentativasFalhas(@Param("id") Long id);
 }

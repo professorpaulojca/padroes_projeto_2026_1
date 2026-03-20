@@ -34,11 +34,20 @@ public class UsuarioEntity implements UserDetails {
     @Column(name = "ativo", nullable = false)
     private boolean ativo;
 
+    @Column(name = "id_situacao", nullable = false)
+    private Integer idSituacao;
+
     @Column(name = "token_reset_senha", length = 255)
     private String tokenResetSenha;
 
     @Column(name = "token_reset_expiracao")
     private LocalDateTime tokenResetExpiracao;
+
+    @Column(name = "tentativas_falhas", nullable = false)
+    private int tentativasFalhas = 0;
+
+    @Column(name = "bloqueado_ate")
+    private LocalDateTime bloqueadoAte;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pessoa_id")
@@ -60,7 +69,10 @@ public class UsuarioEntity implements UserDetails {
         if (this.perfil == null) {
             this.perfil = PerfilUsuario.USUARIO;
         }
-        this.ativo = true;
+        if (this.idSituacao == null) {
+            this.idSituacao = 1;
+        }
+        this.ativo = (this.idSituacao == 1);
     }
 
     @PreUpdate
@@ -90,7 +102,7 @@ public class UsuarioEntity implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return bloqueadoAte == null || LocalDateTime.now().isAfter(bloqueadoAte);
     }
 
     @Override
@@ -151,6 +163,15 @@ public class UsuarioEntity implements UserDetails {
         this.ativo = ativo;
     }
 
+    public Integer getIdSituacao() {
+        return idSituacao;
+    }
+
+    public void setIdSituacao(Integer idSituacao) {
+        this.idSituacao = idSituacao;
+        this.ativo = (idSituacao != null && idSituacao == 1);
+    }
+
     public String getTokenResetSenha() {
         return tokenResetSenha;
     }
@@ -165,6 +186,22 @@ public class UsuarioEntity implements UserDetails {
 
     public void setTokenResetExpiracao(LocalDateTime tokenResetExpiracao) {
         this.tokenResetExpiracao = tokenResetExpiracao;
+    }
+
+    public int getTentativasFalhas() {
+        return tentativasFalhas;
+    }
+
+    public void setTentativasFalhas(int tentativasFalhas) {
+        this.tentativasFalhas = tentativasFalhas;
+    }
+
+    public LocalDateTime getBloqueadoAte() {
+        return bloqueadoAte;
+    }
+
+    public void setBloqueadoAte(LocalDateTime bloqueadoAte) {
+        this.bloqueadoAte = bloqueadoAte;
     }
 
     public PessoaEntity getPessoa() {

@@ -1,0 +1,49 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e6]:
+  - generic [ref=e7]:
+    - img [ref=e9]
+    - heading "Bem-vindo" [level=1] [ref=e11]
+    - paragraph [ref=e12]: Faça login para acessar o sistema
+  - alert [ref=e13]:
+    - img [ref=e15]
+    - generic [ref=e17]: Network Error
+    - button "Close" [ref=e19] [cursor=pointer]:
+      - img [ref=e20]
+  - alert [ref=e22]:
+    - img [ref=e24]
+    - generic [ref=e26]: Muitas tentativas falhas (4). Aguarde 5s para tentar novamente.
+  - generic [ref=e27]:
+    - generic [ref=e28]:
+      - generic [ref=e29]: Email
+      - generic [ref=e30]:
+        - textbox "Email" [disabled] [ref=e31]:
+          - /placeholder: seu@email.com
+          - text: admin@email.com
+        - group:
+          - generic: Email
+    - generic [ref=e32]:
+      - generic [ref=e33]: Senha
+      - generic [ref=e34]:
+        - textbox "Senha" [disabled] [ref=e35]:
+          - /placeholder: ••••••
+          - text: qwerty
+        - button "alternar visibilidade da senha" [ref=e37] [cursor=pointer]:
+          - img [ref=e38]
+        - group:
+          - generic: Senha
+    - generic [ref=e40]:
+      - generic [ref=e41] [cursor=pointer]:
+        - generic [ref=e42]:
+          - checkbox "Lembrar-me" [ref=e43]
+          - img [ref=e44]
+        - paragraph [ref=e46]: Lembrar-me
+      - link "Esqueceu a senha?" [ref=e47] [cursor=pointer]:
+        - /url: /esqueci-senha
+    - button "Aguarde 5s" [disabled]
+  - paragraph [ref=e49]:
+    - text: Não tem uma conta?
+    - link "Criar conta" [ref=e50] [cursor=pointer]:
+      - /url: /cadastro
+```
