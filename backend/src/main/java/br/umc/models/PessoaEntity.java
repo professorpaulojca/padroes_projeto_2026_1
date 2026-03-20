@@ -34,6 +34,9 @@ public class PessoaEntity {
     @OneToMany(mappedBy = "pessoa", fetch = FetchType.LAZY)
     private Set<UsuarioEntity> usuarios = new HashSet<>();
 
+    @Column(name = "id_situacao", nullable = false)
+    private Integer idSituacao;
+
     @Column(name = "criado_em", nullable = false, updatable = false)
     private LocalDateTime criadoEm;
 
@@ -47,6 +50,9 @@ public class PessoaEntity {
     protected void onCreate() {
         this.criadoEm = LocalDateTime.now();
         this.atualizadoEm = LocalDateTime.now();
+        if (this.idSituacao == null) {
+            this.idSituacao = 1;
+        }
     }
 
     @PreUpdate
@@ -103,6 +109,14 @@ public class PessoaEntity {
 
     public Set<UsuarioEntity> getUsuarios() {
         return usuarios;
+    }
+
+    public Integer getIdSituacao() {
+        return idSituacao;
+    }
+
+    public void setIdSituacao(Integer idSituacao) {
+        this.idSituacao = idSituacao;
     }
 
     public LocalDateTime getCriadoEm() {

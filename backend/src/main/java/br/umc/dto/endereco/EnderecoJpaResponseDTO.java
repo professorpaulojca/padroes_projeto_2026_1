@@ -45,7 +45,19 @@ public class EnderecoJpaResponseDTO {
     @Schema(description = "Longitude para georreferenciamento", example = "-46.6543")
     private Double longitude;
 
+    @Schema(description = "Situação do endereço: 1=Ativo, 2=Inativo, 3=Excluído", example = "Ativo")
+    private String situacao;
+
     public EnderecoJpaResponseDTO() {
+    }
+
+    private static String resolverSituacao(Integer idSituacao) {
+        if (idSituacao == null) return "Ativo";
+        return switch (idSituacao) {
+            case 2 -> "Inativo";
+            case 3 -> "Excluído";
+            default -> "Ativo";
+        };
     }
 
     public static EnderecoJpaResponseDTO fromEntity(EnderecoEntity entity) {
@@ -63,6 +75,7 @@ public class EnderecoJpaResponseDTO {
         dto.enderecoPrincipal = entity.getEnderecoPrincipal() != null ? entity.getEnderecoPrincipal().name() : null;
         dto.latitude = entity.getLatitude();
         dto.longitude = entity.getLongitude();
+        dto.situacao = resolverSituacao(entity.getIdSituacao());
         return dto;
     }
 
@@ -104,4 +117,7 @@ public class EnderecoJpaResponseDTO {
 
     public Double getLongitude() { return longitude; }
     public void setLongitude(Double longitude) { this.longitude = longitude; }
+
+    public String getSituacao() { return situacao; }
+    public void setSituacao(String situacao) { this.situacao = situacao; }
 }

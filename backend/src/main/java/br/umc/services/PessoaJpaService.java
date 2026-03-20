@@ -65,7 +65,7 @@ public class PessoaJpaService {
     @Transactional(readOnly = true)
     public PessoaJpaResponseDTO buscarPorId(Long id) {
         log.debug("[PESSOA] Buscando pessoa por ID: {}", id);
-        PessoaEntity pessoa = pessoaJpaRepository.findById(id)
+        PessoaEntity pessoa = pessoaJpaRepository.findByIdAtivo(id)
                 .orElseThrow(() -> {
                     log.warn("[PESSOA] Pessoa não encontrada: id={}", id);
                     return new IllegalArgumentException("Pessoa não encontrada com ID: " + id);
@@ -87,7 +87,7 @@ public class PessoaJpaService {
     @Transactional
     public PessoaJpaResponseDTO atualizar(Long id, PessoaRequestDTO dto) {
         log.info("[PESSOA] Atualizando pessoa: id={} | nome={}", id, dto.getNome());
-        PessoaEntity pessoa = pessoaJpaRepository.findById(id)
+        pessoaJpaRepository.findByIdAtivo(id)
                 .orElseThrow(() -> {
                     log.warn("[PESSOA] Pessoa não encontrada para atualização: id={}", id);
                     return new IllegalArgumentException("Pessoa não encontrada com ID: " + id);
@@ -97,24 +97,25 @@ public class PessoaJpaService {
         pessoaJpaRepository.updatePessoa(id, dto.getNome().trim(), dataNascimento);
 
         log.info("[PESSOA] Pessoa atualizada com sucesso: id={}", id);
-        return PessoaJpaResponseDTO.fromEntity(pessoaJpaRepository.findById(id).orElseThrow());
+        return PessoaJpaResponseDTO.fromEntity(pessoaJpaRepository.findByIdAtivo(id).orElseThrow());
     }
 
     @Transactional
     public void excluir(Long id) {
         log.info("[PESSOA] Excluindo pessoa: id={}", id);
-        if (!pessoaJpaRepository.existsById(id)) {
-            log.warn("[PESSOA] Pessoa não encontrada para exclusão: id={}", id);
-            throw new IllegalArgumentException("Pessoa não encontrada com ID: " + id);
-        }
-        pessoaJpaRepository.deleteById(id);
-        log.info("[PESSOA] Pessoa excluída com sucesso: id={}", id);
+        pessoaJpaRepository.findByIdAtivo(id)
+                .orElseThrow(() -> {
+                    log.warn("[PESSOA] Pessoa não encontrada para exclusão: id={}", id);
+                    return new IllegalArgumentException("Pessoa não encontrada com ID: " + id);
+                });
+        pessoaJpaRepository.softDelete(id);
+        log.info("[PESSOA] Pessoa excluída (soft delete) com sucesso: id={}", id);
     }
 
     @Transactional
     public List<EnderecoJpaResponseDTO> adicionarEnderecos(Long pessoaId, List<EnderecoJpaRequestDTO> dtos) {
         log.info("[PESSOA] Adicionando {} endereço(s) à pessoa: pessoaId={}", dtos.size(), pessoaId);
-        PessoaEntity pessoa = pessoaJpaRepository.findById(pessoaId)
+        PessoaEntity pessoa = pessoaJpaRepository.findByIdAtivo(pessoaId)
                 .orElseThrow(() -> new IllegalArgumentException("Pessoa não encontrada com ID: " + pessoaId));
 
         return dtos.stream().map(dto -> {
@@ -127,11 +128,11 @@ public class PessoaJpaService {
     @Transactional
     public void desvincularEndereco(Long pessoaId, Long enderecoId) {
         log.info("[PESSOA] Desvinculando endereço: pessoaId={} | enderecoId={}", pessoaId, enderecoId);
-        if (!pessoaJpaRepository.existsById(pessoaId)) {
+        if (pessoaJpaRepository.findByIdAtivo(pessoaId).isEmpty()) {
             log.warn("[PESSOA] Pessoa não encontrada para desvincular: pessoaId={}", pessoaId);
             throw new IllegalArgumentException("Pessoa não encontrada com ID: " + pessoaId);
         }
-        if (!enderecoRepository.existsById(enderecoId)) {
+        if (enderecoRepository.findByIdAtivo(enderecoId).isEmpty()) {
             log.warn("[PESSOA] Endereço não encontrado para desvincular: enderecoId={}", enderecoId);
             throw new IllegalArgumentException("Endereço não encontrado com ID: " + enderecoId);
         }
@@ -141,7 +142,7 @@ public class PessoaJpaService {
 
     @Transactional(readOnly = true)
     public List<EnderecoJpaResponseDTO> listarEnderecos(Long pessoaId) {
-        if (!pessoaJpaRepository.existsById(pessoaId)) {
+        if (pessoaJpaRepository.findByIdAtivo(pessoaId).isEmpty()) {
             throw new IllegalArgumentException("Pessoa não encontrada com ID: " + pessoaId);
         }
         return enderecoRepository.findByPessoaId(pessoaId)

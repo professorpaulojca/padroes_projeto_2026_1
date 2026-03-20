@@ -58,6 +58,9 @@ public class EnderecoEntity {
     @ManyToMany(mappedBy = "enderecos", fetch = FetchType.LAZY)
     private Set<PessoaEntity> pessoas = new HashSet<>();
 
+    @Column(name = "id_situacao", nullable = false)
+    private Integer idSituacao;
+
     @Column(name = "criado_em", nullable = false, updatable = false)
     private LocalDateTime criadoEm;
 
@@ -73,6 +76,9 @@ public class EnderecoEntity {
         this.atualizadoEm = LocalDateTime.now();
         if (this.pais == null || this.pais.isBlank()) {
             this.pais = "Brasil";
+        }
+        if (this.idSituacao == null) {
+            this.idSituacao = 1;
         }
     }
 
@@ -187,6 +193,14 @@ public class EnderecoEntity {
 
     public Set<PessoaEntity> getPessoas() {
         return pessoas;
+    }
+
+    public Integer getIdSituacao() {
+        return idSituacao;
+    }
+
+    public void setIdSituacao(Integer idSituacao) {
+        this.idSituacao = idSituacao;
     }
 
     public LocalDateTime getCriadoEm() {

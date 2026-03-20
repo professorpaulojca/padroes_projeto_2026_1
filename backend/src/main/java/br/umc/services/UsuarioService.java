@@ -38,7 +38,7 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public UsuarioResponseDTO buscarPorId(Long id) {
         log.debug("[USUARIO] Buscando usuário por ID: {}", id);
-        UsuarioEntity usuario = usuarioRepository.findById(id)
+        UsuarioEntity usuario = usuarioRepository.findByIdAtivo(id)
                 .orElseThrow(() -> {
                     log.warn("[USUARIO] Usuário não encontrado: id={}", id);
                     return new IllegalArgumentException("Usuário não encontrado: " + id);
@@ -65,14 +65,14 @@ public class UsuarioService {
     @Transactional
     public UsuarioResponseDTO atualizarPerfil(Long id, AtualizarPerfilRequestDTO dto, String emailAutenticado) {
         log.info("[USUARIO] Atualizando perfil: id={} | solicitante={}", id, emailAutenticado);
-        UsuarioEntity usuario = usuarioRepository.findById(id)
+        UsuarioEntity usuario = usuarioRepository.findByIdAtivo(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado: " + id));
 
         verificarAutorizacao(usuario, emailAutenticado);
 
         PessoaEntity pessoa = null;
         if (dto.getPessoaId() != null) {
-            pessoa = pessoaJpaRepository.findById(dto.getPessoaId())
+            pessoa = pessoaJpaRepository.findByIdAtivo(dto.getPessoaId())
                     .orElseThrow(() -> new IllegalArgumentException("Pessoa não encontrada: " + dto.getPessoaId()));
         }
 
@@ -82,13 +82,13 @@ public class UsuarioService {
             usuarioRepository.updatePessoa(id, pessoa.getId());
         }
 
-        return UsuarioResponseDTO.fromEntity(usuarioRepository.findById(id).orElseThrow());
+        return UsuarioResponseDTO.fromEntity(usuarioRepository.findByIdAtivo(id).orElseThrow());
     }
 
     @Transactional
     public void alterarSenha(Long id, AlterarSenhaRequestDTO dto, String emailAutenticado) {
         log.info("[USUARIO] Alteração de senha solicitada: id={} | solicitante={}", id, emailAutenticado);
-        UsuarioEntity usuario = usuarioRepository.findById(id)
+        UsuarioEntity usuario = usuarioRepository.findByIdAtivo(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado: " + id));
 
         verificarAutorizacao(usuario, emailAutenticado);
@@ -105,7 +105,7 @@ public class UsuarioService {
     @Transactional
     public void desativarUsuario(Long id, String emailAutenticado) {
         log.info("[USUARIO] Desativando usuário: id={} | solicitante={}", id, emailAutenticado);
-        UsuarioEntity usuario = usuarioRepository.findById(id)
+        usuarioRepository.findByIdAtivo(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado: " + id));
 
         UsuarioEntity autenticado = usuarioRepository.findByEmail(emailAutenticado)
@@ -115,7 +115,8 @@ public class UsuarioService {
             throw new AccessDeniedException("Acesso negado");
         }
 
-        usuarioRepository.updatePerfil(id, usuario.getNomeExibicao(), usuario.getPerfil().name(), false);
+        usuarioRepository.softDelete(id);
+        log.info("[USUARIO] Usuário desativado (soft delete) com sucesso: id={}", id);
     }
 
     private void verificarAutorizacao(UsuarioEntity alvo, String emailAutenticado) {

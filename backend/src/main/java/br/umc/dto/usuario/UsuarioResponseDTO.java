@@ -38,7 +38,19 @@ public class UsuarioResponseDTO {
     @Schema(description = "Data de atualização", example = "01/01/2024 10:00:00")
     private String atualizadoEm;
 
+    @Schema(description = "Situação do usuário: 1=Ativo, 2=Inativo, 3=Excluído", example = "Ativo")
+    private String situacao;
+
     public UsuarioResponseDTO() {
+    }
+
+    private static String resolverSituacao(Integer idSituacao) {
+        if (idSituacao == null) return "Ativo";
+        return switch (idSituacao) {
+            case 2 -> "Inativo";
+            case 3 -> "Excluído";
+            default -> "Ativo";
+        };
     }
 
     public static UsuarioResponseDTO fromEntity(UsuarioEntity entity) {
@@ -48,6 +60,7 @@ public class UsuarioResponseDTO {
         dto.nomeExibicao = entity.getNomeExibicao();
         dto.perfil = entity.getPerfil() != null ? entity.getPerfil().name() : null;
         dto.ativo = entity.isAtivo();
+        dto.situacao = resolverSituacao(entity.getIdSituacao());
         if (entity.getPessoa() != null) {
             dto.pessoaId = entity.getPessoa().getId();
             dto.pessoaNome = entity.getPessoa().getNome();
@@ -83,4 +96,7 @@ public class UsuarioResponseDTO {
 
     public String getAtualizadoEm() { return atualizadoEm; }
     public void setAtualizadoEm(String atualizadoEm) { this.atualizadoEm = atualizadoEm; }
+
+    public String getSituacao() { return situacao; }
+    public void setSituacao(String situacao) { this.situacao = situacao; }
 }

@@ -201,4 +201,25 @@ class UsuarioControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.mensagem", containsString("sucesso")));
     }
+
+    @Test
+    @DisplayName("GET /api/usuarios/{id} - usuário ativo deve ter situacao Ativo")
+    void deveTerSituacaoAtivoAoCadastrarUsuario() throws Exception {
+        mockMvc.perform(get("/api/usuarios/" + usuarioId)
+                        .header("Authorization", bearer()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.situacao", is("Ativo")));
+    }
+
+    @Test
+    @DisplayName("DELETE /api/usuarios/{id} - soft delete deve marcar id_situacao=3 no banco")
+    void deveMarcarSituacaoExcluidoAposDeleteUsuario() throws Exception {
+        mockMvc.perform(delete("/api/usuarios/" + usuarioId)
+                        .header("Authorization", bearer()))
+                .andExpect(status().isOk());
+
+        br.umc.models.UsuarioEntity aposDelete = usuarioRepository.findById(usuarioId).orElseThrow();
+        org.junit.jupiter.api.Assertions.assertEquals(3, aposDelete.getIdSituacao());
+        org.junit.jupiter.api.Assertions.assertFalse(aposDelete.isAtivo());
+    }
 }

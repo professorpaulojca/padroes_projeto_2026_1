@@ -13,35 +13,42 @@ import java.util.Optional;
 @Repository
 public interface EnderecoRepository extends JpaRepository<EnderecoEntity, Long> {
 
-    @Query(value = "SELECT * FROM enderecos WHERE cep = :cep ORDER BY logradouro", nativeQuery = true)
+    @Query(value = "SELECT * FROM enderecos WHERE id = :id AND id_situacao != 3", nativeQuery = true)
+    Optional<EnderecoEntity> findByIdAtivo(@Param("id") Long id);
+
+    @Modifying(clearAutomatically = true)
+    @Query(value = "UPDATE enderecos SET id_situacao = 3, atualizado_em = NOW() WHERE id = :id", nativeQuery = true)
+    void softDelete(@Param("id") Long id);
+
+    @Query(value = "SELECT * FROM enderecos WHERE cep = :cep AND id_situacao != 3 ORDER BY logradouro", nativeQuery = true)
     List<EnderecoEntity> findByCep(@Param("cep") String cep);
 
-    @Query(value = "SELECT * FROM enderecos WHERE cep = :cep AND numero = :numero AND LOWER(complemento) = LOWER(:complemento)", nativeQuery = true)
+    @Query(value = "SELECT * FROM enderecos WHERE cep = :cep AND numero = :numero AND LOWER(complemento) = LOWER(:complemento) AND id_situacao != 3", nativeQuery = true)
     Optional<EnderecoEntity> findByCepAndNumeroAndComplemento(
             @Param("cep") String cep,
             @Param("numero") String numero,
             @Param("complemento") String complemento);
 
-    @Query(value = "SELECT * FROM enderecos WHERE cep = :cep AND numero = :numero AND complemento IS NULL", nativeQuery = true)
+    @Query(value = "SELECT * FROM enderecos WHERE cep = :cep AND numero = :numero AND complemento IS NULL AND id_situacao != 3", nativeQuery = true)
     Optional<EnderecoEntity> findByCepAndNumeroSemComplemento(
             @Param("cep") String cep,
             @Param("numero") String numero);
 
-    @Query(value = "SELECT * FROM enderecos ORDER BY logradouro, numero", nativeQuery = true)
+    @Query(value = "SELECT * FROM enderecos WHERE id_situacao != 3 ORDER BY logradouro, numero", nativeQuery = true)
     List<EnderecoEntity> findAllOrderByLogradouro();
 
     @Query(value = """
             SELECT e.* FROM enderecos e
             INNER JOIN pessoas_enderecos pe ON e.id = pe.endereco_id
-            WHERE pe.pessoa_id = :pessoaId
+            WHERE pe.pessoa_id = :pessoaId AND pe.ativo = true AND e.id_situacao != 3
             ORDER BY e.logradouro
             """, nativeQuery = true)
     List<EnderecoEntity> findByPessoaId(@Param("pessoaId") Long pessoaId);
 
-    @Query(value = "SELECT * FROM enderecos WHERE LOWER(cidade) = LOWER(:cidade) ORDER BY logradouro", nativeQuery = true)
+    @Query(value = "SELECT * FROM enderecos WHERE LOWER(cidade) = LOWER(:cidade) AND id_situacao != 3 ORDER BY logradouro", nativeQuery = true)
     List<EnderecoEntity> findByCidadeIgnoreCase(@Param("cidade") String cidade);
 
-    @Query(value = "SELECT * FROM enderecos WHERE LOWER(estado) = LOWER(:estado) ORDER BY cidade, logradouro", nativeQuery = true)
+    @Query(value = "SELECT * FROM enderecos WHERE LOWER(estado) = LOWER(:estado) AND id_situacao != 3 ORDER BY cidade, logradouro", nativeQuery = true)
     List<EnderecoEntity> findByEstadoIgnoreCase(@Param("estado") String estado);
 
     @Modifying

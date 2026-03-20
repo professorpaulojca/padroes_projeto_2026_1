@@ -169,6 +169,30 @@ class EnderecoJpaControllerTest {
     }
 
     @Test
+    @DisplayName("GET /api/enderecos/{id} - endereço ativo deve ter situacao Ativo")
+    void deveTerSituacaoAtivoAoCadastrarEndereco() throws Exception {
+        EnderecoEntity e = salvarEndereco("01310-100", "Av. Paulista", "999");
+
+        mockMvc.perform(get("/api/enderecos/" + e.getId())
+                        .header("Authorization", bearer()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.situacao", is("Ativo")));
+    }
+
+    @Test
+    @DisplayName("DELETE /api/enderecos/{id} - soft delete deve marcar id_situacao=3 no banco")
+    void deveMarcarsituacaoExcluidoAposDeleteEndereco() throws Exception {
+        EnderecoEntity e = salvarEndereco("04038-001", "Rua Domingos de Morais", "123");
+
+        mockMvc.perform(delete("/api/enderecos/" + e.getId())
+                        .header("Authorization", bearer()))
+                .andExpect(status().isOk());
+
+        EnderecoEntity aposDelete = enderecoRepository.findById(e.getId()).orElseThrow();
+        org.junit.jupiter.api.Assertions.assertEquals(3, aposDelete.getIdSituacao());
+    }
+
+    @Test
     @DisplayName("GET /api/enderecos - deve retornar 403 sem token")
     void deveRetornar403SemToken() throws Exception {
         mockMvc.perform(get("/api/enderecos"))

@@ -28,7 +28,19 @@ public class PessoaJpaResponseDTO {
     @Schema(description = "Lista de endereços da pessoa")
     private List<EnderecoJpaResponseDTO> enderecos;
 
+    @Schema(description = "Situação da pessoa: 1=Ativo, 2=Inativo, 3=Excluído", example = "Ativo")
+    private String situacao;
+
     public PessoaJpaResponseDTO() {
+    }
+
+    private static String resolverSituacao(Integer idSituacao) {
+        if (idSituacao == null) return "Ativo";
+        return switch (idSituacao) {
+            case 2 -> "Inativo";
+            case 3 -> "Excluído";
+            default -> "Ativo";
+        };
     }
 
     public static PessoaJpaResponseDTO fromEntity(PessoaEntity entity) {
@@ -38,6 +50,7 @@ public class PessoaJpaResponseDTO {
         dto.dataNascimento = entity.getDataNascimento() != null
                 ? entity.getDataNascimento().format(FORMATTER) : null;
         dto.idade = entity.getIdade();
+        dto.situacao = resolverSituacao(entity.getIdSituacao());
         dto.enderecos = entity.getEnderecos() != null
                 ? entity.getEnderecos().stream()
                     .map(EnderecoJpaResponseDTO::fromEntity)
@@ -60,4 +73,7 @@ public class PessoaJpaResponseDTO {
 
     public List<EnderecoJpaResponseDTO> getEnderecos() { return enderecos; }
     public void setEnderecos(List<EnderecoJpaResponseDTO> enderecos) { this.enderecos = enderecos; }
+
+    public String getSituacao() { return situacao; }
+    public void setSituacao(String situacao) { this.situacao = situacao; }
 }

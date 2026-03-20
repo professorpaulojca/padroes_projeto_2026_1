@@ -94,7 +94,7 @@ public class EnderecoJpaService {
     @Transactional(readOnly = true)
     public EnderecoJpaResponseDTO buscarPorId(Long id) {
         log.debug("[ENDERECO] Buscando endereço por ID: {}", id);
-        EnderecoEntity endereco = enderecoRepository.findById(id)
+        EnderecoEntity endereco = enderecoRepository.findByIdAtivo(id)
                 .orElseThrow(() -> {
                     log.warn("[ENDERECO] Endereço não encontrado: id={}", id);
                     return new IllegalArgumentException("Endereço não encontrado com ID: " + id);
@@ -118,7 +118,7 @@ public class EnderecoJpaService {
     @Transactional
     public EnderecoJpaResponseDTO atualizar(Long id, EnderecoJpaRequestDTO dto) {
         log.info("[ENDERECO] Atualizando endereço: id={} | cep={}", id, dto.getCep());
-        EnderecoEntity existente = enderecoRepository.findById(id)
+        EnderecoEntity existente = enderecoRepository.findByIdAtivo(id)
                 .orElseThrow(() -> {
                     log.warn("[ENDERECO] Endereço não encontrado para atualização: id={}", id);
                     return new IllegalArgumentException("Endereço não encontrado com ID: " + id);
@@ -152,18 +152,19 @@ public class EnderecoJpaService {
         );
 
         log.info("[ENDERECO] Endereço atualizado com sucesso: id={}", id);
-        return EnderecoJpaResponseDTO.fromEntity(enderecoRepository.findById(id).orElseThrow());
+        return EnderecoJpaResponseDTO.fromEntity(enderecoRepository.findByIdAtivo(id).orElseThrow());
     }
 
     @Transactional
     public void excluir(Long id) {
         log.info("[ENDERECO] Excluindo endereço: id={}", id);
-        if (!enderecoRepository.existsById(id)) {
-            log.warn("[ENDERECO] Endereço não encontrado para exclusão: id={}", id);
-            throw new IllegalArgumentException("Endereço não encontrado com ID: " + id);
-        }
-        enderecoRepository.deleteById(id);
-        log.info("[ENDERECO] Endereço excluído com sucesso: id={}", id);
+        enderecoRepository.findByIdAtivo(id)
+                .orElseThrow(() -> {
+                    log.warn("[ENDERECO] Endereço não encontrado para exclusão: id={}", id);
+                    return new IllegalArgumentException("Endereço não encontrado com ID: " + id);
+                });
+        enderecoRepository.softDelete(id);
+        log.info("[ENDERECO] Endereço excluído (soft delete) com sucesso: id={}", id);
     }
 
     private String resolverLogradouro(ViaCepResponseDTO viaCep) {

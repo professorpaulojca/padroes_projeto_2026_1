@@ -232,6 +232,32 @@ class PessoaJpaControllerTest {
     }
 
     @Test
+    @DisplayName("GET /api/pessoas - pessoa ativa deve ter situacao Ativo")
+    void deveTerSituacaoAtivoAoCadastrar() throws Exception {
+        PessoaRequestDTO dto = new PessoaRequestDTO("Situacao Teste", "10/05/1995");
+
+        mockMvc.perform(post("/api/pessoas")
+                        .header("Authorization", bearer())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.situacao", is("Ativo")));
+    }
+
+    @Test
+    @DisplayName("DELETE /api/pessoas/{id} - soft delete deve marcar id_situacao=3 no banco")
+    void deveMarcarsituacaoExcluidoAposDelete() throws Exception {
+        PessoaEntity p = salvarPessoa("Soft Delete Check", "1975-06-15");
+
+        mockMvc.perform(delete("/api/pessoas/" + p.getId())
+                        .header("Authorization", bearer()))
+                .andExpect(status().isOk());
+
+        PessoaEntity aposDelete = pessoaJpaRepository.findById(p.getId()).orElseThrow();
+        org.junit.jupiter.api.Assertions.assertEquals(3, aposDelete.getIdSituacao());
+    }
+
+    @Test
     @DisplayName("GET /api/pessoas/{id}/enderecos - deve retornar lista vazia para pessoa sem endereços")
     void deveRetornarEnderecoVazioParaPessoa() throws Exception {
         PessoaEntity p = salvarPessoa("Sem Endereço", "1990-01-01");
