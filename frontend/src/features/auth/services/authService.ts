@@ -44,5 +44,8 @@ export const authService = {
   async logout(): Promise<void> {
     log.info('Logout realizado');
     localStorage.removeItem('access_token');
+    sessionStorage.removeItem('access_token');
+    localStorage.removeItem('remembered_email');
+    localStorage.removeItem('remember_me');
   },
 };

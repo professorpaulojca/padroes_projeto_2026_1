@@ -20,8 +20,50 @@ public class PessoaEntity {
     @Column(name = "nome", nullable = false, length = 150)
     private String nome;
 
+    @Column(name = "sobrenome", length = 150)
+    private String sobrenome;
+
+    @Column(name = "cpf", length = 14)
+    private String cpf;
+
+    @Column(name = "rg", length = 20)
+    private String rg;
+
     @Column(name = "data_nascimento", nullable = false)
     private LocalDate dataNascimento;
+
+    @Column(name = "sexo", length = 20)
+    private String sexo;
+
+    @Column(name = "email", length = 150)
+    private String email;
+
+    @Column(name = "telefone", length = 20)
+    private String telefone;
+
+    @Column(name = "celular", length = 20)
+    private String celular;
+
+    @Column(name = "observacoes", length = 500)
+    private String observacoes;
+
+    @Column(name = "tipo_sanguineo", length = 5)
+    private String tipoSanguineo;
+
+    @Column(name = "estado_civil", length = 20)
+    private String estadoCivil;
+
+    @Column(name = "nacionalidade", length = 100)
+    private String nacionalidade;
+
+    @Column(name = "naturalidade", length = 100)
+    private String naturalidade;
+
+    @Column(name = "profissao", length = 100)
+    private String profissao;
+
+    @Column(name = "empresa", length = 150)
+    private String empresa;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -80,6 +122,48 @@ public class PessoaEntity {
     public void setNome(String nome) {
         this.nome = nome;
     }
+
+    public String getSobrenome() { return sobrenome; }
+    public void setSobrenome(String sobrenome) { this.sobrenome = sobrenome; }
+
+    public String getCpf() { return cpf; }
+    public void setCpf(String cpf) { this.cpf = cpf; }
+
+    public String getRg() { return rg; }
+    public void setRg(String rg) { this.rg = rg; }
+
+    public String getSexo() { return sexo; }
+    public void setSexo(String sexo) { this.sexo = sexo; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getTelefone() { return telefone; }
+    public void setTelefone(String telefone) { this.telefone = telefone; }
+
+    public String getCelular() { return celular; }
+    public void setCelular(String celular) { this.celular = celular; }
+
+    public String getObservacoes() { return observacoes; }
+    public void setObservacoes(String observacoes) { this.observacoes = observacoes; }
+
+    public String getTipoSanguineo() { return tipoSanguineo; }
+    public void setTipoSanguineo(String tipoSanguineo) { this.tipoSanguineo = tipoSanguineo; }
+
+    public String getEstadoCivil() { return estadoCivil; }
+    public void setEstadoCivil(String estadoCivil) { this.estadoCivil = estadoCivil; }
+
+    public String getNacionalidade() { return nacionalidade; }
+    public void setNacionalidade(String nacionalidade) { this.nacionalidade = nacionalidade; }
+
+    public String getNaturalidade() { return naturalidade; }
+    public void setNaturalidade(String naturalidade) { this.naturalidade = naturalidade; }
+
+    public String getProfissao() { return profissao; }
+    public void setProfissao(String profissao) { this.profissao = profissao; }
+
+    public String getEmpresa() { return empresa; }
+    public void setEmpresa(String empresa) { this.empresa = empresa; }
 
     public LocalDate getDataNascimento() {
         return dataNascimento;

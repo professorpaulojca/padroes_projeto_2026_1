@@ -16,7 +16,7 @@ export const api = axios.create({
 // Request interceptor — adiciona token de autenticação e loga a requisição
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -49,6 +49,7 @@ api.interceptors.response.use(
     if (status === 401) {
       log.warn('Sessão expirada — redirecionando para login');
       localStorage.removeItem('access_token');
+      sessionStorage.removeItem('access_token');
       window.location.href = '/login';
     }
     return Promise.reject(error);

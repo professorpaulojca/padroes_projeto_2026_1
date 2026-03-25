@@ -45,6 +45,20 @@ public class PessoaJpaService {
         PessoaEntity pessoa = new PessoaEntity();
         pessoa.setNome(dto.getNome().trim());
         pessoa.setDataNascimento(dataNascimento);
+        pessoa.setSobrenome(dto.getSobrenome());
+        pessoa.setCpf(dto.getCpf());
+        pessoa.setRg(dto.getRg());
+        pessoa.setSexo(dto.getSexo());
+        pessoa.setEmail(dto.getEmail());
+        pessoa.setTelefone(dto.getTelefone());
+        pessoa.setCelular(dto.getCelular());
+        pessoa.setObservacoes(dto.getObservacoes());
+        pessoa.setTipoSanguineo(dto.getTipoSanguineo());
+        pessoa.setEstadoCivil(dto.getEstadoCivil());
+        pessoa.setNacionalidade(dto.getNacionalidade());
+        pessoa.setNaturalidade(dto.getNaturalidade());
+        pessoa.setProfissao(dto.getProfissao());
+        pessoa.setEmpresa(dto.getEmpresa());
 
         pessoa = pessoaJpaRepository.save(pessoa);
         log.info("[PESSOA] Pessoa cadastrada com sucesso: id={} | nome={}", pessoa.getId(), pessoa.getNome());
@@ -94,7 +108,13 @@ public class PessoaJpaService {
                 });
 
         LocalDate dataNascimento = parsarData(dto.getDataNascimento());
-        pessoaJpaRepository.updatePessoa(id, dto.getNome().trim(), dataNascimento);
+        pessoaJpaRepository.updatePessoa(id, dto.getNome().trim(),
+                dto.getSobrenome(), dto.getCpf(), dto.getRg(),
+                dataNascimento, dto.getSexo(), dto.getEmail(),
+                dto.getTelefone(), dto.getCelular(), dto.getObservacoes(),
+                dto.getTipoSanguineo(), dto.getEstadoCivil(),
+                dto.getNacionalidade(), dto.getNaturalidade(),
+                dto.getProfissao(), dto.getEmpresa());
 
         log.info("[PESSOA] Pessoa atualizada com sucesso: id={}", id);
         return PessoaJpaResponseDTO.fromEntity(pessoaJpaRepository.findByIdAtivo(id).orElseThrow());

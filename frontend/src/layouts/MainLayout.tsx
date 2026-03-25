@@ -12,32 +12,46 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Divider,
   Avatar,
   Menu,
   MenuItem,
+  Divider,
   useMediaQuery,
   useTheme,
+  Breadcrumbs,
+  Link,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
   Dashboard,
   People,
   LocationOn,
-  Person,
+  ManageAccounts,
   Logout,
-  ChevronLeft,
+  Person,
+  Hub,
+  NavigateNext,
 } from '@mui/icons-material';
 import { useAuthStore } from '@/features/auth';
 
-const DRAWER_WIDTH = 260;
+const DRAWER_WIDTH = 240;
 
-const navItems = [
+const mainNavItems = [
   { label: 'Dashboard', icon: <Dashboard />, path: '/dashboard' },
   { label: 'Pessoas', icon: <People />, path: '/pessoas' },
   { label: 'Endereços', icon: <LocationOn />, path: '/enderecos' },
-  { label: 'Perfil', icon: <Person />, path: '/perfil' },
 ];
+
+const userNavItems = [
+  { label: 'Meu Perfil', icon: <ManageAccounts />, path: '/perfil' },
+];
+
+const pathTitles: Record<string, string> = {
+  '/dashboard': 'Dashboard',
+  '/pessoas': 'Pessoas',
+  '/enderecos': 'Endereços',
+  '/perfil': 'Meu Perfil',
+};
 
 export const MainLayout = () => {
   const theme = useTheme();
@@ -54,66 +68,94 @@ export const MainLayout = () => {
     navigate('/login');
   };
 
-  const drawerContent = (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          px: 2,
-          py: 2,
-          minHeight: 64,
-        }}
+  const initials = user?.name
+    ? user.name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase()
+    : 'U';
+
+  const currentTitle = pathTitles[location.pathname] || 'Sistema';
+
+  const renderNavSection = (title: string, items: typeof mainNavItems) => (
+    <>
+      <Typography
+        variant="overline"
+        sx={{ px: 3, pt: 2, pb: 0.5, display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: 11, letterSpacing: '0.1em', fontWeight: 700 }}
       >
-        <Typography variant="h6" fontWeight={700} color="primary" noWrap>
-          Padrões de Projeto
-        </Typography>
-        {isMobile && (
-          <IconButton onClick={() => setDrawerOpen(false)}>
-            <ChevronLeft />
-          </IconButton>
-        )}
-      </Box>
-      <Divider />
-      <List sx={{ flex: 1, px: 1, py: 1 }}>
-        {navItems.map((item) => {
+        {title}
+      </Typography>
+      <List sx={{ px: 1 }}>
+        {items.map((item) => {
           const isActive = location.pathname === item.path;
           return (
             <ListItem key={item.path} disablePadding sx={{ mb: 0.5 }}>
               <ListItemButton
                 component={RouterLink}
                 to={item.path}
-                selected={isActive}
                 onClick={() => isMobile && setDrawerOpen(false)}
                 sx={{
                   borderRadius: 2,
-                  '&.Mui-selected': {
-                    bgcolor: 'primary.main',
-                    color: 'primary.contrastText',
-                    '& .MuiListItemIcon-root': { color: 'primary.contrastText' },
-                    '&:hover': { bgcolor: 'primary.dark' },
+                  py: 1,
+                  color: 'rgba(255,255,255,0.7)',
+                  ...(isActive && {
+                    bgcolor: 'rgba(255,255,255,0.15)',
+                    color: '#fff',
+                    borderRight: '3px solid #42a5f5',
+                  }),
+                  '&:hover': {
+                    bgcolor: 'rgba(255,255,255,0.1)',
+                    color: '#fff',
                   },
                 }}
               >
-                <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.label} primaryTypographyProps={{ fontSize: 14, fontWeight: isActive ? 600 : 400 }} />
+                <ListItemIcon sx={{ minWidth: 40, color: 'inherit' }}>{item.icon}</ListItemIcon>
+                <ListItemText
+                  primary={item.label}
+                  primaryTypographyProps={{ fontSize: 14, fontWeight: isActive ? 600 : 400 }}
+                />
               </ListItemButton>
             </ListItem>
           );
         })}
       </List>
-      <Divider />
-      <Box sx={{ p: 2 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <Avatar sx={{ width: 36, height: 36, bgcolor: 'primary.main', fontSize: 14 }}>
-            {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+    </>
+  );
+
+  const drawerContent = (
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', bgcolor: '#1565c0' }}>
+      {/* Logo */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, px: 2.5, py: 2.5 }}>
+        <Box sx={{ p: 1, bgcolor: 'rgba(255,255,255,0.15)', borderRadius: 2, display: 'flex' }}>
+          <Hub sx={{ color: '#fff', fontSize: 24 }} />
+        </Box>
+        <Box>
+          <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: 15, lineHeight: 1.2 }}>
+            Padrões
+          </Typography>
+          <Typography sx={{ color: 'rgba(255,255,255,0.7)', fontSize: 12 }}>
+            de Projeto
+          </Typography>
+        </Box>
+      </Box>
+
+      {renderNavSection('Principal', mainNavItems)}
+      {renderNavSection('Usuário', userNavItems)}
+
+      <Box sx={{ flex: 1 }} />
+
+      {/* User footer */}
+      <Box sx={{ p: 2, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+        <Box
+          component={RouterLink}
+          to="/perfil"
+          sx={{ display: 'flex', alignItems: 'center', gap: 1.5, textDecoration: 'none' }}
+        >
+          <Avatar sx={{ width: 36, height: 36, bgcolor: '#42a5f5', fontSize: 14, fontWeight: 700 }}>
+            {initials}
           </Avatar>
           <Box sx={{ overflow: 'hidden' }}>
-            <Typography variant="body2" fontWeight={600} noWrap>
+            <Typography variant="body2" fontWeight={600} noWrap sx={{ color: '#fff' }}>
               {user?.name || 'Usuário'}
             </Typography>
-            <Typography variant="caption" color="text.secondary" noWrap>
+            <Typography variant="caption" noWrap sx={{ color: 'rgba(255,255,255,0.6)' }}>
               {user?.perfil || ''}
             </Typography>
           </Box>
@@ -135,46 +177,47 @@ export const MainLayout = () => {
           '& .MuiDrawer-paper': {
             width: DRAWER_WIDTH,
             boxSizing: 'border-box',
-            borderRight: '1px solid',
-            borderColor: 'divider',
+            border: 'none',
+            bgcolor: '#1565c0',
           },
         }}
       >
         {drawerContent}
       </Drawer>
 
-      {/* Main content area */}
-      <Box
-        sx={{
-          flexGrow: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          transition: 'margin-left 0.3s',
-        }}
-      >
+      {/* Main content */}
+      <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', transition: 'margin-left 0.3s' }}>
         {/* Top Bar */}
         <AppBar
           position="sticky"
           color="default"
           elevation={0}
-          sx={{
-            borderBottom: '1px solid',
-            borderColor: 'divider',
-            bgcolor: 'background.paper',
-          }}
+          sx={{ borderBottom: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', height: 60 }}
         >
-          <Toolbar>
-            <IconButton
-              edge="start"
-              onClick={() => setDrawerOpen(!drawerOpen)}
-              sx={{ mr: 2 }}
-            >
+          <Toolbar sx={{ minHeight: 60 }}>
+            <IconButton edge="start" onClick={() => setDrawerOpen(!drawerOpen)} sx={{ mr: 2 }}>
               <MenuIcon />
             </IconButton>
-            <Box sx={{ flexGrow: 1 }} />
+
+            <Box sx={{ flexGrow: 1 }}>
+              <Typography variant="subtitle1" fontWeight={800} sx={{ fontSize: 18 }}>
+                {currentTitle}
+              </Typography>
+              <Breadcrumbs separator={<NavigateNext sx={{ fontSize: 14 }} />} sx={{ '& .MuiBreadcrumbs-li': { fontSize: 12 } }}>
+                <Link component={RouterLink} to="/dashboard" underline="hover" color="text.secondary" sx={{ fontSize: 12 }}>
+                  Dashboard
+                </Link>
+                {location.pathname !== '/dashboard' && (
+                  <Typography variant="caption" color="text.primary" sx={{ fontSize: 12 }}>
+                    {currentTitle}
+                  </Typography>
+                )}
+              </Breadcrumbs>
+            </Box>
+
             <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
-              <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main', fontSize: 14 }}>
-                {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+              <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main', fontSize: 13, fontWeight: 700 }}>
+                {initials}
               </Avatar>
             </IconButton>
             <Menu
@@ -200,11 +243,7 @@ export const MainLayout = () => {
         {/* Page content */}
         <Box
           component="main"
-          sx={{
-            flexGrow: 1,
-            p: 3,
-            backgroundColor: 'background.default',
-          }}
+          sx={{ flexGrow: 1, p: 3, backgroundColor: '#f4f6fb' }}
         >
           <Outlet />
         </Box>

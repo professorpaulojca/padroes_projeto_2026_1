@@ -31,11 +31,29 @@ public interface PessoaJpaRepository extends JpaRepository<PessoaEntity, Long> {
     void softDelete(@Param("id") Long id);
 
     @Modifying(clearAutomatically = true)
-    @Query(value = "UPDATE pessoas SET nome = :nome, data_nascimento = :dataNascimento, atualizado_em = NOW() WHERE id = :id", nativeQuery = true)
+    @Query(value = "UPDATE pessoas SET nome = :nome, sobrenome = :sobrenome, cpf = :cpf, rg = :rg, " +
+            "data_nascimento = :dataNascimento, sexo = :sexo, email = :email, telefone = :telefone, " +
+            "celular = :celular, observacoes = :observacoes, tipo_sanguineo = :tipoSanguineo, " +
+            "estado_civil = :estadoCivil, nacionalidade = :nacionalidade, naturalidade = :naturalidade, " +
+            "profissao = :profissao, empresa = :empresa, atualizado_em = NOW() WHERE id = :id", nativeQuery = true)
     void updatePessoa(
             @Param("id") Long id,
             @Param("nome") String nome,
-            @Param("dataNascimento") LocalDate dataNascimento);
+            @Param("sobrenome") String sobrenome,
+            @Param("cpf") String cpf,
+            @Param("rg") String rg,
+            @Param("dataNascimento") LocalDate dataNascimento,
+            @Param("sexo") String sexo,
+            @Param("email") String email,
+            @Param("telefone") String telefone,
+            @Param("celular") String celular,
+            @Param("observacoes") String observacoes,
+            @Param("tipoSanguineo") String tipoSanguineo,
+            @Param("estadoCivil") String estadoCivil,
+            @Param("nacionalidade") String nacionalidade,
+            @Param("naturalidade") String naturalidade,
+            @Param("profissao") String profissao,
+            @Param("empresa") String empresa);
 
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE pessoas_enderecos SET ativo = false WHERE pessoa_id = :pessoaId AND endereco_id = :enderecoId", nativeQuery = true)

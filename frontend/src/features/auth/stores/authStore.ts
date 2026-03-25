@@ -6,7 +6,7 @@ import { authService } from '../services';
 const log = createLogger('AUTH_STORE');
 
 interface AuthActions {
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, rememberMe?: boolean) => Promise<void>;
   logout: () => Promise<void>;
   setUser: (user: AuthUser | null) => void;
   clearError: () => void;
@@ -29,7 +29,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   lockedUntil: null,
 
   // Actions
-  login: async (email: string, password: string) => {
+  login: async (email: string, password: string, rememberMe = false) => {
     const state = get();
 
     // Verificar bloqueio temporário no frontend
@@ -45,7 +45,20 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     try {
       const response = await authService.login({ email, password });
 
-      localStorage.setItem('access_token', response.accessToken);
+      // Persistência baseada na escolha do usuário:
+      // - rememberMe=true  → localStorage (persiste entre sessões)
+      // - rememberMe=false → sessionStorage (expira ao fechar o navegador)
+      if (rememberMe) {
+        localStorage.setItem('access_token', response.accessToken);
+        localStorage.setItem('remembered_email', email);
+        localStorage.setItem('remember_me', 'true');
+        sessionStorage.removeItem('access_token');
+      } else {
+        sessionStorage.setItem('access_token', response.accessToken);
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('remembered_email');
+        localStorage.removeItem('remember_me');
+      }
 
       set({
         user: response.user,
@@ -55,7 +68,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         failedAttempts: 0,
         lockedUntil: null,
       });
-      log.info(`Login concluído com sucesso: email=${email}`);
+      log.info(`Login concluído com sucesso: email=${email} | rememberMe=${rememberMe}`);
     } catch (error) {
       let message = 'Ocorreu um erro ao fazer login';
 
